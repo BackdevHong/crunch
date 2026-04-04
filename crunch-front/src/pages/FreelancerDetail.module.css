@@ -1,0 +1,118 @@
+.page { background: var(--color-bg-tertiary); min-height: 100vh; }
+.inner { max-width: 1000px; margin: 0 auto; padding: 28px 24px 48px; }
+
+.back {
+  background: none; border: none; font-size: 14px;
+  color: var(--color-text-secondary); cursor: pointer; padding: 0;
+  margin-bottom: 20px; display: block; font-family: inherit;
+  transition: color 0.12s;
+}
+.back:hover { color: #185fa5; }
+
+.layout { display: flex; gap: 24px; align-items: flex-start; }
+.main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+.sidebar { width: 280px; flex-shrink: 0; display: flex; flex-direction: column; gap: 12px; }
+
+.profileCard {
+  background: var(--color-bg-primary);
+  border: 0.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex; gap: 20px; align-items: flex-start;
+}
+.avatarWrap { position: relative; flex-shrink: 0; }
+.avatar {
+  width: 72px; height: 72px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; font-weight: 500;
+}
+.onlineDot {
+  position: absolute; bottom: 3px; right: 3px;
+  width: 14px; height: 14px; background: #3ac55a;
+  border-radius: 50%; border: 2px solid white;
+}
+.profileInfo { flex: 1; min-width: 0; }
+.nameRow { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.nameRow h1 { font-size: 20px; font-weight: 500; color: var(--color-text-primary); }
+
+.badge { font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 99px; }
+.badgeTop { background: #fff0e8; color: #c04a1a; border: 0.5px solid #ffcfb8; }
+.badgePro { background: #e6f1fb; color: #185fa5; border: 0.5px solid #b5d4f4; }
+.badgeNew { background: #eaf3de; color: #3b6d11; border: 0.5px solid #c0dd97; }
+
+.role { font-size: 14px; color: var(--color-text-secondary); margin-bottom: 10px; }
+.meta { display: flex; gap: 12px; font-size: 13px; color: var(--color-text-secondary); flex-wrap: wrap; margin-bottom: 12px; }
+.onlineLabel { color: #3ac55a; font-weight: 500; }
+
+.skills { display: flex; gap: 6px; flex-wrap: wrap; }
+.skill {
+  font-size: 12px; padding: 3px 10px; border-radius: 99px;
+  background: #e6f1fb; color: #185fa5;
+  border: 0.5px solid #b5d4f4;
+}
+
+.card {
+  background: var(--color-bg-primary);
+  border: 0.5px solid var(--color-border);
+  border-radius: var(--radius-lg); padding: 20px;
+}
+.card h3 { font-size: 15px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 12px; }
+.card p { font-size: 14px; color: var(--color-text-secondary); line-height: 1.7; margin-bottom: 8px; }
+.card p:last-child { margin-bottom: 0; }
+
+.careerItem { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 14px; }
+.careerItem:last-child { margin-bottom: 0; }
+.careerDot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: #185fa5; flex-shrink: 0; margin-top: 4px;
+}
+.careerTitle { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 2px; }
+.careerPeriod { font-size: 12px; color: var(--color-text-secondary); }
+
+/* SIDEBAR */
+.priceCard {
+  background: var(--color-bg-primary);
+  border: 0.5px solid var(--color-border);
+  border-radius: var(--radius-lg); padding: 20px;
+}
+.priceTop { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px; }
+.priceLabel { font-size: 12px; color: var(--color-text-secondary); }
+.price { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
+
+.btnContact {
+  width: 100%; padding: 12px; margin-bottom: 8px;
+  background: #185fa5; border: none; border-radius: var(--radius-md);
+  color: white; font-size: 15px; font-weight: 500;
+  cursor: pointer; transition: opacity 0.15s; font-family: inherit;
+}
+.btnContact:hover { opacity: 0.88; }
+
+.btnMsg {
+  width: 100%; padding: 11px;
+  background: var(--color-bg-primary);
+  border: 0.5px solid var(--color-border-hover);
+  border-radius: var(--radius-md);
+  font-size: 14px; color: var(--color-text-primary);
+  cursor: pointer; transition: background 0.12s; font-family: inherit;
+}
+.btnMsg:hover { background: var(--color-bg-secondary); }
+
+.infoCard {
+  background: var(--color-bg-primary);
+  border: 0.5px solid var(--color-border);
+  border-radius: var(--radius-lg); padding: 16px;
+}
+.infoRow {
+  display: flex; justify-content: space-between;
+  padding: 8px 0; font-size: 13px;
+  border-bottom: 0.5px solid var(--color-border);
+}
+.infoRow:last-child { border-bottom: none; }
+.infoRow span { color: var(--color-text-secondary); }
+.infoRow strong { color: var(--color-text-primary); font-weight: 500; }
+
+@media (max-width: 768px) {
+  .layout { flex-direction: column; }
+  .sidebar { width: 100%; }
+  .profileCard { flex-direction: column; }
+}
