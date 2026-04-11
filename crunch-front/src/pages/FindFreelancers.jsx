@@ -1,21 +1,34 @@
-import { useState, useMemo } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useApp } from '../context/AppContext'
+import api from '../lib/api'
 import FreelancerCard from '../components/FreelancerCard'
 import { SKILL_TAGS } from '../data/mockData'
 import styles from './FindFreelancers.module.css'
 
-const SORT_OPTIONS = ['추천순', '평점순', '완료 건수순', '낮은 단가순']
+const SORT_MAP = {
+  '추천순':     { sort: 'rating',        order: 'desc' },
+  '평점순':     { sort: 'rating',        order: 'desc' },
+  '완료 건수순': { sort: 'completedJobs', order: 'desc' },
+  '낮은 단가순': { sort: 'hourlyRate',    order: 'asc'  },
+}
+
 const RATE_OPTIONS = [
-  { label: '전체', min: 0, max: Infinity },
-  { label: '~3만원/시간', min: 0, max: 30000 },
-  { label: '3~6만원/시간', min: 30000, max: 60000 },
-  { label: '6만원+/시간', min: 60000, max: Infinity },
+  { label: '전체',         min: undefined, max: undefined },
+  { label: '~3만원/시간',  min: undefined, max: 30000    },
+  { label: '3~6만원/시간', min: 30000,     max: 60000    },
+  { label: '6만원+/시간',  min: 60000,     max: undefined },
 ]
+
 const EXP_OPTIONS = ['1년 미만', '1~3년', '3~5년', '5년 이상']
 const PAGE_SIZE = 6
 
 export default function FindFreelancers() {
-  const { freelancers, setSelectedFreelancer } = useApp()
+  const { setSelectedFreelancer } = useApp()
+
+  const [freelancers, setFreelancers] = useState([])
+  const [total, setTotal] = useState(0)
+  const [totalPages, setTotalPages] = useState(1)
+  const [loading, setLoading] = useState(false)
 
   const [query, setQuery] = useState('')
   const [activeSkills, setActiveSkills] = useState([])
@@ -25,30 +38,49 @@ export default function FindFreelancers() {
   const [sort, setSort] = useState('추천순')
   const [page, setPage] = useState(1)
 
-  const toggleSkill = (skill) => { setActiveSkills(prev => prev.includes(skill) ? prev.filter(s => s !== skill) : [...prev, skill]); setPage(1) }
-  const toggleExp = (opt) => { setExperience(prev => prev.includes(opt) ? prev.filter(e => e !== opt) : [...prev, opt]); setPage(1) }
+  const fetchFreelancers = useCallback(async () => {
+    setLoading(true)
+    try {
+      const rateOpt = RATE_OPTIONS.find(r => r.label === rate)
+      const { sort: sortKey, order } = SORT_MAP[sort]
 
-  const rateRange = RATE_OPTIONS.find(r => r.label === rate) || RATE_OPTIONS[0]
+      const params = {
+        page,
+        limit: PAGE_SIZE,
+        sort: sortKey,
+        order,
+        ...(query && { q: query }),
+        ...(activeSkills.length > 0 && { skill: activeSkills[0] }),
+        ...(rateOpt?.min && { minRate: rateOpt.min }),
+        ...(rateOpt?.max && { maxRate: rateOpt.max }),
+        ...(experience.length > 0 && { experience: experience[0] }),
+        ...(onlyOnline && { online: true }),
+      }
 
-  const filtered = useMemo(() => {
-    let result = [...freelancers]
+      const { data } = await api.get('/api/freelancers', { params })
+      setFreelancers(data.data.freelancers)
+      setTotal(data.data.pagination.total)
+      setTotalPages(data.data.pagination.totalPages)
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setLoading(false)
+    }
+  }, [query, activeSkills, rate, experience, onlyOnline, sort, page])
 
-    if (query) result = result.filter(f => f.name.includes(query) || f.role.includes(query) || f.skills.some(s => s.includes(query)))
-    if (activeSkills.length > 0) result = result.filter(f => activeSkills.every(sk => f.skills.includes(sk)))
-    result = result.filter(f => f.hourlyRate >= rateRange.min && f.hourlyRate <= rateRange.max)
-    if (experience.length > 0) result = result.filter(f => experience.includes(f.experience))
-    if (onlyOnline) result = result.filter(f => f.online)
+  useEffect(() => {
+    fetchFreelancers()
+  }, [fetchFreelancers])
 
-    if (sort === '평점순') result.sort((a, b) => b.rating - a.rating)
-    else if (sort === '완료 건수순') result.sort((a, b) => b.completedJobs - a.completedJobs)
-    else if (sort === '낮은 단가순') result.sort((a, b) => a.hourlyRate - b.hourlyRate)
-
-    return result
-  }, [freelancers, query, activeSkills, rateRange, experience, onlyOnline, sort])
-
-  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
-  const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
   const handleFilter = (setter, value) => { setter(value); setPage(1) }
+  const toggleSkill = (skill) => {
+    setActiveSkills(prev => prev.includes(skill) ? prev.filter(s => s !== skill) : [...prev, skill])
+    setPage(1)
+  }
+  const toggleExp = (opt) => {
+    setExperience(prev => prev.includes(opt) ? prev.filter(e => e !== opt) : [...prev, opt])
+    setPage(1)
+  }
 
   return (
     <div className={styles.page}>
@@ -56,14 +88,15 @@ export default function FindFreelancers() {
         <h1>나에게 딱 맞는 <span>프리랜서</span>를 찾아보세요</h1>
         <div className={styles.searchRow}>
           <div className={styles.searchBox}>
-            <input type="text" placeholder="예: React 개발자, UI/UX 디자이너..." value={query}
-              onChange={e => handleFilter(setQuery, e.target.value)} />
-            <button>검색</button>
+            <input type="text" placeholder="예: React 개발자, UI/UX 디자이너..."
+              value={query} onChange={e => handleFilter(setQuery, e.target.value)} />
+            <button onClick={fetchFreelancers}>검색</button>
           </div>
         </div>
         <div className={styles.quickTags}>
           {SKILL_TAGS.slice(0, 7).map(tag => (
-            <span key={tag} className={`${styles.tag} ${activeSkills.includes(tag) ? styles.tagOn : ''}`}
+            <span key={tag}
+              className={`${styles.tag} ${activeSkills.includes(tag) ? styles.tagOn : ''}`}
               onClick={() => toggleSkill(tag)}>{tag}</span>
           ))}
         </div>
@@ -81,31 +114,31 @@ export default function FindFreelancers() {
               ))}
             </div>
           </div>
-
           <div className={styles.section}>
             <div className={styles.sectionTitle}>시간당 단가</div>
             {RATE_OPTIONS.map(({ label }) => (
               <label key={label} className={styles.filterLabel}>
-                <input type="radio" name="rate" checked={rate === label} onChange={() => handleFilter(setRate, label)} />
+                <input type="radio" name="rate" checked={rate === label}
+                  onChange={() => handleFilter(setRate, label)} />
                 {label}
               </label>
             ))}
           </div>
-
           <div className={styles.section}>
             <div className={styles.sectionTitle}>경력</div>
             {EXP_OPTIONS.map(opt => (
               <label key={opt} className={styles.filterLabel}>
-                <input type="checkbox" checked={experience.includes(opt)} onChange={() => toggleExp(opt)} />
+                <input type="checkbox" checked={experience.includes(opt)}
+                  onChange={() => toggleExp(opt)} />
                 {opt}
               </label>
             ))}
           </div>
-
           <div className={styles.section}>
             <div className={styles.sectionTitle}>가용 상태</div>
             <label className={styles.filterLabel}>
-              <input type="checkbox" checked={onlyOnline} onChange={e => handleFilter(setOnlyOnline, e.target.checked)} />
+              <input type="checkbox" checked={onlyOnline}
+                onChange={e => handleFilter(setOnlyOnline, e.target.checked)} />
               지금 바로 가능
             </label>
           </div>
@@ -113,18 +146,25 @@ export default function FindFreelancers() {
 
         <div className={styles.content}>
           <div className={styles.gridHeader}>
-            <h2>프리랜서 <span>{filtered.length}명</span></h2>
-            <select className={styles.sortSelect} value={sort} onChange={e => handleFilter(setSort, e.target.value)}>
-              {SORT_OPTIONS.map(o => <option key={o}>{o}</option>)}
+            <h2>프리랜서 <span>{total}명</span></h2>
+            <select className={styles.sortSelect} value={sort}
+              onChange={e => handleFilter(setSort, e.target.value)}>
+              {Object.keys(SORT_MAP).map(o => <option key={o}>{o}</option>)}
             </select>
           </div>
 
-          {paginated.length === 0 ? (
-            <div className={styles.empty}>조건에 맞는 프리랜서가 없어요. 필터를 바꿔보세요.</div>
+          {loading ? (
+            <div className={styles.empty}>불러오는 중...</div>
+          ) : freelancers.length === 0 ? (
+            <div className={styles.empty}>조건에 맞는 프리랜서가 없어요.</div>
           ) : (
             <div className={styles.grid}>
-              {paginated.map(fl => (
-                <FreelancerCard key={fl.id} freelancer={fl} onClick={() => setSelectedFreelancer(fl)} />
+              {freelancers.map(fl => (
+                <FreelancerCard key={fl.id} freelancer={{
+                  ...fl,
+                  name: fl.user.name,
+                  avatarUrl: fl.user.avatarUrl,
+                }} onClick={() => setSelectedFreelancer(fl)} />
               ))}
             </div>
           )}
@@ -133,7 +173,8 @@ export default function FindFreelancers() {
             <div className={styles.pagination}>
               <button className={styles.pageBtn} onClick={() => setPage(p => Math.max(1, p - 1))}>‹</button>
               {Array.from({ length: totalPages }, (_, i) => i + 1).map(n => (
-                <button key={n} className={`${styles.pageBtn} ${page === n ? styles.pageBtnActive : ''}`} onClick={() => setPage(n)}>{n}</button>
+                <button key={n} className={`${styles.pageBtn} ${page === n ? styles.pageBtnActive : ''}`}
+                  onClick={() => setPage(n)}>{n}</button>
               ))}
               <button className={styles.pageBtn} onClick={() => setPage(p => Math.min(totalPages, p + 1))}>›</button>
             </div>

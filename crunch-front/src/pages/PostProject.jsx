@@ -1,14 +1,17 @@
 import { useState } from 'react'
 import { useApp } from '../context/AppContext'
+import api from '../lib/api'
 import { CATEGORY_META, SKILL_TAGS, COLLAB_TAGS, DEADLINE_OPTIONS, BUDGET_PRESETS } from '../data/mockData'
 import styles from './PostProject.module.css'
 
 const STEPS = ['기본 정보', '예산 · 기간', '상세 요구사항', '검토 · 제출']
 
 export default function PostProject({ onNavigate }) {
-  const { addProject, currentUser } = useApp()
+  const { currentUser } = useApp()
   const [step, setStep] = useState(1)
+  const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [error, setError] = useState('')
 
   const [form, setForm] = useState({
     title: '', category: '', skills: [],
@@ -18,11 +21,34 @@ export default function PostProject({ onNavigate }) {
 
   const set = (key, value) => setForm(prev => ({ ...prev, [key]: value }))
   const toggleArr = (key, value) =>
-    set(key, form[key].includes(value) ? form[key].filter(v => v !== value) : [...form[key], value])
+    set(key, form[key].includes(value)
+      ? form[key].filter(v => v !== value)
+      : [...form[key], value])
 
-  const handleSubmit = () => {
-    addProject(form)
-    setSubmitted(true)
+  const handleSubmit = async () => {
+    if (!form.title) { setError('제목을 입력해주세요.'); return }
+    if (!form.category) { setError('카테고리를 선택해주세요.'); return }
+
+    setSubmitting(true)
+    setError('')
+    try {
+      await api.post('/api/projects', {
+        title: form.title,
+        category: form.category,
+        budgetPreset: form.budgetPreset,
+        budgetMin: form.budgetMin || null,
+        budgetMax: form.budgetMax || null,
+        deadline: form.deadline,
+        description: form.description,
+        collabTags: form.collab,
+        skills: form.skills,
+      })
+      setSubmitted(true)
+    } catch (err) {
+      setError(err.response?.data?.message ?? '등록 중 오류가 발생했습니다.')
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   if (submitted) {
@@ -32,7 +58,9 @@ export default function PostProject({ onNavigate }) {
           <div className={styles.successIcon}>🎉</div>
           <h2>프로젝트가 등록되었습니다!</h2>
           <p>48시간 내 평균 5.2개의 전문가 제안이 도착합니다.</p>
-          <button className={styles.btnNext} onClick={() => onNavigate('home')}>홈으로 돌아가기</button>
+          <button className={styles.btnNext} onClick={() => onNavigate('home')}>
+            홈으로 돌아가기
+          </button>
         </div>
       </div>
     )
@@ -53,6 +81,16 @@ export default function PostProject({ onNavigate }) {
         {step === 3 && <Step3 form={form} set={set} toggleArr={toggleArr} />}
         {step === 4 && <Step4 form={form} currentUser={currentUser} />}
 
+        {error && (
+          <div style={{
+            background: '#fcebeb', border: '0.5px solid #f09595',
+            borderRadius: '8px', padding: '10px 14px',
+            fontSize: '13px', color: '#a32d2d', marginBottom: '12px',
+          }}>
+            {error}
+          </div>
+        )}
+
         <div className={styles.actions}>
           {step > 1
             ? <button className={styles.btnBack} onClick={() => setStep(s => s - 1)}>← 이전</button>
@@ -60,7 +98,9 @@ export default function PostProject({ onNavigate }) {
           }
           {step < 4
             ? <button className={styles.btnNext} onClick={() => setStep(s => s + 1)}>다음 →</button>
-            : <button className={styles.btnSubmit} onClick={handleSubmit}>🚀 프로젝트 등록하기</button>
+            : <button className={styles.btnSubmit} onClick={handleSubmit} disabled={submitting}>
+                {submitting ? '등록 중...' : '🚀 프로젝트 등록하기'}
+              </button>
           }
         </div>
       </div>
@@ -68,6 +108,7 @@ export default function PostProject({ onNavigate }) {
   )
 }
 
+// ── STEPPER ──────────────────────────────────────────────────
 function Stepper({ current, steps }) {
   return (
     <div className={styles.stepper}>
@@ -91,20 +132,22 @@ function Stepper({ current, steps }) {
   )
 }
 
+// ── STEP 1 ───────────────────────────────────────────────────
 function Step1({ form, set, toggleArr }) {
   return (
     <div className={styles.card}>
       <div className={styles.cardTitle}><div className={styles.cardTitleIcon}>📋</div>프로젝트 기본 정보</div>
       <div className={styles.field}>
         <label>프로젝트 제목</label>
-        <input type="text" placeholder="예: 쇼핑몰 웹사이트 개발" value={form.title} onChange={e => set('title', e.target.value)} />
+        <input type="text" placeholder="예: 쇼핑몰 웹사이트 개발"
+          value={form.title} onChange={e => set('title', e.target.value)} />
         <div className={styles.hint}>어떤 작업인지 명확하게 적어주세요</div>
       </div>
       <div className={styles.field}>
         <label>카테고리</label>
         <select value={form.category} onChange={e => set('category', e.target.value)}>
           <option value="">카테고리를 선택하세요</option>
-          {CATEGORY_META.map(c => <option key={c.label}>{c.label}</option>)}
+          {CATEGORY_META.map(c => <option key={c.label} value={c.label}>{c.label}</option>)}
         </select>
       </div>
       <div className={styles.field}>
@@ -122,6 +165,7 @@ function Step1({ form, set, toggleArr }) {
   )
 }
 
+// ── STEP 2 ───────────────────────────────────────────────────
 function Step2({ form, set }) {
   return (
     <div className={styles.card}>
@@ -141,11 +185,13 @@ function Step2({ form, set }) {
       <div className={styles.fieldRow}>
         <div className={styles.field}>
           <label>직접 입력 (최소)</label>
-          <input type="text" placeholder="0 원" value={form.budgetMin} onChange={e => set('budgetMin', e.target.value)} />
+          <input type="text" placeholder="0 원"
+            value={form.budgetMin} onChange={e => set('budgetMin', e.target.value)} />
         </div>
         <div className={styles.field}>
           <label>직접 입력 (최대)</label>
-          <input type="text" placeholder="500,000 원" value={form.budgetMax} onChange={e => set('budgetMax', e.target.value)} />
+          <input type="text" placeholder="500,000 원"
+            value={form.budgetMax} onChange={e => set('budgetMax', e.target.value)} />
         </div>
       </div>
       <div className={styles.field}>
@@ -158,13 +204,15 @@ function Step2({ form, set }) {
   )
 }
 
+// ── STEP 3 ───────────────────────────────────────────────────
 function Step3({ form, set, toggleArr }) {
   return (
     <div className={styles.card}>
       <div className={styles.cardTitle}><div className={styles.cardTitleIcon}>📝</div>상세 요구사항</div>
       <div className={styles.field}>
         <label>프로젝트 상세 설명</label>
-        <textarea placeholder={'프로젝트에 대해 자세히 설명해 주세요.\n\n예: 현재 상황, 원하는 결과물, 참고할 레퍼런스 등'}
+        <textarea
+          placeholder={'프로젝트에 대해 자세히 설명해 주세요.\n\n예: 현재 상황, 원하는 결과물, 참고할 레퍼런스 등'}
           value={form.description} onChange={e => set('description', e.target.value)} />
         <div className={styles.hint}>자세할수록 더 좋은 제안을 받을 수 있어요</div>
       </div>
@@ -189,13 +237,14 @@ function Step3({ form, set, toggleArr }) {
   )
 }
 
+// ── STEP 4 ───────────────────────────────────────────────────
 function Step4({ form, currentUser }) {
   const rows = [
-    { label: '제목', value: form.title || '(미입력)' },
+    { label: '제목',   value: form.title || '(미입력)' },
     { label: '카테고리', value: form.category || '(미입력)' },
-    { label: '예산', value: form.budgetPreset },
+    { label: '예산',   value: form.budgetPreset },
     { label: '납기일', value: form.deadline },
-    { label: '등록자', value: currentUser ? currentUser.name : '(로그인 필요)' },
+    { label: '등록자', value: currentUser?.name ?? '(로그인 필요)' },
   ]
   return (
     <>

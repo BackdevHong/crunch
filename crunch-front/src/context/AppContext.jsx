@@ -1,68 +1,83 @@
-import { createContext, useContext, useState } from 'react'
-import { MOCK_USERS, MOCK_SERVICES, MOCK_FREELANCERS } from '../data/mockData'
+import { createContext, useContext, useState, useEffect } from 'react'
+import api from '../lib/api'
+import { MOCK_SERVICES, MOCK_FREELANCERS } from '../data/mockData'
 
 const AppContext = createContext(null)
 
 export function AppProvider({ children }) {
-  // ── 인증 상태 ──
   const [currentUser, setCurrentUser] = useState(null)
   const [authError, setAuthError] = useState('')
+  const [authLoading, setAuthLoading] = useState(true) // 초기 인증 확인 중
 
-  // ── 데이터 ──
-  const [services] = useState(MOCK_SERVICES)
-  const [freelancers] = useState(MOCK_FREELANCERS)
+  const [services, setServices] = useState([])
+  const [freelancers, setFreelancers] = useState([])
   const [projects, setProjects] = useState([])
 
-  // ── 상세 페이지 ──
   const [selectedService, setSelectedService] = useState(null)
   const [selectedFreelancer, setSelectedFreelancer] = useState(null)
 
-  // ── 로그인 ──
-  const login = (email, password) => {
-    const user = MOCK_USERS.find(u => u.email === email && u.password === password)
-    if (user) {
-      setCurrentUser(user)
-      setAuthError('')
-      return true
+  // ── 앱 시작 시 로그인 상태 복원 ──────────────────────────────
+  useEffect(() => {
+    const token = localStorage.getItem('accessToken')
+    if (!token) {
+      setAuthLoading(false)
+      return
     }
-    setAuthError('이메일 또는 비밀번호가 올바르지 않습니다.')
-    return false
-  }
+    api.get('/api/auth/me')
+      .then(({ data }) => setCurrentUser(data.data))
+      .catch(() => localStorage.removeItem('accessToken'))
+      .finally(() => setAuthLoading(false))
+  }, [])
 
-  // ── 회원가입 ──
-  const signup = ({ firstName, lastName, email, password }) => {
-    const exists = MOCK_USERS.find(u => u.email === email)
-    if (exists) {
-      setAuthError('이미 사용 중인 이메일입니다.')
+  // ── 로그인 ───────────────────────────────────────────────────
+  const login = async (email, password) => {
+    setAuthError('')
+    try {
+      const { data } = await api.post('/api/auth/login', { email, password })
+      localStorage.setItem('accessToken', data.data.accessToken)
+      setCurrentUser(data.data.user)
+      return true
+    } catch (err) {
+      setAuthError(err.response?.data?.message ?? '로그인 중 오류가 발생했습니다.')
       return false
     }
-    const newUser = {
-      id: Date.now(),
-      name: `${lastName}${firstName}`,
-      email,
-      password,
-      avatar: lastName[0] || '?',
-      avatarBg: '#E6F1FB',
-      avatarColor: '#185FA5',
-    }
-    MOCK_USERS.push(newUser)
-    setCurrentUser(newUser)
+  }
+
+  // ── 회원가입 ─────────────────────────────────────────────────
+  const signup = async ({ lastName, firstName, email, password }) => {
     setAuthError('')
-    return true
+    try {
+      const { data } = await api.post('/api/auth/signup', {
+        name: `${lastName}${firstName}`,
+        email,
+        password,
+      })
+      localStorage.setItem('accessToken', data.data.accessToken)
+      setCurrentUser(data.data.user)
+      return true
+    } catch (err) {
+      setAuthError(err.response?.data?.message ?? '회원가입 중 오류가 발생했습니다.')
+      return false
+    }
   }
 
-  // ── 로그아웃 ──
-  const logout = () => {
-    setCurrentUser(null)
+  // ── 로그아웃 ─────────────────────────────────────────────────
+  const logout = async () => {
+    try {
+      await api.post('/api/auth/logout')
+    } finally {
+      localStorage.removeItem('accessToken')
+      setCurrentUser(null)
+    }
   }
 
-  // ── 프로젝트 등록 ──
+  // ── 프로젝트 등록 ─────────────────────────────────────────────
   const addProject = (projectData) => {
     const newProject = {
       id: Date.now(),
       ...projectData,
       authorId: currentUser?.id,
-      authorName: currentUser?.name || '익명',
+      authorName: currentUser?.name ?? '익명',
       createdAt: new Date().toISOString(),
       status: '모집중',
     }
@@ -72,15 +87,11 @@ export function AppProvider({ children }) {
 
   return (
     <AppContext.Provider value={{
-      // auth
-      currentUser, authError, setAuthError, login, signup, logout,
-      // data
-      services, freelancers, projects,
-      // detail
+      currentUser, authError, setAuthError, authLoading,
+      login, signup, logout,
+      services, freelancers, projects, addProject,
       selectedService, setSelectedService,
       selectedFreelancer, setSelectedFreelancer,
-      // actions
-      addProject,
     }}>
       {children}
     </AppContext.Provider>

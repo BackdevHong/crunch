@@ -1,0 +1,43 @@
+.layout { display: flex; min-height: 100vh; }
+
+.sidebar {
+  width: 220px; flex-shrink: 0;
+  background: #1a1a18; color: white;
+  display: flex; flex-direction: column;
+  position: sticky; top: 0; height: 100vh;
+}
+
+.logo {
+  padding: 24px 20px;
+  font-size: 15px; font-weight: 500;
+  border-bottom: 0.5px solid rgba(255,255,255,0.1);
+}
+
+.nav { flex: 1; padding: 12px 0; }
+
+.navItem {
+  width: 100%; display: flex; align-items: center; gap: 10px;
+  padding: 11px 20px; font-size: 14px;
+  color: rgba(255,255,255,0.55);
+  background: none; border: none; cursor: pointer;
+  text-align: left; font-family: inherit;
+  transition: all 0.12s;
+}
+.navItem:hover { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.85); }
+.navActive { background: rgba(255,255,255,0.12); color: white; }
+.navIcon { font-size: 15px; width: 20px; flex-shrink: 0; }
+
+.sidebarFooter {
+  padding: 16px 20px;
+  border-top: 0.5px solid rgba(255,255,255,0.1);
+}
+.adminName { font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 8px; }
+.logoutBtn {
+  background: none; border: 0.5px solid rgba(255,255,255,0.2);
+  border-radius: 6px; color: rgba(255,255,255,0.55);
+  font-size: 12px; padding: 4px 10px;
+  cursor: pointer; font-family: inherit; transition: all 0.12s;
+}
+.logoutBtn:hover { color: white; border-color: rgba(255,255,255,0.4); }
+
+.content { flex: 1; background: #f1efe8; overflow-y: auto; }

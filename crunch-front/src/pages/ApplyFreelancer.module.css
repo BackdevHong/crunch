@@ -1,0 +1,84 @@
+.page { background: var(--color-bg-tertiary); min-height: 100vh; }
+
+.hero {
+  background: linear-gradient(135deg, #f0f6ff 0%, #e6effd 100%);
+  padding: 40px 24px 32px;
+  text-align: center;
+  border-bottom: 0.5px solid var(--color-border);
+}
+.hero h1 { font-size: 26px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 6px; }
+.hero h1 span { color: #185fa5; }
+.hero p { font-size: 14px; color: var(--color-text-secondary); }
+
+.formWrap { max-width: 640px; margin: 0 auto; padding: 28px 24px 48px; }
+
+.card {
+  background: var(--color-bg-primary);
+  border: 0.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 16px;
+}
+.cardTitle { font-size: 15px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 20px; padding-bottom: 14px; border-bottom: 0.5px solid var(--color-border); }
+
+.field { margin-bottom: 16px; }
+.field:last-child { margin-bottom: 0; }
+.field label { display: block; font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 5px; }
+.field input, .field select, .field textarea {
+  width: 100%; padding: 10px 13px;
+  border: 0.5px solid var(--color-border-hover);
+  border-radius: var(--radius-md);
+  font-size: 14px; color: var(--color-text-primary);
+  background: var(--color-bg-primary);
+  outline: none; transition: border-color 0.12s; font-family: inherit;
+}
+.field input:focus, .field select:focus, .field textarea:focus { border-color: #185fa5; }
+.field textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
+
+.fieldRow { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.required { color: var(--color-accent); }
+.optional { font-weight: 400; color: var(--color-text-secondary); font-size: 12px; }
+
+.tagGroup { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+.tag {
+  font-size: 12px; padding: 5px 12px; border-radius: 99px;
+  border: 0.5px solid var(--color-border-hover);
+  background: var(--color-bg-primary); color: var(--color-text-secondary);
+  cursor: pointer; transition: all 0.12s;
+}
+.tag:hover { border-color: #185fa5; color: #185fa5; }
+.tagOn { background: #e6f1fb; color: #185fa5; border-color: #185fa5; }
+
+.errorBox {
+  background: #fcebeb; border: 0.5px solid #f09595;
+  border-radius: var(--radius-md); padding: 10px 14px;
+  font-size: 13px; color: #a32d2d; margin-bottom: 12px;
+}
+
+.actions { display: flex; justify-content: space-between; align-items: center; padding-top: 8px; }
+
+.btnBack {
+  padding: 10px 20px; border-radius: var(--radius-md);
+  border: 0.5px solid var(--color-border-hover);
+  background: var(--color-bg-primary); font-size: 14px;
+  color: var(--color-text-secondary); cursor: pointer; font-family: inherit;
+}
+.btnPrimary {
+  padding: 11px 28px; border-radius: var(--radius-md);
+  border: none; background: #185fa5;
+  color: white; font-size: 14px; font-weight: 500;
+  cursor: pointer; transition: opacity 0.15s; font-family: inherit;
+}
+.btnPrimary:hover { opacity: 0.88; }
+.btnPrimary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.successWrap {
+  max-width: 420px; margin: 80px auto; padding: 48px 32px;
+  background: var(--color-bg-primary);
+  border: 0.5px solid var(--color-border);
+  border-radius: var(--radius-lg); text-align: center;
+}
+.successIcon { font-size: 48px; margin-bottom: 16px; }
+.successWrap h2 { font-size: 20px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 8px; }
+.successWrap p { font-size: 14px; color: var(--color-text-secondary); line-height: 1.7; margin-bottom: 24px; }

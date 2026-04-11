@@ -18,10 +18,21 @@ export default function FreelancerCard({ freelancer, onClick }) {
         </div>
         <span className={`${styles.badge} ${BADGE_STYLE[badge]}`}>{badge}</span>
       </div>
-      <div className={styles.tags}>{skills.map(s => <span key={s} className={styles.tag}>{s}</span>)}</div>
+      <div className={styles.tags}>
+        {(skills ?? []).map(sk => (
+          <span key={sk.skill ?? sk} className={styles.tag}>
+            {sk.skill ?? sk}
+          </span>
+        ))}
+      </div>
       <div className={styles.footer}>
-        <div><div className={styles.rateLabel}>시간당</div><div className={styles.rate}>{hourlyRate.toLocaleString()}원</div></div>
-        <button className={styles.btn} onClick={e => { e.stopPropagation(); onClick && onClick() }}>프로필 보기</button>
+        <div>
+          <div className={styles.rateLabel}>시간당</div>
+          <div className={styles.rate}>{hourlyRate.toLocaleString()}원</div>
+        </div>
+        <button className={styles.btn} onClick={e => { e.stopPropagation(); onClick && onClick() }}>
+          프로필 보기
+        </button>
       </div>
     </div>
   )

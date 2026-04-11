@@ -52,10 +52,13 @@ function LoginView({ onSwitch, onClose }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  const handleSubmit = () => {
-    if (!email || !password) { setAuthError('이메일과 비밀번호를 입력해주세요.'); return }
-    const ok = login(email, password)
-    if (ok) onClose()
+  const handleSubmit = async () => {
+    if (!email || !password) {
+      setAuthError('이메일과 비밀번호를 입력해주세요.')
+      return
+    }
+    const ok = await login(email, password)
+    if (ok) onClose()  // 성공할 때만 닫기
   }
 
   return (
@@ -93,12 +96,21 @@ function SignupView({ onSwitch, onClose }) {
   const [agreed, setAgreed] = useState(false)
   const set = (k, v) => { setForm(p => ({ ...p, [k]: v })); setAuthError('') }
 
-  const handleSubmit = () => {
-    if (!form.lastName || !form.firstName || !form.email || !form.password) { setAuthError('모든 항목을 입력해주세요.'); return }
-    if (form.password.length < 8) { setAuthError('비밀번호는 8자 이상이어야 합니다.'); return }
-    if (!agreed) { setAuthError('이용약관에 동의해주세요.'); return }
-    const ok = signup(form)
-    if (ok) onClose()
+  const handleSubmit = async () => {
+    if (!form.lastName || !form.firstName || !form.email || !form.password) {
+      setAuthError('모든 항목을 입력해주세요.')
+      return
+    }
+    if (form.password.length < 8) {
+      setAuthError('비밀번호는 8자 이상이어야 합니다.')
+      return
+    }
+    if (!agreed) {
+      setAuthError('이용약관에 동의해주세요.')
+      return
+    }
+    const ok = await signup(form)
+    if (ok) onClose()  // 성공할 때만 닫기
   }
 
   return (

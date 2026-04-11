@@ -1,0 +1,273 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  client
+  freelancer
+  admin
+}
+
+enum ServiceCategory {
+  DEV         @map("개발·IT")
+  DESIGN      @map("디자인")
+  MARKETING   @map("마케팅")
+  WRITING     @map("글쓰기·번역")
+  VIDEO       @map("영상·사진")
+  MUSIC       @map("음악·오디오")
+}
+
+enum FreelancerBadge {
+  Top
+  Pro
+  New
+}
+
+enum ProjectStatus {
+  OPEN        @map("모집중")
+  IN_PROGRESS @map("진행중")
+  DONE        @map("완료")
+  CANCELLED   @map("취소")
+}
+
+enum ProposalStatus {
+  PENDING    @map("대기중")
+  ACCEPTED   @map("수락")
+  REJECTED   @map("거절")
+  CANCELLED  @map("취소")
+}
+
+enum OrderStatus {
+  PENDING     @map("결제대기")
+  IN_PROGRESS @map("진행중")
+  REVIEW      @map("검수중")
+  DONE        @map("완료")
+  CANCELLED   @map("취소")
+  REFUNDED    @map("환불")
+}
+
+enum ApplicationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model FreelancerApplication {
+  id             String            @id @default(uuid()) @db.Char(36)
+  userId         String            @unique @map("user_id") @db.Char(36)
+  role           String            @db.VarChar(100)
+  category       ServiceCategory
+  experience     String            @db.VarChar(20)
+  hourlyRate     Int               @map("hourly_rate")
+  bio            String?           @db.Text
+  skills         Json?
+  portfolioUrl   String?           @map("portfolio_url") @db.Text
+  status         ApplicationStatus @default(PENDING)
+  rejectedReason String?           @map("rejected_reason") @db.Text
+  createdAt      DateTime          @default(now()) @map("created_at")
+  updatedAt      DateTime          @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("freelancer_applications")
+}
+
+model User {
+  id           String    @id @default(uuid()) @db.Char(36)
+  name         String    @db.VarChar(50)
+  email        String    @unique @db.VarChar(255)
+  passwordHash String    @map("password_hash") @db.VarChar(255)
+  avatarUrl    String?   @map("avatar_url") @db.Text
+  role         UserRole  @default(client)
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  // refresh token 저장 (단순 구현 — 프로덕션은 별도 테이블 권장)
+  refreshToken String?   @map("refresh_token") @db.Text
+
+  freelancer   Freelancer?
+  application  FreelancerApplication?
+  services     Service[]
+  projects     Project[]
+  buyerOrders  Order[]    @relation("BuyerOrders")
+  sellerOrders Order[]    @relation("SellerOrders")
+  sentReviews  Review[]   @relation("ReviewerRelation")
+  gotReviews   Review[]   @relation("RevieweeRelation")
+  sentMessages Message[]  @relation("SenderRelation")
+  gotMessages  Message[]  @relation("ReceiverRelation")
+
+  @@map("users")
+}
+
+model Freelancer {
+  id            String          @id @default(uuid()) @db.Char(36)
+  userId        String          @unique @map("user_id") @db.Char(36)
+  role          String          @db.VarChar(100)
+  badge         FreelancerBadge?
+  bio           String?         @db.Text
+  rating        Decimal         @default(0.00) @db.Decimal(3, 2)
+  completedJobs Int             @default(0) @map("completed_jobs")
+  hourlyRate    Int             @default(0) @map("hourly_rate")
+  online        Boolean         @default(false)
+  experience    String?         @db.VarChar(20)
+  category      ServiceCategory
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
+
+  user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skills        FreelancerSkill[]
+  proposals     Proposal[]
+
+  @@map("freelancers")
+}
+
+model FreelancerSkill {
+  freelancerId String     @map("freelancer_id") @db.Char(36)
+  skill        String     @db.VarChar(50)
+  freelancer   Freelancer @relation(fields: [freelancerId], references: [id], onDelete: Cascade)
+
+  @@id([freelancerId, skill])
+  @@map("freelancer_skills")
+}
+
+model Service {
+  id           String          @id @default(uuid()) @db.Char(36)
+  sellerId     String          @map("seller_id") @db.Char(36)
+  title        String          @db.VarChar(200)
+  description  String?         @db.Text
+  category     ServiceCategory
+  price        Int
+  deliveryDays Int             @map("delivery_days")
+  badge        String?         @db.VarChar(20)
+  rating       Decimal         @default(0.00) @db.Decimal(3, 2)
+  reviewCount  Int             @default(0) @map("review_count")
+  thumbnailUrl String?         @map("thumbnail_url") @db.Text
+  isActive     Boolean         @default(true) @map("is_active")
+  createdAt    DateTime        @default(now()) @map("created_at")
+  updatedAt    DateTime        @updatedAt @map("updated_at")
+
+  seller  User           @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  skills  ServiceSkill[]
+  orders  Order[]
+
+  @@map("services")
+}
+
+model ServiceSkill {
+  serviceId String  @map("service_id") @db.Char(36)
+  skill     String  @db.VarChar(50)
+  service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  @@id([serviceId, skill])
+  @@map("service_skills")
+}
+
+model Project {
+  id           String          @id @default(uuid()) @db.Char(36)
+  authorId     String          @map("author_id") @db.Char(36)
+  title        String          @db.VarChar(200)
+  category     ServiceCategory
+  budgetPreset String?         @map("budget_preset") @db.VarChar(30)
+  budgetMin    Int?            @map("budget_min")
+  budgetMax    Int?            @map("budget_max")
+  deadline     String?         @db.VarChar(30)
+  description  String?         @db.Text
+  collabTags   Json?           @map("collab_tags")
+  status       ProjectStatus   @default(OPEN)
+  createdAt    DateTime        @default(now()) @map("created_at")
+  updatedAt    DateTime        @updatedAt @map("updated_at")
+
+  author    User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  skills    ProjectSkill[]
+  proposals Proposal[]
+
+  @@map("projects")
+}
+
+model ProjectSkill {
+  projectId String  @map("project_id") @db.Char(36)
+  skill     String  @db.VarChar(50)
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@id([projectId, skill])
+  @@map("project_skills")
+}
+
+model Proposal {
+  id           String         @id @default(uuid()) @db.Char(36)
+  projectId    String         @map("project_id") @db.Char(36)
+  freelancerId String         @map("freelancer_id") @db.Char(36)
+  message      String         @db.Text
+  price        Int
+  deliveryDays Int            @map("delivery_days")
+  status       ProposalStatus @default(PENDING)
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @updatedAt @map("updated_at")
+
+  project    Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  freelancer Freelancer @relation(fields: [freelancerId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, freelancerId])
+  @@map("proposals")
+}
+
+model Order {
+  id           String      @id @default(uuid()) @db.Char(36)
+  serviceId    String      @map("service_id") @db.Char(36)
+  buyerId      String      @map("buyer_id") @db.Char(36)
+  sellerId     String      @map("seller_id") @db.Char(36)
+  amount       Int
+  status       OrderStatus @default(PENDING)
+  requirements String?     @db.Text
+  createdAt    DateTime    @default(now()) @map("created_at")
+  updatedAt    DateTime    @updatedAt @map("updated_at")
+  completedAt  DateTime?   @map("completed_at")
+
+  service  Service   @relation(fields: [serviceId], references: [id])
+  buyer    User      @relation("BuyerOrders", fields: [buyerId], references: [id])
+  seller   User      @relation("SellerOrders", fields: [sellerId], references: [id])
+  reviews  Review[]
+  messages Message[]
+
+  @@map("orders")
+}
+
+model Review {
+  id          String   @id @default(uuid()) @db.Char(36)
+  orderId     String   @map("order_id") @db.Char(36)
+  reviewerId  String   @map("reviewer_id") @db.Char(36)
+  revieweeId  String   @map("reviewee_id") @db.Char(36)
+  rating      Int      @db.TinyInt
+  comment     String?  @db.Text
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  order    Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  reviewer User  @relation("ReviewerRelation", fields: [reviewerId], references: [id])
+  reviewee User  @relation("RevieweeRelation", fields: [revieweeId], references: [id])
+
+  @@unique([orderId, reviewerId])
+  @@map("reviews")
+}
+
+model Message {
+  id         String   @id @default(uuid()) @db.Char(36)
+  senderId   String   @map("sender_id") @db.Char(36)
+  receiverId String   @map("receiver_id") @db.Char(36)
+  orderId    String?  @map("order_id") @db.Char(36)
+  content    String   @db.Text
+  isRead     Boolean  @default(false) @map("is_read")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  sender   User   @relation("SenderRelation", fields: [senderId], references: [id])
+  receiver User   @relation("ReceiverRelation", fields: [receiverId], references: [id])
+  order    Order? @relation(fields: [orderId], references: [id], onDelete: SetNull)
+
+  @@map("messages")
+}

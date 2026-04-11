@@ -1,0 +1,77 @@
+.page { padding: 32px; }
+
+.pageHeader { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+.pageHeader h1 { font-size: 20px; font-weight: 500; color: #1a1a18; }
+.badge { font-size: 12px; background: white; border: 0.5px solid rgba(0,0,0,0.15); border-radius: 99px; padding: 3px 10px; color: #6b6b67; }
+
+.toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 12px; }
+.tabs { display: flex; gap: 4px; }
+.tab { padding: 7px 14px; border-radius: 8px; border: 0.5px solid rgba(0,0,0,0.15); background: white; font-size: 13px; color: #6b6b67; cursor: pointer; font-family: inherit; transition: all 0.12s; }
+.tab:hover { border-color: rgba(0,0,0,0.3); color: #1a1a18; }
+.tabActive { background: #1a1a18; color: white; border-color: #1a1a18; }
+
+.searchInput {
+  padding: 8px 12px; border: 0.5px solid rgba(0,0,0,0.2); border-radius: 8px;
+  font-size: 13px; font-family: inherit; color: #1a1a18; outline: none;
+  width: 220px; transition: border-color 0.12s;
+}
+.searchInput:focus { border-color: #185fa5; }
+
+.empty { padding: 48px; text-align: center; color: #6b6b67; background: white; border-radius: 12px; border: 0.5px solid rgba(0,0,0,0.1); }
+
+.table { background: white; border-radius: 12px; border: 0.5px solid rgba(0,0,0,0.1); overflow: hidden; }
+.thead { display: grid; padding: 12px 20px; background: #f7f7f5; border-bottom: 0.5px solid rgba(0,0,0,0.1); font-size: 12px; font-weight: 500; color: #6b6b67; }
+.trow { display: grid; padding: 13px 20px; font-size: 13px; color: #1a1a18; border-bottom: 0.5px solid rgba(0,0,0,0.06); align-items: center; transition: background 0.1s; }
+.trow:last-child { border-bottom: none; }
+.trow:hover { background: #fafaf8; }
+
+.name { font-weight: 500; color: #1a1a18; }
+.sub { font-size: 12px; color: #6b6b67; margin-top: 2px; }
+.trow .sub { font-size: 13px; margin-top: 0; }
+
+.statusBadge { font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 99px; }
+
+.detailBtn { font-size: 12px; padding: 5px 12px; border-radius: 6px; border: 0.5px solid rgba(0,0,0,0.2); background: none; cursor: pointer; font-family: inherit; color: #1a1a18; transition: all 0.12s; }
+.detailBtn:hover { background: #1a1a18; color: white; border-color: #1a1a18; }
+
+.roleSelect { font-size: 12px; padding: 5px 8px; border-radius: 6px; border: 0.5px solid rgba(0,0,0,0.2); background: white; color: #1a1a18; cursor: pointer; font-family: inherit; outline: none; }
+
+.pagination { display: flex; justify-content: center; align-items: center; gap: 16px; margin-top: 20px; font-size: 13px; color: #6b6b67; }
+.pagination button { padding: 6px 12px; border-radius: 6px; border: 0.5px solid rgba(0,0,0,0.2); background: white; cursor: pointer; font-size: 14px; font-family: inherit; transition: all 0.12s; }
+.pagination button:hover:not(:disabled) { background: #1a1a18; color: white; border-color: #1a1a18; }
+.pagination button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* MODAL */
+.overlay { position: fixed; inset: 0; background: rgba(26,26,24,0.5); display: flex; align-items: center; justify-content: center; z-index: 200; padding: 24px; }
+.modal { background: white; border-radius: 16px; width: 100%; max-width: 520px; max-height: 85vh; overflow-y: auto; }
+.modalHeader { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 0.5px solid rgba(0,0,0,0.1); }
+.modalHeader h2 { font-size: 16px; font-weight: 500; color: #1a1a18; }
+.closeBtn { background: none; border: none; font-size: 16px; color: #6b6b67; cursor: pointer; }
+.modalBody { padding: 20px 24px; }
+
+.infoGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+.infoItem { background: #f7f7f5; border-radius: 8px; padding: 10px 14px; }
+.infoItem span { display: block; font-size: 11px; color: #6b6b67; margin-bottom: 3px; }
+.infoItem strong { font-size: 13px; font-weight: 500; color: #1a1a18; }
+
+.section { margin-bottom: 16px; }
+.sectionLabel { font-size: 11px; font-weight: 500; color: #6b6b67; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+.sectionText { font-size: 13px; color: #1a1a18; line-height: 1.65; }
+.tags { display: flex; gap: 5px; flex-wrap: wrap; }
+.tag { font-size: 12px; padding: 3px 10px; border-radius: 99px; background: #e6f1fb; color: #185fa5; }
+.link { font-size: 13px; color: #185fa5; text-decoration: none; }
+.link:hover { text-decoration: underline; }
+
+.rejectNote { background: #fcebeb; border-radius: 8px; padding: 12px 14px; margin-bottom: 16px; }
+.rejectNote p { font-size: 13px; color: #a32d2d; line-height: 1.5; }
+.rejectTextarea { width: 100%; padding: 10px 13px; border: 0.5px solid rgba(0,0,0,0.2); border-radius: 8px; font-size: 13px; font-family: inherit; min-height: 80px; resize: vertical; outline: none; }
+.rejectTextarea:focus { border-color: #a32d2d; }
+
+.modalActions { display: flex; gap: 8px; justify-content: flex-end; }
+.btnReject { padding: 10px 20px; border-radius: 8px; border: 0.5px solid rgba(0,0,0,0.2); background: none; color: #a32d2d; font-size: 14px; cursor: pointer; font-family: inherit; }
+.btnReject:hover { background: #fcebeb; }
+.btnApprove { padding: 10px 24px; border-radius: 8px; border: none; background: #3B6D11; color: white; font-size: 14px; font-weight: 500; cursor: pointer; font-family: inherit; }
+.btnApprove:hover { opacity: 0.88; }
+.btnApprove:disabled, .btnReject:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #1a1a18; color: white; font-size: 14px; padding: 12px 24px; border-radius: 99px; z-index: 300; }

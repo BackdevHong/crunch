@@ -10,6 +10,11 @@ import FindFreelancers from './pages/FindFreelancers'
 import PostProject from './pages/PostProject'
 import ServiceDetail from './pages/ServiceDetail'
 import FreelancerDetail from './pages/FreelancerDetail'
+import ApplyFreelancer from './pages/ApplyFreelancer'
+import AdminApplications from './pages/admin/AdminApplications'
+import AdminUsers from './pages/admin/AdminUsers'
+import AdminServices from './pages/admin/AdminServices'
+import MyPage from './pages/MyPage'
 
 export default function App() {
   return (
@@ -20,20 +25,34 @@ export default function App() {
 }
 
 function AppInner() {
-  const { selectedService, selectedFreelancer, setSelectedService, setSelectedFreelancer } = useApp()
+  const { selectedService, selectedFreelancer, setSelectedService, setSelectedFreelancer, authLoading, currentUser } = useApp()
   const [activePage, setActivePage] = useState('home')
   const [authModal, setAuthModal] = useState(null)
 
-  // 페이지 이동 시에만 상세 상태 초기화
-  const navigate = (page) => {
-    setSelectedService(null)
-    setSelectedFreelancer(null)
-    setActivePage(page)
+  if (authLoading) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', color: '#6b6b67', fontSize: '14px' }}>
+        불러오는 중...
+      </div>
+    )
   }
 
   // 로그인/시작하기는 상세 페이지 유지한 채 모달만 열기
   const openLogin = () => setAuthModal('login')
   const openSignup = () => setAuthModal('signup')
+
+  // 페이지 이동 시에만 상세 상태 초기화
+  const navigate = (page) => {
+    if ((page === 'post' || page === 'apply' || page === 'mypage') && !currentUser) {
+      openLogin()
+      return
+    }
+    if (page.startsWith('admin') && currentUser?.role !== 'admin') return
+    setSelectedService(null)
+    setSelectedFreelancer(null)
+    setActivePage(page)
+  }
+
 
   const nav = (
     <Navbar
@@ -74,7 +93,32 @@ function AppInner() {
             </>
           )}
           {activePage === 'post' && (
-            <PostProject onNavigate={navigate} />
+            currentUser
+              ? <PostProject onNavigate={navigate} onSignup={openSignup} />
+              : (() => {
+                  // 로그인 안 된 상태로 접근 시 로그인 모달 띄우고 홈으로
+                  openLogin()
+                  navigate('home')
+                  return null
+                })()
+          )}
+          {activePage === 'apply' && (
+            <ApplyFreelancer onNavigate={navigate} />
+          )}
+          {activePage === 'admin-applications' && (
+            <AdminApplications activePage={activePage} onNavigate={navigate} />
+          )}
+          {activePage === 'admin-users' && (
+            <AdminUsers activePage={activePage} onNavigate={navigate} />
+          )}
+          {activePage === 'admin-services' && (
+            <AdminServices activePage={activePage} onNavigate={navigate} />
+          )}
+          {activePage === 'mypage' && (
+            <>
+              <MyPage onNavigate={navigate} />
+              <Footer />
+            </>
           )}
         </>
       )}

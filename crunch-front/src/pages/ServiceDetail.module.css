@@ -113,3 +113,34 @@
   .sidebar { width: 100%; }
   .processSteps { flex-wrap: wrap; }
 }
+
+.requirementsInput {
+  width: 100%;
+  padding: 10px 13px;
+  border: 0.5px solid var(--color-border-hover);
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--color-text-primary);
+  background: var(--color-bg-primary);
+  resize: vertical;
+  min-height: 80px;
+  outline: none;
+  margin-bottom: 10px;
+}
+.requirementsInput:focus {
+  border-color: var(--color-accent);
+}
+
+.successBox {
+  max-width: 400px;
+  margin: 80px auto;
+  padding: 48px 32px;
+  background: var(--color-bg-primary);
+  border: 0.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  text-align: center;
+}
+.successIcon { font-size: 48px; margin-bottom: 16px; }
+.successBox h2 { font-size: 20px; font-weight: 500; margin-bottom: 8px; color: var(--color-text-primary); }
+.successBox p { font-size: 14px; color: var(--color-text-secondary); margin-bottom: 24px; }

@@ -6,6 +6,7 @@ const NAV_ITEMS = [
   { label: '서비스 찾기', page: 'services' },
   { label: '프리랜서 찾기', page: 'freelancers' },
   { label: '프로젝트 올리기', page: 'post' },
+  { label: '프리랜서 신청', page: 'apply' },
 ]
 
 export default function Navbar({ activePage, onNavigate, onLogin, onSignup }) {
@@ -32,15 +33,33 @@ export default function Navbar({ activePage, onNavigate, onLogin, onSignup }) {
             {label}
           </button>
         ))}
+        {currentUser?.role === 'admin' && (
+          <button
+            className={`${styles.navLink} ${activePage.startsWith('admin') ? styles.active : ''}`}
+            onClick={() => onNavigate('admin-applications')}>
+            어드민
+          </button>
+        )}
       </div>
 
       <div className={styles.navActions}>
         {currentUser ? (
           <>
-            <div className={styles.userAvatar} style={{ background: currentUser.avatarBg, color: currentUser.avatarColor }}>
-              {currentUser.avatar}
+            <div
+              className={styles.userAvatar}
+              style={{ background: currentUser.avatarBg, color: currentUser.avatarColor, cursor: 'pointer' }}
+              onClick={() => onNavigate('mypage')}
+              title="마이 페이지"
+            >
+              {currentUser.avatar ?? currentUser.name?.[0]}
             </div>
-            <span className={styles.userName}>{currentUser.name}</span>
+            <span
+              className={styles.userName}
+              style={{ cursor: 'pointer' }}
+              onClick={() => onNavigate('mypage')}
+            >
+              {currentUser.name}
+            </span>
             <button className={styles.btnGhost} onClick={logout}>로그아웃</button>
           </>
         ) : (
