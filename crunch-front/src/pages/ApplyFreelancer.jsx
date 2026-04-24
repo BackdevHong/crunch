@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useApp } from '../context/useApp'
 import api from '../lib/api'
 import { CATEGORY_META, SKILL_TAGS } from '../data/mockData'
 import styles from './ApplyFreelancer.module.css'
@@ -7,7 +6,6 @@ import styles from './ApplyFreelancer.module.css'
 const EXPERIENCE_OPTIONS = ['1년 미만', '1~3년', '3~5년', '5년 이상']
 
 export default function ApplyFreelancer({ onNavigate }) {
-  const { } = useApp()
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState('')

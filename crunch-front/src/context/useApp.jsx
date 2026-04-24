@@ -1,4 +1,3 @@
-// src/context/useApp.js (새 파일)
 import { useContext } from 'react'
 import { AppContext } from './AppContext'
 

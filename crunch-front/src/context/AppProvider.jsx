@@ -1,8 +1,7 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
+import { AppContext } from './AppContext'
 import api from '../lib/api'
 import { MOCK_SERVICES, MOCK_FREELANCERS } from '../data/mockData'
-
-export const AppContext = createContext(null)
 
 export function AppProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null)
