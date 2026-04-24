@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import './styles/global.css'
-import { useApp } from '../context/useApp'
+import { useApp } from './context/useApp'
 import { AppProvider } from './context/AppProvider'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
