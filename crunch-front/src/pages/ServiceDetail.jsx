@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useApp } from '../context/AppContext'
+import { useApp } from '../context/useApp'
 import api from '../lib/api'
 import styles from './ServiceDetail.module.css'
 

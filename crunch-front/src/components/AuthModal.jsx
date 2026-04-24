@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useApp } from '../context/AppContext'
+import { useApp } from '../context/useApp'
 import styles from './AuthModal.module.css'
 
 export default function AuthModal({ initialView = 'login', onClose }) {

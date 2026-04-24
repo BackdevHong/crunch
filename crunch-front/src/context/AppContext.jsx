@@ -2,15 +2,15 @@ import { createContext, useContext, useState, useEffect } from 'react'
 import api from '../lib/api'
 import { MOCK_SERVICES, MOCK_FREELANCERS } from '../data/mockData'
 
-const AppContext = createContext(null)
+export const AppContext = createContext(null)
 
 export function AppProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null)
   const [authError, setAuthError] = useState('')
   const [authLoading, setAuthLoading] = useState(true) // 초기 인증 확인 중
 
-  const [services, setServices] = useState([])
-  const [freelancers, setFreelancers] = useState([])
+  const [services, _setServices] = useState([])
+  const [freelancers, _setFreelancers] = useState([])
   const [projects, setProjects] = useState([])
 
   const [selectedService, setSelectedService] = useState(null)
@@ -96,10 +96,4 @@ export function AppProvider({ children }) {
       {children}
     </AppContext.Provider>
   )
-}
-
-export const useApp = () => {
-  const ctx = useContext(AppContext)
-  if (!ctx) throw new Error('useApp must be used inside AppProvider')
-  return ctx
 }

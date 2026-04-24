@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useApp } from '../context/AppContext'
+import { useApp } from '../context/useApp'
 import api from '../lib/api'
 import { CATEGORY_META, SKILL_TAGS, COLLAB_TAGS, DEADLINE_OPTIONS, BUDGET_PRESETS } from '../data/mockData'
 import styles from './PostProject.module.css'

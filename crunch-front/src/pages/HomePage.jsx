@@ -1,4 +1,4 @@
-import { useApp } from '../context/AppContext'
+import { useApp } from '../context/useApp'
 import styles from './HomePage.module.css'
 
 const STATS = [

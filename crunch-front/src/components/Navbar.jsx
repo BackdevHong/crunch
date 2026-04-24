@@ -1,4 +1,4 @@
-import { useApp } from '../context/AppContext'
+import { useApp } from '../context/useApp'
 import styles from './Navbar.module.css'
 
 const NAV_ITEMS = [

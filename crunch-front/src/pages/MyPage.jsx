@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useApp } from '../context/AppContext'
+import { useApp } from '../context/useApp'
 import api from '../lib/api'
 import { CATEGORY_META, SKILL_TAGS } from '../data/mockData'
 import styles from './MyPage.module.css'
@@ -26,7 +26,7 @@ const TABS_CLIENT     = ['프로필', '주문 내역', '내 프로젝트']
 const TABS_FREELANCER = ['프로필', '프리랜서 프로필', '주문 내역', '판매 내역', '내 프로젝트']
 
 export default function MyPage({ onNavigate }) {
-  const { currentUser, setAuthError } = useApp()
+  const { currentUser } = useApp()
   const [activeTab, setActiveTab] = useState('프로필')
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)

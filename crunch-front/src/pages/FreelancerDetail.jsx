@@ -1,4 +1,4 @@
-import { useApp } from '../context/AppContext'
+import { useApp } from '../context/useApp'
 import styles from './FreelancerDetail.module.css'
 
 const BADGE_STYLE = { Top: styles.badgeTop, Pro: styles.badgePro, New: styles.badgeNew }

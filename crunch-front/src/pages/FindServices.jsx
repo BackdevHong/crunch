@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { useApp } from '../context/AppContext'
+import { useApp } from '../context/useApp'
 import api from '../lib/api'
 import ServiceCard from '../components/ServiceCard'
 import { CATEGORY_META } from '../data/mockData'
