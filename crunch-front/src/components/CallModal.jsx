@@ -264,7 +264,10 @@ export default function CallModal({ callInfo, onClose }) {
       setIsScreenSharing(false)
     }
   }, [isScreenSharing, channelId])
-  toggleScreenShareRef.current = toggleScreenShare
+
+  useEffect(() => {
+    toggleScreenShareRef.current = toggleScreenShare
+  }, [toggleScreenShare])
 
   const totalCount = peerStreams.length + 1
   const gridCount = Math.min(totalCount, 6)
