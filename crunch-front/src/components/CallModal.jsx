@@ -28,6 +28,7 @@ export default function CallModal({ callInfo, onClose }) {
   const iceBufRef = useRef(new Map())           // peerId → RTCIceCandidateInit[] (버퍼)
   const localStreamRef = useRef(null)
   const screenStreamRef = useRef(null)
+  const toggleScreenShareRef = useRef(null)
   const localVideoRef = useRef(null)
 
   // ── 로컬 미디어 ──────────────────────────────────────────
@@ -121,13 +122,17 @@ export default function CallModal({ callInfo, onClose }) {
       mounted = false
       socket.io.off('reconnect', handleReconnect)
       socket.emit('call-leave', { channelId })
+      const pcs = pcsRef.current
+      const peerNames = peerNamesRef.current
+      const peerMediaStreams = peerMediaStreamsRef.current
+      const iceBuf = iceBufRef.current
       localStreamRef.current?.getTracks().forEach(t => t.stop())
       screenStreamRef.current?.getTracks().forEach(t => t.stop())
-      pcsRef.current.forEach(pc => pc.close())
-      pcsRef.current.clear()
-      peerNamesRef.current.clear()
-      peerMediaStreamsRef.current.clear()
-      iceBufRef.current.clear()
+      pcs.forEach(pc => pc.close())
+      pcs.clear()
+      peerNames.clear()
+      peerMediaStreams.clear()
+      iceBuf.clear()
     }
   }, [channelId, getLocalMedia])
 
@@ -239,7 +244,7 @@ export default function CallModal({ callInfo, onClose }) {
           if (sender) await sender.replaceTrack(screenTrack)
         }
         if (localVideoRef.current) localVideoRef.current.srcObject = screenStream
-        screenTrack.onended = () => toggleScreenShare()
+        screenTrack.onended = () => toggleScreenShareRef.current?.()
         socket.emit('screen-share-toggle', { channelId, active: true })
         setIsScreenSharing(true)
       } catch (err) {
@@ -259,6 +264,7 @@ export default function CallModal({ callInfo, onClose }) {
       setIsScreenSharing(false)
     }
   }, [isScreenSharing, channelId])
+  toggleScreenShareRef.current = toggleScreenShare
 
   const totalCount = peerStreams.length + 1
   const gridCount = Math.min(totalCount, 6)

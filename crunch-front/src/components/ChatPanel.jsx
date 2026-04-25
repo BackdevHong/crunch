@@ -48,7 +48,7 @@ function formatBytes(bytes) {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }
 
-function FileAttachment({ msg, isMine }) {
+function FileAttachment({ msg }) {
   const { fileUrl, fileName, fileType, fileSize, content } = msg
   if (!fileUrl) return null
 
@@ -97,7 +97,6 @@ function MeetingCard({ msg, currentUserId, onRespond }) {
   const myResponse = meeting.responses.find(r => r.userId === currentUserId)
   const accepted = meeting.responses.filter(r => r.response === 'ACCEPTED')
   const rejected = meeting.responses.filter(r => r.response === 'REJECTED')
-  const pending = meeting.responses
 
   const scheduledAt = new Date(meeting.scheduledAt)
   const dateStr = scheduledAt.toLocaleDateString('ko-KR', {
@@ -462,12 +461,12 @@ export default function ChatPanel({ onStartCall, activeCallChannelId }) {
                   const hasFile = !!msg.fileUrl
                   const isMeeting = msg.messageType === 'MEETING'
 
-                  const renderContent = (isMyMsg) => {
+                  const renderContent = () => {
                     if (isMeeting) {
                       return <MeetingCard msg={msg} currentUserId={currentUser.id} onRespond={respondToMeeting} />
                     }
                     if (hasFile) {
-                      return <FileAttachment msg={msg} isMine={isMyMsg} />
+                      return <FileAttachment msg={msg} />
                     }
                     return <div className={styles.msgBubble}>{msg.content}</div>
                   }
@@ -479,14 +478,14 @@ export default function ChatPanel({ onStartCall, activeCallChannelId }) {
                           <Avatar user={msg.sender} size={32} />
                           <div>
                             <div className={styles.msgSender}>{msg.sender?.name}</div>
-                            {renderContent(false)}
+                            {renderContent()}
                             {isLastInGroup && <div className={styles.msgTime}>{timeStr}</div>}
                           </div>
                         </div>
                       )}
                       {isMine && (
                         <>
-                          {renderContent(true)}
+                          {renderContent()}
                           {isLastInGroup && <div className={styles.msgTime}>{timeStr}</div>}
                         </>
                       )}
