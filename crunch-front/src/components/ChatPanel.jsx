@@ -4,6 +4,8 @@ import api from '../lib/api'
 import socket from '../lib/socket'
 import styles from './ChatPanel.module.css'
 import MeetingModal from './MeetingModal'
+import TodoModal from './TodoModal'
+import TodoPanel from './TodoPanel'
 
 const AVATAR_COLORS = [
   ['#FFF0E8', '#C04A1A'], ['#E6F1FB', '#185FA5'], ['#EAF3DE', '#3B6D11'],
@@ -168,6 +170,8 @@ export default function ChatPanel({ onStartCall, activeCallChannelId }) {
   const [isDragging, setIsDragging] = useState(false)
   const [plusMenuOpen, setPlusMenuOpen] = useState(false)
   const [meetingModalOpen, setMeetingModalOpen] = useState(false)
+  const [todoModalOpen, setTodoModalOpen] = useState(false)
+  const [todoLists, setTodoLists] = useState([])
   const messagesEndRef = useRef(null)
   const prevChannelRef = useRef(null)
   const fileInputRef = useRef(null)
@@ -195,8 +199,15 @@ export default function ChatPanel({ onStartCall, activeCallChannelId }) {
     socket.emit('join-channel', activeChannel.id)
 
     setLoadingMsg(true)
-    api.get(`/api/channels/${activeChannel.id}/messages`)
-      .then(({ data }) => setMessages(data.data))
+    setTodoLists([])
+    Promise.all([
+      api.get(`/api/channels/${activeChannel.id}/messages`),
+      api.get(`/api/channels/${activeChannel.id}/todos`),
+    ])
+      .then(([msgRes, todoRes]) => {
+        setMessages(msgRes.data.data)
+        setTodoLists(todoRes.data.data)
+      })
       .catch(console.error)
       .finally(() => setLoadingMsg(false))
   }, [activeChannel?.id])
@@ -232,6 +243,27 @@ export default function ChatPanel({ onStartCall, activeCallChannelId }) {
     }
     socket.on('meeting-updated', handler)
     return () => socket.off('meeting-updated', handler)
+  }, [])
+
+  // 투두 실시간 업데이트
+  useEffect(() => {
+    const onCreated = (list) => setTodoLists(prev => [...prev, list])
+    const onDeleted = ({ todoListId }) =>
+      setTodoLists(prev => prev.filter(l => l.id !== todoListId))
+    const onItemToggled = ({ todoListId, item }) =>
+      setTodoLists(prev => prev.map(l =>
+        l.id !== todoListId ? l
+          : { ...l, items: l.items.map(i => i.id === item.id ? item : i) }
+      ))
+
+    socket.on('todo-created', onCreated)
+    socket.on('todo-deleted', onDeleted)
+    socket.on('todo-item-toggled', onItemToggled)
+    return () => {
+      socket.off('todo-created', onCreated)
+      socket.off('todo-deleted', onDeleted)
+      socket.off('todo-item-toggled', onItemToggled)
+    }
   }, [])
 
   useEffect(() => {
@@ -277,6 +309,28 @@ export default function ChatPanel({ onStartCall, activeCallChannelId }) {
     if (file) uploadFile(file)
     e.target.value = ''
   }
+
+  const submitTodo = useCallback(async ({ title, items }) => {
+    if (!activeChannel) return
+    await api.post(`/api/channels/${activeChannel.id}/todos`, { title, items })
+  }, [activeChannel])
+
+  const deleteTodo = useCallback(async (todoListId) => {
+    if (!window.confirm('투두 리스트를 삭제할까요?')) return
+    try {
+      await api.delete(`/api/todos/${todoListId}`)
+    } catch (err) {
+      console.error('[deleteTodo]', err)
+    }
+  }, [])
+
+  const toggleTodoItem = useCallback(async (itemId) => {
+    try {
+      await api.patch(`/api/todos/items/${itemId}/toggle`)
+    } catch (err) {
+      console.error('[toggleTodoItem]', err)
+    }
+  }, [])
 
   const submitMeeting = useCallback(async ({ title, scheduledAt }) => {
     if (!activeChannel) return
@@ -325,6 +379,16 @@ export default function ChatPanel({ onStartCall, activeCallChannelId }) {
         setMeetingModalOpen(true)
       },
     },
+    {
+      id: 'todo',
+      icon: '📋',
+      label: '투두 리스트',
+      description: '할 일 목록을 만들어 채팅방에 고정',
+      action: () => {
+        setPlusMenuOpen(false)
+        setTodoModalOpen(true)
+      },
+    },
     // 추후 추가 예정
     // { id: 'settlement', icon: '💰', label: '정산', description: '비용 정산 요청', action: () => {} },
   ]
@@ -361,6 +425,12 @@ export default function ChatPanel({ onStartCall, activeCallChannelId }) {
       <MeetingModal
         onClose={() => setMeetingModalOpen(false)}
         onSubmit={submitMeeting}
+      />
+    )}
+    {todoModalOpen && (
+      <TodoModal
+        onClose={() => setTodoModalOpen(false)}
+        onSubmit={submitTodo}
       />
     )}
     <div className={styles.panel}>
@@ -441,6 +511,14 @@ export default function ChatPanel({ onStartCall, activeCallChannelId }) {
               </div>
             </div>
 
+            <TodoPanel
+              todoLists={todoLists}
+              currentUserId={currentUser.id}
+              channelAuthorId={activeChannel.project?.authorId}
+              onToggleItem={toggleTodoItem}
+              onDelete={deleteTodo}
+            />
+
             <div className={styles.messages}>
               {loadingMsg ? (
                 <div className={styles.empty}>불러오는 중...</div>
@@ -460,6 +538,15 @@ export default function ChatPanel({ onStartCall, activeCallChannelId }) {
                   const timeStr = new Date(msg.createdAt).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })
                   const hasFile = !!msg.fileUrl
                   const isMeeting = msg.messageType === 'MEETING'
+                  const isSystem = msg.messageType === 'SYSTEM'
+
+                  if (isSystem) {
+                    return (
+                      <div key={msg.id} className={styles.systemMsg}>
+                        <span className={styles.systemMsgText}>{msg.content}</span>
+                      </div>
+                    )
+                  }
 
                   const renderContent = () => {
                     if (isMeeting) {

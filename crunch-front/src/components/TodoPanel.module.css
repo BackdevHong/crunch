@@ -1,0 +1,160 @@
+.panel {
+  border-bottom: 0.5px solid var(--color-border);
+  background: var(--color-bg-secondary);
+  flex-shrink: 0;
+  max-height: 320px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 헤더 */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  transition: background 0.1s;
+  flex-shrink: 0;
+}
+.header:hover { background: var(--color-bg-tertiary); }
+.headerIcon { font-size: 14px; }
+.headerTitle {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  flex: 1;
+}
+.headerProgress {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-accent);
+  white-space: nowrap;
+}
+.progressBar {
+  width: 60px;
+  height: 4px;
+  background: var(--color-border);
+  border-radius: 99px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.progressFill {
+  height: 100%;
+  background: var(--color-accent);
+  border-radius: 99px;
+  transition: width 0.3s ease;
+}
+.collapseIcon {
+  font-size: 9px;
+  color: var(--color-text-secondary);
+}
+
+/* 바디 */
+.body {
+  overflow-y: auto;
+  flex: 1;
+  padding: 0 0 6px;
+}
+
+/* 투두 리스트 */
+.todoList {
+  border-top: 0.5px solid var(--color-border);
+}
+.listHeader {
+  display: flex;
+  align-items: center;
+  padding: 0 12px 0 16px;
+  gap: 4px;
+}
+.listToggle {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 7px 0;
+  font-family: inherit;
+  text-align: left;
+}
+.listChevron {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  width: 12px;
+  flex-shrink: 0;
+}
+.listTitle {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  flex: 1;
+}
+.listCount {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+.deleteBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  padding: 3px 5px;
+  border-radius: 5px;
+  opacity: 0.4;
+  transition: all 0.1s;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.deleteBtn:hover { opacity: 1; background: #FDEAEA; }
+
+/* 아이템 */
+.itemList {
+  list-style: none;
+  margin: 0;
+  padding: 0 16px 6px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 3px 0;
+}
+.checkLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+.checkbox {
+  width: 14px;
+  height: 14px;
+  accent-color: var(--color-accent);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.itemText {
+  font-size: 13px;
+  color: var(--color-text-primary);
+  line-height: 1.4;
+  transition: all 0.15s;
+}
+.itemDone .itemText {
+  text-decoration: line-through;
+  color: var(--color-text-secondary);
+}
+.completedMeta {
+  font-size: 10px;
+  color: var(--color-text-secondary);
+  padding-left: 22px;
+}

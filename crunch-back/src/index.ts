@@ -17,6 +17,7 @@ import mypageRouter from './routes/mypage.route'
 import proposalRouter from './routes/proposal.route'
 import channelRouter from './routes/channel.route'
 import meetingRouter from './routes/meeting.route'
+import todoRouter from './routes/todo.route'
 
 const app = express()
 const httpServer = http.createServer(app)
@@ -45,6 +46,7 @@ app.use('/api/mypage', mypageRouter)
 app.use('/api/proposals', proposalRouter)
 app.use('/api/channels', channelRouter)
 app.use('/api/meetings', meetingRouter)
+app.use('/api/todos', todoRouter)
 
 // ── 헬스 체크 ─────────────────────────────────────────────────
 app.get('/health', (_req, res) => {

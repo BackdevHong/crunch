@@ -41,6 +41,7 @@ enum MessageType {
   TEXT
   FILE
   MEETING
+  SYSTEM
 }
 
 enum MeetingRsvp {
@@ -117,6 +118,8 @@ model User {
   sentChannelMessages ChannelMessage[]
   proposedMeetings    MeetingProposal[]
   meetingResponses    MeetingResponse[]
+  createdTodoLists    TodoList[]
+  completedTodoItems  TodoItem[]        @relation("TodoItemCompleter")
 
   @@map("users")
 }
@@ -300,6 +303,7 @@ model Channel {
   members   ChannelMember[]
   messages  ChannelMessage[]
   meetings  MeetingProposal[]
+  todoLists TodoList[]
 
   @@map("channels")
 }
@@ -375,4 +379,32 @@ model ProjectMember {
 
   @@id([projectId, freelancerId])
   @@map("project_members")
+}
+
+model TodoList {
+  id          String     @id @default(uuid()) @db.Char(36)
+  channelId   String     @map("channel_id") @db.Char(36)
+  title       String     @db.VarChar(200)
+  createdById String     @map("created_by_id") @db.Char(36)
+  createdAt   DateTime   @default(now()) @map("created_at")
+
+  channel   Channel    @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  createdBy User       @relation(fields: [createdById], references: [id])
+  items     TodoItem[]
+
+  @@map("todo_lists")
+}
+
+model TodoItem {
+  id            String    @id @default(uuid()) @db.Char(36)
+  todoListId    String    @map("todo_list_id") @db.Char(36)
+  text          String    @db.VarChar(500)
+  completedAt   DateTime? @map("completed_at")
+  completedById String?   @map("completed_by_id") @db.Char(36)
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  todoList    TodoList @relation(fields: [todoListId], references: [id], onDelete: Cascade)
+  completedBy User?    @relation("TodoItemCompleter", fields: [completedById], references: [id])
+
+  @@map("todo_items")
 }

@@ -1,0 +1,172 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.modal {
+  background: var(--color-bg-primary);
+  border-radius: 16px;
+  border: 0.5px solid var(--color-border);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.18);
+  width: 100%;
+  max-width: 460px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideUp 0.18s ease;
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 20px 16px;
+  border-bottom: 0.5px solid var(--color-border);
+  flex-shrink: 0;
+}
+.headerIcon { font-size: 20px; }
+.title {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+.closeBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  padding: 4px;
+  border-radius: 6px;
+  transition: background 0.1s;
+}
+.closeBtn:hover { background: var(--color-bg-tertiary); }
+
+.form {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+}
+.field { display: flex; flex-direction: column; gap: 6px; }
+.label { font-size: 12px; font-weight: 500; color: var(--color-text-secondary); }
+.input {
+  padding: 9px 12px;
+  border: 0.5px solid var(--color-border-hover);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  color: var(--color-text-primary);
+  background: var(--color-bg-primary);
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.12s;
+}
+.input:focus { border-color: var(--color-accent); }
+
+.itemList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--color-bg-secondary);
+  border: 0.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 10px;
+}
+.itemRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.itemDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-border-hover);
+  flex-shrink: 0;
+}
+.itemInput {
+  flex: 1;
+  padding: 6px 8px;
+  border: 0.5px solid transparent;
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--color-text-primary);
+  background: transparent;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.1s, background 0.1s;
+}
+.itemInput:focus { border-color: var(--color-accent); background: var(--color-bg-primary); }
+.removeBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  padding: 2px 4px;
+  border-radius: 4px;
+  opacity: 0.5;
+  transition: all 0.1s;
+  flex-shrink: 0;
+}
+.removeBtn:hover:not(:disabled) { opacity: 1; color: #b91c1c; }
+.removeBtn:disabled { cursor: not-allowed; }
+.addItemBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--color-accent);
+  padding: 4px 0 0 14px;
+  text-align: left;
+  font-family: inherit;
+  font-weight: 500;
+  transition: opacity 0.1s;
+}
+.addItemBtn:hover { opacity: 0.75; }
+
+.actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  padding-top: 4px;
+  flex-shrink: 0;
+}
+.cancelBtn {
+  padding: 9px 18px;
+  border-radius: var(--radius-md);
+  border: 0.5px solid var(--color-border-hover);
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.12s;
+}
+.cancelBtn:hover { background: var(--color-bg-secondary); }
+.submitBtn {
+  padding: 9px 20px;
+  border-radius: var(--radius-md);
+  border: none;
+  background: var(--color-accent);
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  transition: opacity 0.15s;
+}
+.submitBtn:hover:not(:disabled) { opacity: 0.88; }
+.submitBtn:disabled { opacity: 0.5; cursor: not-allowed; }
