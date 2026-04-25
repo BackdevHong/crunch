@@ -1,28 +1,29 @@
-# .github/workflows/ci.yml
-name: CI - Backend
+# .github/workflows/ci-frontend.yml
+name: CI - Frontend
 
 on:
   push:
     branches: [main]
     paths:
-      - 'crunch-back/**'
+      - 'crunch-front/**'
   pull_request:
     branches: [main]
     paths:
-      - 'crunch-back/**'
+      - 'crunch-front/**'
 
 jobs:
-  backend:
+  frontend:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: crunch-back
+        working-directory: crunch-front
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: 'npm'
-          cache-dependency-path: crunch-back/package-lock.json
+          cache-dependency-path: crunch-front/package-lock.json
       - run: npm ci
-      - run: npm run build   # TypeScript 컴파일 오류 감지
+      - run: npm run lint    # ESLint 검사
+      - run: npm run build   # Vite 빌드
