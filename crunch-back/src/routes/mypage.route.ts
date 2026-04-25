@@ -7,6 +7,7 @@ import {
   getMyOrders,
   getMySales,
   getMyProjects,
+  getMyProposals,
 } from '../controllers/mypage.controller'
 
 const router = Router()
@@ -19,5 +20,6 @@ router.patch('/profile/freelancer', updateFreelancerProfile)
 router.get('/orders', getMyOrders)
 router.get('/sales', getMySales)
 router.get('/projects', getMyProjects)
+router.get('/proposals', getMyProposals)
 
 export default router

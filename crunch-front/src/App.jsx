@@ -17,6 +17,7 @@ import AdminUsers from './pages/admin/AdminUsers'
 import AdminServices from './pages/admin/AdminServices'
 import MyPage from './pages/MyPage'
 import PostService from './pages/PostService'
+import BrowseProjects from './pages/BrowseProjects'
 
 export default function App() {
   return (
@@ -45,11 +46,11 @@ function AppInner() {
 
   // 페이지 이동 시에만 상세 상태 초기화
   const navigate = (page) => {
-    if ((page === 'post' || page === 'apply' || page === 'mypage' || page === 'post-service') && !currentUser) {
+    if ((page === 'post' || page === 'apply' || page === 'mypage' || page === 'post-service' || page === 'browse-projects') && !currentUser) {
       openLogin()
       return
     }
-    if (page === 'post-service' && currentUser?.role !== 'freelancer') return
+    if ((page === 'post-service' || page === 'browse-projects') && currentUser?.role !== 'freelancer') return
     if (page.startsWith('admin') && currentUser?.role !== 'admin') return
     setSelectedService(null)
     setSelectedFreelancer(null)
@@ -116,6 +117,12 @@ function AppInner() {
           )}
           {activePage === 'admin-services' && (
             <AdminServices activePage={activePage} onNavigate={navigate} />
+          )}
+          {activePage === 'browse-projects' && (
+            <>
+              <BrowseProjects />
+              <Footer />
+            </>
           )}
           {activePage === 'post-service' && (
             <PostService onNavigate={navigate} />

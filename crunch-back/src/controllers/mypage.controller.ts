@@ -135,6 +135,36 @@ export async function getMySales(req: Request, res: Response): Promise<void> {
   }
 }
 
+// 내 제안 목록 (프리랜서)
+export async function getMyProposals(req: Request, res: Response): Promise<void> {
+  try {
+    const userId = req.user!.userId
+    const freelancer = await prisma.freelancer.findUnique({ where: { userId } })
+    if (!freelancer) {
+      ok(res, [])
+      return
+    }
+
+    const proposals = await prisma.proposal.findMany({
+      where: { freelancerId: freelancer.id },
+      orderBy: { createdAt: 'desc' },
+      include: {
+        project: {
+          include: {
+            author: { select: { id: true, name: true } },
+            skills: { select: { skill: true } },
+          },
+        },
+      },
+    })
+
+    ok(res, proposals)
+  } catch (err) {
+    console.error('[getMyProposals]', err)
+    serverError(res)
+  }
+}
+
 // 내 프로젝트 목록
 export async function getMyProjects(req: Request, res: Response): Promise<void> {
   try {

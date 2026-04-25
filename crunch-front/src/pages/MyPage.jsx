@@ -23,7 +23,7 @@ const ORDER_STATUS_BG = {
 }
 
 const TABS_CLIENT     = ['프로필', '주문 내역', '내 프로젝트']
-const TABS_FREELANCER = ['프로필', '프리랜서 프로필', '주문 내역', '판매 내역', '내 프로젝트']
+const TABS_FREELANCER = ['프로필', '프리랜서 프로필', '주문 내역', '판매 내역', '내 프로젝트', '내 제안']
 
 export default function MyPage({ onNavigate }) {
   const { currentUser } = useApp()
@@ -94,6 +94,7 @@ export default function MyPage({ onNavigate }) {
           {activeTab === '주문 내역' && <OrdersTab />}
           {activeTab === '판매 내역' && isFreelancer && <SalesTab />}
           {activeTab === '내 프로젝트' && <ProjectsTab />}
+          {activeTab === '내 제안' && isFreelancer && <MyProposalsTab />}
         </div>
       </div>
 
@@ -360,10 +361,21 @@ function SalesTab() {
 function ProjectsTab() {
   const [projects, setProjects] = useState([])
   const [loading, setLoading] = useState(true)
+  const [expandedId, setExpandedId] = useState(null)
+  const [proposals, setProposals] = useState({})   // { [projectId]: proposal[] }
+  const [propLoading, setPropLoading] = useState({})
+  const [actionLoading, setActionLoading] = useState(null)
+  const [toast, setToast] = useState('')
 
   const PROJECT_STATUS_LABEL = { OPEN: '모집중', IN_PROGRESS: '진행중', DONE: '완료', CANCELLED: '취소' }
   const PROJECT_STATUS_COLOR = { OPEN: '#185FA5', IN_PROGRESS: '#854F0B', DONE: '#3B6D11', CANCELLED: '#6b6b67' }
   const PROJECT_STATUS_BG    = { OPEN: '#E6F1FB', IN_PROGRESS: '#FAEEDA', DONE: '#EAF3DE', CANCELLED: '#f1efe8' }
+
+  const PROPOSAL_STATUS_LABEL = { PENDING: '대기중', ACCEPTED: '수락', REJECTED: '거절', CANCELLED: '취소' }
+  const PROPOSAL_STATUS_COLOR = { PENDING: '#854F0B', ACCEPTED: '#3B6D11', REJECTED: '#6b6b67', CANCELLED: '#6b6b67' }
+  const PROPOSAL_STATUS_BG    = { PENDING: '#FAEEDA', ACCEPTED: '#EAF3DE', REJECTED: '#f1efe8', CANCELLED: '#f1efe8' }
+
+  const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(''), 3000) }
 
   useEffect(() => {
     api.get('/api/mypage/projects')
@@ -371,6 +383,47 @@ function ProjectsTab() {
       .catch(console.error)
       .finally(() => setLoading(false))
   }, [])
+
+  const toggleProposals = async (projId) => {
+    if (expandedId === projId) { setExpandedId(null); return }
+    setExpandedId(projId)
+    if (proposals[projId]) return
+    setPropLoading(p => ({ ...p, [projId]: true }))
+    try {
+      const { data } = await api.get(`/api/proposals/project/${projId}`)
+      setProposals(p => ({ ...p, [projId]: data.data }))
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setPropLoading(p => ({ ...p, [projId]: false }))
+    }
+  }
+
+  const handleStatus = async (proposalId, status, projectId) => {
+    setActionLoading(proposalId)
+    try {
+      await api.patch(`/api/proposals/${proposalId}/status`, { status })
+      // 로컬 상태 업데이트
+      setProposals(prev => ({
+        ...prev,
+        [projectId]: prev[projectId].map(p =>
+          p.id === proposalId
+            ? { ...p, status }
+            : (status === 'ACCEPTED' ? { ...p, status: 'REJECTED' } : p)
+        ),
+      }))
+      setProjects(prev => prev.map(proj =>
+        proj.id === projectId && status === 'ACCEPTED'
+          ? { ...proj, status: 'IN_PROGRESS' }
+          : proj
+      ))
+      showToast(status === 'ACCEPTED' ? '✅ 제안을 수락했습니다.' : '제안을 거절했습니다.')
+    } catch (err) {
+      showToast(err.response?.data?.message ?? '처리 중 오류가 발생했습니다.')
+    } finally {
+      setActionLoading(null)
+    }
+  }
 
   if (loading) return <div className={styles.loading}>불러오는 중...</div>
   if (projects.length === 0) return (
@@ -383,23 +436,127 @@ function ProjectsTab() {
   return (
     <div className={styles.listWrap}>
       {projects.map(proj => (
-        <div key={proj.id} className={styles.listItem}>
-          <div className={styles.listLeft}>
-            <div className={styles.listTitle}>{proj.title}</div>
-            <div className={styles.listSub}>{proj.category} · {proj.deadline}</div>
-            <div className={styles.listSub}>{new Date(proj.createdAt).toLocaleDateString('ko-KR')}</div>
-            <div className={styles.skillTags}>
-              {(proj.skills ?? []).map(sk => (
-                <span key={sk.skill ?? sk} className={styles.skillTag}>{sk.skill ?? sk}</span>
-              ))}
+        <div key={proj.id}>
+          <div className={styles.listItem}>
+            <div className={styles.listLeft}>
+              <div className={styles.listTitle}>{proj.title}</div>
+              <div className={styles.listSub}>{proj.category} · {proj.deadline}</div>
+              <div className={styles.listSub}>{new Date(proj.createdAt).toLocaleDateString('ko-KR')}</div>
+              <div className={styles.skillTags}>
+                {(proj.skills ?? []).map(sk => (
+                  <span key={sk.skill ?? sk} className={styles.skillTag}>{sk.skill ?? sk}</span>
+                ))}
+              </div>
+            </div>
+            <div className={styles.listRight}>
+              <span className={styles.statusBadge}
+                style={{ background: PROJECT_STATUS_BG[proj.status], color: PROJECT_STATUS_COLOR[proj.status] }}>
+                {PROJECT_STATUS_LABEL[proj.status]}
+              </span>
+              <button
+                className={styles.proposalToggleBtn}
+                onClick={() => toggleProposals(proj.id)}
+              >
+                제안 {proj._count?.proposals ?? 0}건 {expandedId === proj.id ? '▲' : '▼'}
+              </button>
             </div>
           </div>
+
+          {expandedId === proj.id && (
+            <div className={styles.proposalPanel}>
+              {propLoading[proj.id] ? (
+                <div className={styles.proposalLoading}>불러오는 중...</div>
+              ) : !proposals[proj.id] || proposals[proj.id].length === 0 ? (
+                <div className={styles.proposalEmpty}>아직 제안이 없습니다.</div>
+              ) : (
+                proposals[proj.id].map(proposal => (
+                  <div key={proposal.id} className={styles.proposalItem}>
+                    <div className={styles.proposalLeft}>
+                      <div className={styles.proposalName}>
+                        {proposal.freelancer?.user?.name ?? '(이름 없음)'}
+                        <span className={styles.proposalBadge}
+                          style={{ background: PROPOSAL_STATUS_BG[proposal.status], color: PROPOSAL_STATUS_COLOR[proposal.status] }}>
+                          {PROPOSAL_STATUS_LABEL[proposal.status]}
+                        </span>
+                      </div>
+                      <div className={styles.proposalSkills}>
+                        {(proposal.freelancer?.skills ?? []).slice(0, 4).map(sk => (
+                          <span key={sk.skill ?? sk} className={styles.skillTag}>{sk.skill ?? sk}</span>
+                        ))}
+                      </div>
+                      <div className={styles.proposalMsg}>{proposal.message}</div>
+                    </div>
+                    <div className={styles.proposalRight}>
+                      <div className={styles.proposalPrice}>{proposal.price.toLocaleString()}원</div>
+                      <div className={styles.proposalDays}>{proposal.deliveryDays}일 납기</div>
+                      {proposal.status === 'PENDING' && (
+                        <div className={styles.proposalActions}>
+                          <button
+                            className={styles.btnAccept}
+                            onClick={() => handleStatus(proposal.id, 'ACCEPTED', proj.id)}
+                            disabled={actionLoading === proposal.id}
+                          >수락</button>
+                          <button
+                            className={styles.btnReject}
+                            onClick={() => handleStatus(proposal.id, 'REJECTED', proj.id)}
+                            disabled={actionLoading === proposal.id}
+                          >거절</button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          )}
+        </div>
+      ))}
+      {toast && <div className={styles.toast}>{toast}</div>}
+    </div>
+  )
+}
+
+// ── 내 제안 탭 (프리랜서) ────────────────────────────────────
+function MyProposalsTab() {
+  const [proposals, setProposals] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  const PROPOSAL_STATUS_LABEL = { PENDING: '대기중', ACCEPTED: '수락', REJECTED: '거절', CANCELLED: '취소' }
+  const PROPOSAL_STATUS_COLOR = { PENDING: '#854F0B', ACCEPTED: '#3B6D11', REJECTED: '#6b6b67', CANCELLED: '#6b6b67' }
+  const PROPOSAL_STATUS_BG    = { PENDING: '#FAEEDA', ACCEPTED: '#EAF3DE', REJECTED: '#f1efe8', CANCELLED: '#f1efe8' }
+
+  useEffect(() => {
+    api.get('/api/mypage/proposals')
+      .then(({ data }) => setProposals(data.data))
+      .catch(console.error)
+      .finally(() => setLoading(false))
+  }, [])
+
+  if (loading) return <div className={styles.loading}>불러오는 중...</div>
+  if (proposals.length === 0) return (
+    <div className={styles.emptyState}>
+      <div className={styles.emptyIcon}>📨</div>
+      <p>아직 제출한 제안이 없습니다.</p>
+    </div>
+  )
+
+  return (
+    <div className={styles.listWrap}>
+      {proposals.map(proposal => (
+        <div key={proposal.id} className={styles.listItem}>
+          <div className={styles.listLeft}>
+            <div className={styles.listTitle}>{proposal.project?.title}</div>
+            <div className={styles.listSub}>의뢰인 · {proposal.project?.author?.name}</div>
+            <div className={styles.listSub}>{new Date(proposal.createdAt).toLocaleDateString('ko-KR')}</div>
+            <div className={styles.proposalMsgSmall}>{proposal.message}</div>
+          </div>
           <div className={styles.listRight}>
+            <div className={styles.listPrice}>{proposal.price.toLocaleString()}원</div>
+            <div className={styles.proposalCount}>{proposal.deliveryDays}일 납기</div>
             <span className={styles.statusBadge}
-              style={{ background: PROJECT_STATUS_BG[proj.status], color: PROJECT_STATUS_COLOR[proj.status] }}>
-              {PROJECT_STATUS_LABEL[proj.status]}
+              style={{ background: PROPOSAL_STATUS_BG[proposal.status], color: PROPOSAL_STATUS_COLOR[proposal.status] }}>
+              {PROPOSAL_STATUS_LABEL[proposal.status]}
             </span>
-            <div className={styles.proposalCount}>제안 {proj._count?.proposals ?? 0}건</div>
           </div>
         </div>
       ))}

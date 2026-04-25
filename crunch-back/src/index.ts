@@ -11,6 +11,7 @@ import projectRouter from './routes/project.route'
 import applicationRouter from './routes/application.route'
 import adminRouter from './routes/admin.route'
 import mypageRouter from './routes/mypage.route'
+import proposalRouter from './routes/proposal.route'
 
 const app = express()
 const PORT = Number(process.env.PORT ?? 4000)
@@ -34,6 +35,7 @@ app.use('/api/projects', projectRouter)
 app.use('/api/applications', applicationRouter)
 app.use('/api/admin', adminRouter)
 app.use('/api/mypage', mypageRouter)
+app.use('/api/proposals', proposalRouter)
 
 // ── 헬스 체크 ─────────────────────────────────────────────────
 app.get('/health', (_req, res) => {

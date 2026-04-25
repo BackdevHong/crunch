@@ -1,16 +1,21 @@
 import { useApp } from '../context/useApp'
 import styles from './Navbar.module.css'
 
-const NAV_ITEMS = [
-  { label: '홈', page: 'home' },
-  { label: '서비스 찾기', page: 'services' },
-  { label: '프리랜서 찾기', page: 'freelancers' },
-  { label: '프로젝트 올리기', page: 'post' },
-  { label: '프리랜서 신청', page: 'apply' },
-]
+const isFreelancer = (user) => user?.role === 'freelancer'
 
 export default function Navbar({ activePage, onNavigate, onLogin, onSignup }) {
   const { currentUser, logout } = useApp()
+  const freelancer = isFreelancer(currentUser)
+
+  const navItems = [
+    { label: '홈', page: 'home' },
+    { label: '서비스 찾기', page: 'services' },
+    { label: '프리랜서 찾기', page: 'freelancers' },
+    freelancer
+      ? { label: '프로젝트 보기', page: 'browse-projects' }
+      : { label: '프로젝트 올리기', page: 'post' },
+    { label: '프리랜서 신청', page: 'apply' },
+  ]
 
   return (
     <nav className={styles.nav}>
@@ -24,7 +29,7 @@ export default function Navbar({ activePage, onNavigate, onLogin, onSignup }) {
       </a>
 
       <div className={styles.navLinks}>
-        {NAV_ITEMS.map(({ label, page }) => (
+        {navItems.map(({ label, page }) => (
           <button
             key={page}
             className={`${styles.navLink} ${activePage === page ? styles.active : ''}`}
@@ -33,7 +38,7 @@ export default function Navbar({ activePage, onNavigate, onLogin, onSignup }) {
             {label}
           </button>
         ))}
-        {currentUser?.role === 'freelancer' && (
+        {freelancer && (
           <button
             className={`${styles.navLink} ${activePage === 'post-service' ? styles.active : ''}`}
             onClick={() => onNavigate('post-service')}>
