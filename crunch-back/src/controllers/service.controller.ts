@@ -1,7 +1,57 @@
 import { Request, Response } from 'express'
 import { prisma } from '../lib/prisma'
-import { ok, serverError } from '../lib/response'
-import { Prisma } from '@prisma/client'
+import { ok, created, fail, serverError } from '../lib/response'
+import { Prisma, ServiceCategory } from '@prisma/client'
+
+const CATEGORY_LABEL_TO_ENUM: Record<string, ServiceCategory> = {
+  '개발·IT':    ServiceCategory.DEV,
+  '디자인':     ServiceCategory.DESIGN,
+  '마케팅':     ServiceCategory.MARKETING,
+  '글쓰기·번역': ServiceCategory.WRITING,
+  '영상·사진':  ServiceCategory.VIDEO,
+  '음악·오디오': ServiceCategory.MUSIC,
+}
+
+export async function createService(req: Request, res: Response): Promise<void> {
+  try {
+    const sellerId = req.user!.userId
+    const { title, category, emoji, skills, price, deliveryDays, description } = req.body
+
+    const categoryEnum = CATEGORY_LABEL_TO_ENUM[category]
+
+    if (!title || !categoryEnum || price == null || deliveryDays == null) {
+      fail(res, '제목, 카테고리, 가격, 납기일은 필수입니다.')
+      return
+    }
+
+    const service = await prisma.service.create({
+      data: {
+        sellerId,
+        title,
+        category: categoryEnum,
+        price: Number(price),
+        deliveryDays: Number(deliveryDays),
+        description: description ?? null,
+        thumbnailUrl: emoji ?? null,
+        isActive: true,
+        rating: 0,
+        reviewCount: 0,
+        ...(Array.isArray(skills) && skills.length > 0
+          ? { skills: { create: skills.map((s: string) => ({ skill: s })) } }
+          : {}),
+      },
+      include: {
+        skills: { select: { skill: true } },
+        seller: { select: { id: true, name: true } },
+      },
+    })
+
+    created(res, service)
+  } catch (err) {
+    console.error('[createService]', err)
+    serverError(res)
+  }
+}
 
 export async function getServices(req: Request, res: Response): Promise<void> {
   try {
