@@ -3,6 +3,10 @@ import { Server as HttpServer } from 'http'
 import { verifyAccessToken } from './lib/jwt'
 import { prisma } from './lib/prisma'
 
+// WebRTC 시그널링용 타입 (브라우저 DOM 타입 없이 최소 정의)
+type RTCSessionDescriptionInit = { type: string; sdp?: string }
+type RTCIceCandidateInit = { candidate?: string; sdpMid?: string | null; sdpMLineIndex?: number | null }
+
 export let io: Server
 
 // 채널별 통화 참여자 관리: channelId → Map<userId, { socketId, userName }>
