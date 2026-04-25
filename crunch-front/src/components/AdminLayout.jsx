@@ -26,7 +26,7 @@ export default function AdminLayout({ children, activePage, onNavigate }) {
         </nav>
         <div className={styles.sidebarFooter}>
           <div className={styles.adminName}>{currentUser?.name}</div>
-          <button className={styles.logoutBtn} onClick={logout}>로그아웃</button>
+          <button className={styles.logoutBtn} onClick={async () => { await logout(); onNavigate('home') }}>로그아웃</button>
         </div>
       </aside>
 

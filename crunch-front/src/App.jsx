@@ -16,6 +16,7 @@ import AdminApplications from './pages/admin/AdminApplications'
 import AdminUsers from './pages/admin/AdminUsers'
 import AdminServices from './pages/admin/AdminServices'
 import MyPage from './pages/MyPage'
+import PostService from './pages/PostService'
 
 export default function App() {
   return (
@@ -44,10 +45,11 @@ function AppInner() {
 
   // 페이지 이동 시에만 상세 상태 초기화
   const navigate = (page) => {
-    if ((page === 'post' || page === 'apply' || page === 'mypage') && !currentUser) {
+    if ((page === 'post' || page === 'apply' || page === 'mypage' || page === 'post-service') && !currentUser) {
       openLogin()
       return
     }
+    if (page === 'post-service' && currentUser?.role !== 'freelancer') return
     if (page.startsWith('admin') && currentUser?.role !== 'admin') return
     setSelectedService(null)
     setSelectedFreelancer(null)
@@ -114,6 +116,9 @@ function AppInner() {
           )}
           {activePage === 'admin-services' && (
             <AdminServices activePage={activePage} onNavigate={navigate} />
+          )}
+          {activePage === 'post-service' && (
+            <PostService onNavigate={navigate} />
           )}
           {activePage === 'mypage' && (
             <>

@@ -33,6 +33,13 @@ export default function Navbar({ activePage, onNavigate, onLogin, onSignup }) {
             {label}
           </button>
         ))}
+        {currentUser?.role === 'freelancer' && (
+          <button
+            className={`${styles.navLink} ${activePage === 'post-service' ? styles.active : ''}`}
+            onClick={() => onNavigate('post-service')}>
+            서비스 올리기
+          </button>
+        )}
         {currentUser?.role === 'admin' && (
           <button
             className={`${styles.navLink} ${activePage.startsWith('admin') ? styles.active : ''}`}
@@ -60,7 +67,7 @@ export default function Navbar({ activePage, onNavigate, onLogin, onSignup }) {
             >
               {currentUser.name}
             </span>
-            <button className={styles.btnGhost} onClick={logout}>로그아웃</button>
+            <button className={styles.btnGhost} onClick={async () => { await logout(); onNavigate('home') }}>로그아웃</button>
           </>
         ) : (
           <>
