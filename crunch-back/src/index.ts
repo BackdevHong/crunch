@@ -1,8 +1,11 @@
 import 'dotenv/config'
+import http from 'http'
+import path from 'path'
 import express from 'express'
 import cors from 'cors'
 import morgan from 'morgan'
 import cookieParser from 'cookie-parser'
+import { initSocket } from './socket'
 import authRouter from './routes/auth.route'
 import serviceRouter from './routes/service.route'
 import freelancerRouter from './routes/freelancer.route'
@@ -12,8 +15,11 @@ import applicationRouter from './routes/application.route'
 import adminRouter from './routes/admin.route'
 import mypageRouter from './routes/mypage.route'
 import proposalRouter from './routes/proposal.route'
+import channelRouter from './routes/channel.route'
+import meetingRouter from './routes/meeting.route'
 
 const app = express()
+const httpServer = http.createServer(app)
 const PORT = Number(process.env.PORT ?? 4000)
 
 // ── 미들웨어 ──────────────────────────────────────────────────
@@ -25,6 +31,7 @@ app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')))
 
 // ── 라우터 ────────────────────────────────────────────────────
 app.use('/api/auth', authRouter)
@@ -36,6 +43,8 @@ app.use('/api/applications', applicationRouter)
 app.use('/api/admin', adminRouter)
 app.use('/api/mypage', mypageRouter)
 app.use('/api/proposals', proposalRouter)
+app.use('/api/channels', channelRouter)
+app.use('/api/meetings', meetingRouter)
 
 // ── 헬스 체크 ─────────────────────────────────────────────────
 app.get('/health', (_req, res) => {
@@ -53,8 +62,11 @@ app.use((err: Error, _req: express.Request, res: express.Response, _next: expres
   res.status(500).json({ success: false, message: '서버 오류가 발생했습니다.' })
 })
 
+// ── Socket.io 초기화 ──────────────────────────────────────────
+initSocket(httpServer)
+
 // ── 서버 시작 ─────────────────────────────────────────────────
-app.listen(PORT, () => {
+httpServer.listen(PORT, () => {
   console.log(`🚀 서버 실행 중 → http://localhost:${PORT}`)
   console.log(`   환경: ${process.env.NODE_ENV ?? 'development'}`)
 })

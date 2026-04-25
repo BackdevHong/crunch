@@ -4,7 +4,8 @@
       "Bash(grep -E \"\\\\.\\(jsx|module\\\\.css\\)$\")",
       "Bash(grep -r \"router.get.*projects\\\\|router.post.*projects\\\\|'/projects'\" /c/Users/GACHON/Desktop/crunch/crunch-back/src/routes/*.ts)",
       "Bash(find /c/Users/GACHON/Desktop/crunch/crunch-back/src/routes -type f -name \"*.ts\" -exec basename {} \\\\;)",
-      "Bash(find /c/Users/GACHON/Desktop/crunch/crunch-back/src/controllers -type f -name \"*.ts\" -exec basename {} \\\\;)"
+      "Bash(find /c/Users/GACHON/Desktop/crunch/crunch-back/src/controllers -type f -name \"*.ts\" -exec basename {} \\\\;)",
+      "Bash(npm install *)"
     ]
   }
 }

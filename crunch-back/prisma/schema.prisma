@@ -37,6 +37,17 @@ enum ProjectStatus {
   CANCELLED   @map("취소")
 }
 
+enum MessageType {
+  TEXT
+  FILE
+  MEETING
+}
+
+enum MeetingRsvp {
+  ACCEPTED
+  REJECTED
+}
+
 enum ProposalStatus {
   PENDING    @map("대기중")
   ACCEPTED   @map("수락")
@@ -100,8 +111,12 @@ model User {
   sellerOrders Order[]    @relation("SellerOrders")
   sentReviews  Review[]   @relation("ReviewerRelation")
   gotReviews   Review[]   @relation("RevieweeRelation")
-  sentMessages Message[]  @relation("SenderRelation")
-  gotMessages  Message[]  @relation("ReceiverRelation")
+  sentMessages        Message[]       @relation("SenderRelation")
+  gotMessages         Message[]       @relation("ReceiverRelation")
+  channelMemberships  ChannelMember[]
+  sentChannelMessages ChannelMessage[]
+  proposedMeetings    MeetingProposal[]
+  meetingResponses    MeetingResponse[]
 
   @@map("users")
 }
@@ -121,9 +136,10 @@ model Freelancer {
   createdAt     DateTime        @default(now()) @map("created_at")
   updatedAt     DateTime        @updatedAt @map("updated_at")
 
-  user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  skills        FreelancerSkill[]
-  proposals     Proposal[]
+  user               User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skills             FreelancerSkill[]
+  proposals          Proposal[]
+  projectMemberships ProjectMember[]
 
   @@map("freelancers")
 }
@@ -184,9 +200,11 @@ model Project {
   createdAt    DateTime        @default(now()) @map("created_at")
   updatedAt    DateTime        @updatedAt @map("updated_at")
 
-  author    User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  author    User            @relation(fields: [authorId], references: [id], onDelete: Cascade)
   skills    ProjectSkill[]
   proposals Proposal[]
+  members   ProjectMember[]
+  channel   Channel?
 
   @@map("projects")
 }
@@ -270,4 +288,91 @@ model Message {
   order    Order? @relation(fields: [orderId], references: [id], onDelete: SetNull)
 
   @@map("messages")
+}
+
+model Channel {
+  id        String   @id @default(uuid()) @db.Char(36)
+  name      String   @db.VarChar(200)
+  projectId String?  @unique @map("project_id") @db.Char(36)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  project   Project?          @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  members   ChannelMember[]
+  messages  ChannelMessage[]
+  meetings  MeetingProposal[]
+
+  @@map("channels")
+}
+
+model ChannelMember {
+  channelId String   @map("channel_id") @db.Char(36)
+  userId    String   @map("user_id") @db.Char(36)
+  joinedAt  DateTime @default(now()) @map("joined_at")
+
+  channel Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([channelId, userId])
+  @@map("channel_members")
+}
+
+model ChannelMessage {
+  id          String      @id @default(uuid()) @db.Char(36)
+  channelId   String      @map("channel_id") @db.Char(36)
+  senderId    String      @map("sender_id") @db.Char(36)
+  content     String?     @db.Text
+  fileUrl     String?     @map("file_url") @db.Text
+  fileName    String?     @map("file_name") @db.VarChar(255)
+  fileType    String?     @map("file_type") @db.VarChar(100)
+  fileSize    Int?        @map("file_size")
+  messageType MessageType @default(TEXT) @map("message_type")
+  createdAt   DateTime    @default(now()) @map("created_at")
+
+  channel Channel          @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  sender  User             @relation(fields: [senderId], references: [id])
+  meeting MeetingProposal?
+
+  @@map("channel_messages")
+}
+
+model MeetingProposal {
+  id          String   @id @default(uuid()) @db.Char(36)
+  messageId   String   @unique @map("message_id") @db.Char(36)
+  channelId   String   @map("channel_id") @db.Char(36)
+  proposerId  String   @map("proposer_id") @db.Char(36)
+  title       String   @db.VarChar(200)
+  scheduledAt DateTime @map("scheduled_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  message   ChannelMessage    @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  channel   Channel           @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  proposer  User              @relation(fields: [proposerId], references: [id])
+  responses MeetingResponse[]
+
+  @@map("meeting_proposals")
+}
+
+model MeetingResponse {
+  meetingId String      @map("meeting_id") @db.Char(36)
+  userId    String      @map("user_id") @db.Char(36)
+  response  MeetingRsvp
+  updatedAt DateTime    @updatedAt @map("updated_at")
+
+  meeting MeetingProposal @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  user    User            @relation(fields: [userId], references: [id])
+
+  @@id([meetingId, userId])
+  @@map("meeting_responses")
+}
+
+model ProjectMember {
+  projectId    String   @map("project_id") @db.Char(36)
+  freelancerId String   @map("freelancer_id") @db.Char(36)
+  joinedAt     DateTime @default(now()) @map("joined_at")
+
+  project    Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  freelancer Freelancer @relation(fields: [freelancerId], references: [id], onDelete: Cascade)
+
+  @@id([projectId, freelancerId])
+  @@map("project_members")
 }

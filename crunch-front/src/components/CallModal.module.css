@@ -1,0 +1,89 @@
+.overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 500;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.modal {
+  background: #1a1a18;
+  border-radius: 16px;
+  width: 92%; max-width: 960px;
+  padding: 20px;
+  display: flex; flex-direction: column; gap: 16px;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+  max-height: 92vh;
+}
+
+.header {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+}
+.statusText {
+  font-size: 15px; font-weight: 500; color: white;
+}
+.screenBadge {
+  font-size: 12px; padding: 4px 10px; border-radius: 99px;
+  background: #3AC55A; color: white; font-weight: 500;
+}
+
+/* VIDEO GRID */
+.videoGrid {
+  display: grid;
+  gap: 8px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+.videoGrid[data-count="1"] { grid-template-columns: 1fr; }
+.videoGrid[data-count="2"] { grid-template-columns: 1fr 1fr; }
+.videoGrid[data-count="3"] { grid-template-columns: 1fr 1fr 1fr; }
+.videoGrid[data-count="4"] { grid-template-columns: 1fr 1fr; }
+.videoGrid[data-count="5"],
+.videoGrid[data-count="6"] { grid-template-columns: 1fr 1fr 1fr; }
+
+.videoCell {
+  position: relative;
+  background: #111;
+  border-radius: 10px;
+  overflow: hidden;
+  aspect-ratio: 16/9;
+}
+.cellVideo {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.cellName {
+  position: absolute;
+  bottom: 8px; left: 10px;
+  font-size: 12px; color: white;
+  background: rgba(0,0,0,0.55);
+  padding: 2px 8px; border-radius: 4px;
+  pointer-events: none;
+}
+
+/* CONTROLS */
+.controls {
+  display: flex; gap: 12px; justify-content: center; align-items: center;
+  flex-shrink: 0;
+}
+.ctrlBtn {
+  width: 52px; height: 52px; border-radius: 50%;
+  border: 0.5px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.1);
+  font-size: 22px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.ctrlBtn:hover { background: rgba(255,255,255,0.2); }
+.ctrlOn { background: rgba(255,255,255,0.25) !important; border-color: white !important; }
+
+.btnEnd {
+  width: 56px; height: 56px; border-radius: 50%;
+  border: none; background: #e53935;
+  font-size: 24px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity 0.15s;
+}
+.btnEnd:hover { opacity: 0.88; }

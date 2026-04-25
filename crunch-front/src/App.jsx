@@ -1,10 +1,12 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './styles/global.css'
 import { useApp } from './context/useApp'
 import { AppProvider } from './context/AppProvider'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import AuthModal from './components/AuthModal'
+import ChatPage from './pages/ChatPage'
+import CallModal from './components/CallModal'
 import HomePage from './pages/HomePage'
 import FindServices from './pages/FindServices'
 import FindFreelancers from './pages/FindFreelancers'
@@ -18,6 +20,7 @@ import AdminServices from './pages/admin/AdminServices'
 import MyPage from './pages/MyPage'
 import PostService from './pages/PostService'
 import BrowseProjects from './pages/BrowseProjects'
+import socket, { reconnectSocket } from './lib/socket'
 
 export default function App() {
   return (
@@ -31,6 +34,16 @@ function AppInner() {
   const { selectedService, selectedFreelancer, setSelectedService, setSelectedFreelancer, authLoading, currentUser } = useApp()
   const [activePage, setActivePage] = useState('home')
   const [authModal, setAuthModal] = useState(null)
+  const [callInfo, setCallInfo] = useState(null) // { channelId, channelName }
+
+  // 로그인 시 소켓 연결, 로그아웃 시 해제
+  useEffect(() => {
+    if (currentUser) {
+      reconnectSocket()
+    } else {
+      socket.disconnect()
+    }
+  }, [currentUser?.id])
 
   if (authLoading) {
     return (
@@ -46,7 +59,7 @@ function AppInner() {
 
   // 페이지 이동 시에만 상세 상태 초기화
   const navigate = (page) => {
-    if ((page === 'post' || page === 'apply' || page === 'mypage' || page === 'post-service' || page === 'browse-projects') && !currentUser) {
+    if ((page === 'post' || page === 'apply' || page === 'mypage' || page === 'post-service' || page === 'browse-projects' || page === 'chat') && !currentUser) {
       openLogin()
       return
     }
@@ -133,6 +146,12 @@ function AppInner() {
               <Footer />
             </>
           )}
+          {activePage === 'chat' && (
+            <ChatPage
+              onStartCall={(info) => setCallInfo(info)}
+              activeCallChannelId={callInfo?.channelId}
+            />
+          )}
         </>
       )}
 
@@ -140,6 +159,32 @@ function AppInner() {
         <AuthModal
           initialView={authModal}
           onClose={() => setAuthModal(null)}
+        />
+      )}
+
+      {/* 채팅 플로팅 버튼 — 채팅 페이지로 이동 */}
+      {currentUser && activePage !== 'chat' && (
+        <button
+          onClick={() => navigate('chat')}
+          style={{
+            position: 'fixed', bottom: '28px', right: '28px', zIndex: 100,
+            width: '52px', height: '52px', borderRadius: '50%',
+            background: 'var(--color-accent)', border: 'none',
+            color: 'white', fontSize: '22px', cursor: 'pointer',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.18)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}
+          title="채팅"
+        >
+          💬
+        </button>
+      )}
+
+      {/* 그룹 통화 모달 */}
+      {callInfo && (
+        <CallModal
+          callInfo={callInfo}
+          onClose={() => setCallInfo(null)}
         />
       )}
     </>
