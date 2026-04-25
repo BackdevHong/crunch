@@ -1,6 +1,7 @@
 # 크런치 (Crunch)
 [![CI](https://github.com/BackdevHong/crunch/actions/workflows/ci.yml/badge.svg)](https://github.com/BackdevHong/crunch/actions/workflows/ci.yml)
 [![CI - Frontend](https://github.com/BackdevHong/crunch/actions/workflows/ci-frontend.yml/badge.svg)](https://github.com/BackdevHong/crunch/actions/workflows/ci-frontend.yml)
+
 프리랜서와 클라이언트를 연결하는 서비스 중개 플랫폼입니다. 클라이언트는 프로젝트를 의뢰하거나 판매 중인 서비스를 구매할 수 있고, 프리랜서는 자신을 홍보하고 제안서를 보내거나 주문을 처리할 수 있습니다. 어드민 영역에서는 프리랜서 신청 승인·거절, 사용자 관리, 서비스 활성화 관리를 수행할 수 있습니다.
 
 > 레포지토리: https://github.com/BackdevHong/crunch
