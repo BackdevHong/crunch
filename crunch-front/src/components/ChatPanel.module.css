@@ -39,7 +39,15 @@
 }
 .channelItem:hover { background: var(--color-bg-tertiary); }
 .channelActive { background: var(--color-accent-bg) !important; }
+.channelTopLine {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
 .channelName {
+  flex: 1;
+  min-width: 0;
   font-size: 13px;
   font-weight: 500;
   color: var(--color-text-primary);
@@ -47,6 +55,31 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.unreadBadge {
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--color-accent);
+  color: white;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 20px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.mentionBadge {
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: #fff4cc;
+  color: #7a4d00;
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 20px;
+  text-align: center;
+  flex-shrink: 0;
 }
 .channelPreview {
   font-size: 11px;
@@ -128,6 +161,167 @@
   white-space: nowrap;
 }
 
+.messageTools {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 16px;
+  border-bottom: 0.5px solid var(--color-border);
+  background: var(--color-bg-primary);
+  flex-shrink: 0;
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.searchBox > span {
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.searchBox input {
+  flex: 1;
+  min-width: 0;
+  height: 32px;
+  padding: 0 10px;
+  border: 0.5px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+}
+
+.searchBox input:focus {
+  border-color: var(--color-accent);
+}
+
+.searchBox button {
+  height: 30px;
+  padding: 0 9px;
+  border: 0.5px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-bg-secondary);
+  color: var(--color-text-secondary);
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.filterTabs {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 1px;
+}
+
+.filterTabs button {
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 10px;
+  border: 0.5px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-bg-secondary);
+  color: var(--color-text-secondary);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.filterTabs button span {
+  min-width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.06);
+  font-size: 10px;
+}
+
+.filterTabs .filterTabActive {
+  border-color: var(--color-accent);
+  background: var(--color-accent-bg, #EAF3DE);
+  color: var(--color-accent);
+}
+
+.pinnedBar {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 16px;
+  border-bottom: 0.5px solid var(--color-border);
+  background: #fff9e8;
+  flex-shrink: 0;
+}
+
+.pinnedHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 88px;
+  color: #7a4d00;
+}
+
+.pinnedHeader strong {
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.pinnedHeader span {
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.pinnedList {
+  flex: 1;
+  display: flex;
+  gap: 6px;
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.pinnedItem {
+  width: 220px;
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 8px 10px;
+  border: 0.5px solid rgba(122, 77, 0, 0.2);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.68);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.pinnedItem span {
+  color: #7a4d00;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.pinnedItem strong {
+  overflow: hidden;
+  color: var(--color-text-primary);
+  font-size: 12px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* MESSAGES */
 .messages {
   flex: 1;
@@ -172,22 +366,424 @@
   border: 0.5px solid var(--color-border);
   border-bottom-left-radius: 4px;
 }
+.mentionedBubble {
+  box-shadow: 0 0 0 2px rgba(122, 77, 0, 0.14);
+}
+.deletedBubble {
+  background: var(--color-bg-secondary) !important;
+  color: var(--color-text-secondary) !important;
+  border: 0.5px dashed var(--color-border) !important;
+  font-style: italic;
+}
+.mentionText {
+  color: #7a4d00;
+  font-weight: 800;
+}
+.mentionMe {
+  padding: 1px 3px;
+  border-radius: 5px;
+  background: #fff4cc;
+}
 .msgTime {
   font-size: 10px;
   color: var(--color-text-secondary);
   margin-top: 3px;
 }
+.msgMeta {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 5px;
+  margin-top: 3px;
+  color: var(--color-text-secondary);
+  font-size: 10px;
+}
+.readReceipt {
+  color: var(--color-accent);
+  font-weight: 800;
+}
+
+.msgActions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-height: 0;
+  margin-top: 0;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+  transition: opacity 0.12s;
+}
+
+.msgRow:hover .msgActions,
+.msgActions:focus-within {
+  max-height: 24px;
+  margin-top: 3px;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.msgActions span {
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: #fff4cc;
+  color: #7a4d00;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.msgActions button {
+  padding: 2px 7px;
+  border: 0.5px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-bg-secondary);
+  color: var(--color-text-secondary);
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.msgActions button:hover {
+  border-color: #7a4d00;
+  color: #7a4d00;
+}
+
+.reactionList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.msgMine .reactionList {
+  justify-content: flex-end;
+}
+
+.reactionList button {
+  height: 24px;
+  padding: 0 8px;
+  border: 0.5px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.reactionList button span {
+  color: var(--color-text-secondary);
+  font-size: 10px;
+}
+
+.reactionList .reactionMine {
+  border-color: var(--color-accent);
+  background: var(--color-accent-bg, #EAF3DE);
+}
+
+.replyPreview {
+  width: min(360px, 100%);
+  margin-bottom: 5px;
+  padding: 7px 9px;
+  border: 0.5px solid var(--color-border);
+  border-left: 3px solid var(--color-accent);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--color-text-primary);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.msgMine .replyPreview {
+  margin-left: auto;
+  background: rgba(255, 255, 255, 0.9);
+}
+.replyPreview span {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--color-accent);
+}
+.replyPreview strong {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.editBox {
+  width: min(360px, 100%);
+  padding: 8px;
+  border: 0.5px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-bg-secondary);
+}
+
+.editBox textarea {
+  width: 100%;
+  min-height: 64px;
+  padding: 8px 10px;
+  border: 0.5px solid var(--color-border-hover);
+  border-radius: 8px;
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1.5;
+  resize: vertical;
+  outline: none;
+}
+
+.editBox textarea:focus {
+  border-color: var(--color-accent);
+}
+
+.editActions {
+  margin-top: 6px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.editActions button {
+  padding: 5px 9px;
+  border: 0.5px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-bg-primary);
+  color: var(--color-text-secondary);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.editActions button:last-child {
+  background: var(--color-accent);
+  color: white;
+  border-color: var(--color-accent);
+}
+
+.editActions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
 /* INPUT */
+.composerArea {
+  border-top: 0.5px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.replyComposer {
+  margin: 10px 16px 0;
+  padding: 8px 10px;
+  border: 0.5px solid var(--color-border);
+  border-left: 3px solid var(--color-accent);
+  border-radius: 8px;
+  background: var(--color-bg-secondary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.replyComposerBody {
+  min-width: 0;
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 0;
+  text-align: left;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.replyComposerBody span {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--color-accent);
+}
+
+.replyComposerBody strong {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.replyCancelBtn {
+  width: 26px;
+  height: 26px;
+  border: 0.5px solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-bg-primary);
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.mentionMenu {
+  margin: 10px 16px 0;
+  border: 0.5px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-bg-primary);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+
+.mentionMenu button {
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-primary);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.mentionMenu button:hover {
+  background: var(--color-bg-secondary);
+}
+
+.imageViewerBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(0, 0, 0, 0.74);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.imageViewer {
+  width: min(1100px, 96vw);
+  height: min(780px, 92vh);
+  border-radius: 10px;
+  background: #111;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.4);
+}
+
+.imageViewerHeader {
+  height: 54px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 0.5px solid rgba(255, 255, 255, 0.12);
+  color: white;
+}
+
+.imageViewerHeader > div:first-child {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.imageViewerHeader strong {
+  max-width: 520px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+}
+
+.imageViewerHeader span {
+  color: rgba(255, 255, 255, 0.64);
+  font-size: 11px;
+}
+
+.imageViewerActions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.imageViewerActions a,
+.imageViewerActions button,
+.imageViewerNav {
+  border: 0.5px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.imageViewerActions a,
+.imageViewerActions button {
+  padding: 7px 10px;
+}
+
+.imageViewerBody {
+  min-height: 0;
+  flex: 1;
+  display: grid;
+  grid-template-columns: 52px 1fr 52px;
+  align-items: center;
+  gap: 10px;
+  padding: 14px;
+}
+
+.imageViewerBody img {
+  max-width: 100%;
+  max-height: 100%;
+  justify-self: center;
+  object-fit: contain;
+}
+
+.imageViewerNav {
+  width: 44px;
+  height: 56px;
+  font-size: 34px;
+}
+
+.imageViewerNav:disabled {
+  opacity: 0;
+  cursor: default;
+}
+
 .inputRow {
   padding: 12px 16px;
-  border-top: 0.5px solid var(--color-border);
   display: flex;
   gap: 8px;
   align-items: flex-end;
-  flex-shrink: 0;
 }
 .hiddenFileInput { display: none; }
+
+.imagePreviewButton {
+  display: block;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: zoom-in;
+  font-family: inherit;
+}
 
 /* + 버튼 & 드롭다운 래퍼 */
 .plusWrap {
@@ -374,15 +970,68 @@
 }
 .fileDocLink:hover { background: var(--color-bg-tertiary); }
 .fileDocIcon { font-size: 20px; flex-shrink: 0; }
+.fileDocBody {
+  min-width: 0;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+}
 .fileDocName {
   font-size: 13px;
   font-weight: 500;
-  flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.fileDocHint {
+  font-size: 10px;
+  color: var(--color-text-secondary);
+}
 .fileDocSize { font-size: 11px; color: var(--color-text-secondary); flex-shrink: 0; }
+
+.filePreviewCard {
+  width: 280px;
+  overflow: hidden;
+  border: 0.5px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-bg-secondary);
+}
+
+.pdfPreview {
+  width: 100%;
+  height: 220px;
+  display: block;
+  border: 0;
+  background: white;
+}
+
+.filePreviewFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px;
+  border-top: 0.5px solid var(--color-border);
+}
+
+.filePreviewFooter span {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--color-text-primary);
+  font-size: 12px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.filePreviewFooter a {
+  flex-shrink: 0;
+  color: var(--color-accent);
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+}
 
 /* SYSTEM MESSAGE */
 .systemMsg {

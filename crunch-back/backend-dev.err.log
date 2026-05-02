@@ -1,0 +1,585 @@
+Error: listen EADDRINUSE: address already in use :::4000
+    at Server.setupListenHandle [as _listen2] (node:net:1948:16)
+    at listenInCluster (node:net:2005:12)
+    at Server.listen (node:net:2110:7)
+    at Object.<anonymous> (C:\Users\GACHON\Desktop\crunch\crunch-back\src\index.ts:71:12)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1812:14)
+    at Module._compile (C:\Users\GACHON\Desktop\crunch\crunch-back\node_modules\source-map-support\source-map-support.js:568:25)
+    at Module.m._compile (C:\Users\GACHON\AppData\Local\Temp\ts-node-dev-hook-20752313940723066.js:69:33)
+    at node:internal/modules/cjs/loader:1943:10
+    at require.extensions..jsx.require.extensions..js (C:\Users\GACHON\AppData\Local\Temp\ts-node-dev-hook-20752313940723066.js:114:20)
+    at require.extensions.<computed> (C:\Users\GACHON\AppData\Local\Temp\ts-node-dev-hook-20752313940723066.js:71:20)
+Error: listen EADDRINUSE: address already in use :::4000
+    at Server.setupListenHandle [as _listen2] (node:net:1948:16)
+    at listenInCluster (node:net:2005:12)
+    at Server.listen (node:net:2110:7)
+    at Object.<anonymous> (C:\Users\GACHON\Desktop\crunch\crunch-back\src\index.ts:71:12)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1812:14)
+    at Module._compile (C:\Users\GACHON\Desktop\crunch\crunch-back\node_modules\source-map-support\source-map-support.js:568:25)
+    at Module.m._compile (C:\Users\GACHON\AppData\Local\Temp\ts-node-dev-hook-20752313940723066.js:69:33)
+    at node:internal/modules/cjs/loader:1943:10
+    at require.extensions..jsx.require.extensions..js (C:\Users\GACHON\AppData\Local\Temp\ts-node-dev-hook-20752313940723066.js:114:20)
+    at require.extensions.<computed> (C:\Users\GACHON\AppData\Local\Temp\ts-node-dev-hook-20752313940723066.js:71:20)
+[getChannelMessages] PrismaClientValidationError: 
+Invalid `prisma.channelMessage.findMany()` invocation in
+C:\Users\GACHON\Desktop\crunch\crunch-back\src\controllers\channel.controller.ts:107:29
+
+  104 }
+  105 
+  106 const [messages, members] = await Promise.all([
+→ 107   prisma.channelMessage.findMany({
+          where: {
+            channelId: "fd854868-a6b2-463e-a2a7-0656a028cf35"
+          },
+          orderBy: {
+            createdAt: "desc"
+          },
+          take: 40,
+          include: {
+            sender: {
+              select: {
+                id: true,
+                name: true,
+                avatarUrl: true
+              }
+            },
+            replyTo: {
+              select: {
+                id: true,
+                content: true,
+                fileName: true,
+                messageType: true,
+                editedAt: true,
+                ~~~~~~~~
+                deletedAt: true,
+                sender: {
+                  select: {
+                    id: true,
+                    name: true,
+                    avatarUrl: true
+                  }
+                },
+        ?       channelId?: true,
+        ?       senderId?: true,
+        ?       fileUrl?: true,
+        ?       fileType?: true,
+        ?       fileSize?: true,
+        ?       isPinned?: true,
+        ?       pinnedAt?: true,
+        ?       pinnedById?: true,
+        ?       replyToId?: true,
+        ?       createdAt?: true,
+        ?       channel?: true,
+        ?       replyTo?: true,
+        ?       replies?: true,
+        ?       meeting?: true,
+        ?       _count?: true
+              }
+            },
+            meeting: {
+              include: {
+                responses: {
+                  include: {
+                    user: {
+                      select: {
+                        id: true,
+                        name: true
+                      }
+                    }
+                  },
+                  orderBy: {
+                    updatedAt: "asc"
+                  }
+                },
+                proposer: {
+                  select: {
+                    id: true,
+                    name: true
+                  }
+                }
+              }
+            }
+          }
+        })
+
+Unknown field `editedAt` for select statement on model `ChannelMessage`. Available options are marked with ?.
+    at wn (C:\Users\GACHON\Desktop\crunch\crunch-back\node_modules\@prisma\client\runtime\library.js:29:1363)
+    at $n.handleRequestError (C:\Users\GACHON\Desktop\crunch\crunch-back\node_modules\@prisma\client\runtime\library.js:121:6958)
+    at $n.handleAndLogRequestError (C:\Users\GACHON\Desktop\crunch\crunch-back\node_modules\@prisma\client\runtime\library.js:121:6623)
+    at $n.request (C:\Users\GACHON\Desktop\crunch\crunch-back\node_modules\@prisma\client\runtime\library.js:121:6307)
+    at l (C:\Users\GACHON\Desktop\crunch\crunch-back\node_modules\@prisma\client\runtime\library.js:130:9633)
+    at async Promise.all (index 0)
+    at getChannelMessages (C:\Users\GACHON\Desktop\crunch\crunch-back\src\controllers\channel.controller.ts:106:33) {
+  clientVersion: '5.22.0'
+}
+[getChannelMessages] PrismaClientValidationError: 
+Invalid `prisma.channelMessage.findMany()` invocation in
+C:\Users\GACHON\Desktop\crunch\crunch-back\src\controllers\channel.controller.ts:107:29
+
+  104 }
+  105 
+  106 const [messages, members] = await Promise.all([
+→ 107   prisma.channelMessage.findMany({
+          where: {
+            channelId: "fd854868-a6b2-463e-a2a7-0656a028cf35"
+          },
+          orderBy: {
+            createdAt: "desc"
+          },
+          take: 40,
+          include: {
+            sender: {
+              select: {
+                id: true,
+                name: true,
+                avatarUrl: true
+              }
+            },
+            replyTo: {
+              select: {
+                id: true,
+                content: true,
+                fileName: true,
+                messageType: true,
+                editedAt: true,
+                ~~~~~~~~
+                deletedAt: true,
+                sender: {
+                  select: {
+                    id: true,
+                    name: true,
+                    avatarUrl: true
+                  }
+                },
+        ?       channelId?: true,
+        ?       senderId?: true,
+        ?       fileUrl?: true,
+        ?       fileType?: true,
+        ?       fileSize?: true,
+        ?       isPinned?: true,
+        ?       pinnedAt?: true,
+        ?       pinnedById?: true,
+        ?       replyToId?: true,
+        ?       createdAt?: true,
+        ?       channel?: true,
+        ?       replyTo?: true,
+        ?       replies?: true,
+        ?       meeting?: true,
+        ?       _count?: true
+              }
+            },
+            meeting: {
+              include: {
+                responses: {
+                  include: {
+                    user: {
+                      select: {
+                        id: true,
+                        name: true
+                      }
+                    }
+                  },
+                  orderBy: {
+                    updatedAt: "asc"
+                  }
+                },
+                proposer: {
+                  select: {
+                    id: true,
+                    name: true
+                  }
+                }
+              }
+            }
+          }
+        })
+
+Unknown field `editedAt` for select statement on model `ChannelMessage`. Available options are marked with ?.
+    at wn (C:\Users\GACHON\Desktop\crunch\crunch-back\node_modules\@prisma\client\runtime\library.js:29:1363)
+    at $n.handleRequestError (C:\Users\GACHON\Desktop\crunch\crunch-back\node_modules\@prisma\client\runtime\library.js:121:6958)
+    at $n.handleAndLogRequestError (C:\Users\GACHON\Desktop\crunch\crunch-back\node_modules\@prisma\client\runtime\library.js:121:6623)
+    at $n.request (C:\Users\GACHON\Desktop\crunch\crunch-back\node_modules\@prisma\client\runtime\library.js:121:6307)
+    at l (C:\Users\GACHON\Desktop\crunch\crunch-back\node_modules\@prisma\client\runtime\library.js:130:9633)
+    at async Promise.all (index 0)
+    at getChannelMessages (C:\Users\GACHON\Desktop\crunch\crunch-back\src\controllers\channel.controller.ts:106:33) {
+  clientVersion: '5.22.0'
+}
+[getChannelMessages] PrismaClientValidationError: 
+Invalid `prisma.channelMessage.findMany()` invocation in
+C:\Users\GACHON\Desktop\crunch\crunch-back\src\controllers\channel.controller.ts:107:29
+
+  104 }
+  105 
+  106 const [messages, members] = await Promise.all([
+→ 107   prisma.channelMessage.findMany({
+          where: {
+            channelId: "fd854868-a6b2-463e-a2a7-0656a028cf35"
+          },
+          orderBy: {
+            createdAt: "desc"
+          },
+          take: 40,
+          include: {
+            sender: {
+              select: {
+                id: true,
+                name: true,
+                avatarUrl: true
+              }
+            },
+            replyTo: {
+              select: {
+                id: true,
+                content: true,
+                fileName: true,
+                messageType: true,
+                editedAt: true,
+                ~~~~~~~~
+                deletedAt: true,
+                sender: {
+                  select: {
+                    id: true,
+                    name: true,
+                    avatarUrl: true
+                  }
+                },
+        ?       channelId?: true,
+        ?       senderId?: true,
+        ?       fileUrl?: true,
+        ?       fileType?: true,
+        ?       fileSize?: true,
+        ?       isPinned?: true,
+        ?       pinnedAt?: true,
+        ?       pinnedById?: true,
+        ?       replyToId?: true,
+        ?       createdAt?: true,
+        ?       channel?: true,
+        ?       replyTo?: true,
+        ?       replies?: true,
+        ?       meeting?: true,
+        ?       _count?: true
+              }
+            },
+            meeting: {
+              include: {
+                responses: {
+                  include: {
+                    user: {
+                      select: {
+                        id: true,
+                        name: true
+                      }
+                    }
+                  },
+                  orderBy: {
+                    updatedAt: "asc"
+                  }
+                },
+                proposer: {
+                  select: {
+                    id: true,
+                    name: true
+                  }
+                }
+              }
+            }
+          }
+        })
+
+Unknown field `editedAt` for select statement on model `ChannelMessage`. Available options are marked with ?.
+    at wn (C:\Users\GACHON\Desktop\crunch\crunch-back\node_modules\@prisma\client\runtime\library.js:29:1363)
+    at $n.handleRequestError (C:\Users\GACHON\Desktop\crunch\crunch-back\node_modules\@prisma\client\runtime\library.js:121:6958)
+    at $n.handleAndLogRequestError (C:\Users\GACHON\Desktop\crunch\crunch-back\node_modules\@prisma\client\runtime\library.js:121:6623)
+    at $n.request (C:\Users\GACHON\Desktop\crunch\crunch-back\node_modules\@prisma\client\runtime\library.js:121:6307)
+    at l (C:\Users\GACHON\Desktop\crunch\crunch-back\node_modules\@prisma\client\runtime\library.js:130:9633)
+    at async Promise.all (index 0)
+    at getChannelMessages (C:\Users\GACHON\Desktop\crunch\crunch-back\src\controllers\channel.controller.ts:106:33) {
+  clientVersion: '5.22.0'
+}
+[getChannelMessages] PrismaClientValidationError: 
+Invalid `prisma.channelMessage.findMany()` invocation in
+C:\Users\GACHON\Desktop\crunch\crunch-back\src\controllers\channel.controller.ts:107:29
+
+  104 }
+  105 
+  106 const [messages, members] = await Promise.all([
+→ 107   prisma.channelMessage.findMany({
+          where: {
+            channelId: "fd854868-a6b2-463e-a2a7-0656a028cf35"
+          },
+          orderBy: {
+            createdAt: "desc"
+          },
+          take: 40,
+          include: {
+            sender: {
+              select: {
+                id: true,
+                name: true,
+                avatarUrl: true
+              }
+            },
+            replyTo: {
+              select: {
+                id: true,
+                content: true,
+                fileName: true,
+                messageType: true,
+                editedAt: true,
+                ~~~~~~~~
+                deletedAt: true,
+                sender: {
+                  select: {
+                    id: true,
+                    name: true,
+                    avatarUrl: true
+                  }
+                },
+        ?       channelId?: true,
+        ?       senderId?: true,
+        ?       fileUrl?: true,
+        ?       fileType?: true,
+        ?       fileSize?: true,
+        ?       isPinned?: true,
+        ?       pinnedAt?: true,
+        ?       pinnedById?: true,
+        ?       replyToId?: true,
+        ?       createdAt?: true,
+        ?       channel?: true,
+        ?       replyTo?: true,
+        ?       replies?: true,
+        ?       meeting?: true,
+        ?       _count?: true
+              }
+            },
+            meeting: {
+              include: {
+                responses: {
+                  include: {
+                    user: {
+                      select: {
+                        id: true,
+                        name: true
+                      }
+                    }
+                  },
+                  orderBy: {
+                    updatedAt: "asc"
+                  }
+                },
+                proposer: {
+                  select: {
+                    id: true,
+                    name: true
+                  }
+                }
+              }
+            }
+          }
+        })
+
+Unknown field `editedAt` for select statement on model `ChannelMessage`. Available options are marked with ?.
+    at wn (C:\Users\GACHON\Desktop\crunch\crunch-back\node_modules\@prisma\client\runtime\library.js:29:1363)
+    at $n.handleRequestError (C:\Users\GACHON\Desktop\crunch\crunch-back\node_modules\@prisma\client\runtime\library.js:121:6958)
+    at $n.handleAndLogRequestError (C:\Users\GACHON\Desktop\crunch\crunch-back\node_modules\@prisma\client\runtime\library.js:121:6623)
+    at $n.request (C:\Users\GACHON\Desktop\crunch\crunch-back\node_modules\@prisma\client\runtime\library.js:121:6307)
+    at l (C:\Users\GACHON\Desktop\crunch\crunch-back\node_modules\@prisma\client\runtime\library.js:130:9633)
+    at async Promise.all (index 0)
+    at getChannelMessages (C:\Users\GACHON\Desktop\crunch\crunch-back\src\controllers\channel.controller.ts:106:33) {
+  clientVersion: '5.22.0'
+}
+[getChannelMessages] PrismaClientValidationError: 
+Invalid `prisma.channelMessage.findMany()` invocation in
+C:\Users\GACHON\Desktop\crunch\crunch-back\src\controllers\channel.controller.ts:107:29
+
+  104 }
+  105 
+  106 const [messages, members] = await Promise.all([
+→ 107   prisma.channelMessage.findMany({
+          where: {
+            channelId: "fd854868-a6b2-463e-a2a7-0656a028cf35"
+          },
+          orderBy: {
+            createdAt: "desc"
+          },
+          take: 40,
+          include: {
+            sender: {
+              select: {
+                id: true,
+                name: true,
+                avatarUrl: true
+              }
+            },
+            replyTo: {
+              select: {
+                id: true,
+                content: true,
+                fileName: true,
+                messageType: true,
+                editedAt: true,
+                ~~~~~~~~
+                deletedAt: true,
+                sender: {
+                  select: {
+                    id: true,
+                    name: true,
+                    avatarUrl: true
+                  }
+                },
+        ?       channelId?: true,
+        ?       senderId?: true,
+        ?       fileUrl?: true,
+        ?       fileType?: true,
+        ?       fileSize?: true,
+        ?       isPinned?: true,
+        ?       pinnedAt?: true,
+        ?       pinnedById?: true,
+        ?       replyToId?: true,
+        ?       createdAt?: true,
+        ?       channel?: true,
+        ?       replyTo?: true,
+        ?       replies?: true,
+        ?       meeting?: true,
+        ?       _count?: true
+              }
+            },
+            meeting: {
+              include: {
+                responses: {
+                  include: {
+                    user: {
+                      select: {
+                        id: true,
+                        name: true
+                      }
+                    }
+                  },
+                  orderBy: {
+                    updatedAt: "asc"
+                  }
+                },
+                proposer: {
+                  select: {
+                    id: true,
+                    name: true
+                  }
+                }
+              }
+            }
+          }
+        })
+
+Unknown field `editedAt` for select statement on model `ChannelMessage`. Available options are marked with ?.
+    at wn (C:\Users\GACHON\Desktop\crunch\crunch-back\node_modules\@prisma\client\runtime\library.js:29:1363)
+    at $n.handleRequestError (C:\Users\GACHON\Desktop\crunch\crunch-back\node_modules\@prisma\client\runtime\library.js:121:6958)
+    at $n.handleAndLogRequestError (C:\Users\GACHON\Desktop\crunch\crunch-back\node_modules\@prisma\client\runtime\library.js:121:6623)
+    at $n.request (C:\Users\GACHON\Desktop\crunch\crunch-back\node_modules\@prisma\client\runtime\library.js:121:6307)
+    at l (C:\Users\GACHON\Desktop\crunch\crunch-back\node_modules\@prisma\client\runtime\library.js:130:9633)
+    at async Promise.all (index 0)
+    at getChannelMessages (C:\Users\GACHON\Desktop\crunch\crunch-back\src\controllers\channel.controller.ts:106:33) {
+  clientVersion: '5.22.0'
+}
+[getChannelMessages] PrismaClientValidationError: 
+Invalid `prisma.channelMessage.findMany()` invocation in
+C:\Users\GACHON\Desktop\crunch\crunch-back\src\controllers\channel.controller.ts:107:29
+
+  104 }
+  105 
+  106 const [messages, members] = await Promise.all([
+→ 107   prisma.channelMessage.findMany({
+          where: {
+            channelId: "fd854868-a6b2-463e-a2a7-0656a028cf35"
+          },
+          orderBy: {
+            createdAt: "desc"
+          },
+          take: 40,
+          include: {
+            sender: {
+              select: {
+                id: true,
+                name: true,
+                avatarUrl: true
+              }
+            },
+            replyTo: {
+              select: {
+                id: true,
+                content: true,
+                fileName: true,
+                messageType: true,
+                editedAt: true,
+                ~~~~~~~~
+                deletedAt: true,
+                sender: {
+                  select: {
+                    id: true,
+                    name: true,
+                    avatarUrl: true
+                  }
+                },
+        ?       channelId?: true,
+        ?       senderId?: true,
+        ?       fileUrl?: true,
+        ?       fileType?: true,
+        ?       fileSize?: true,
+        ?       isPinned?: true,
+        ?       pinnedAt?: true,
+        ?       pinnedById?: true,
+        ?       replyToId?: true,
+        ?       createdAt?: true,
+        ?       channel?: true,
+        ?       replyTo?: true,
+        ?       replies?: true,
+        ?       meeting?: true,
+        ?       _count?: true
+              }
+            },
+            meeting: {
+              include: {
+                responses: {
+                  include: {
+                    user: {
+                      select: {
+                        id: true,
+                        name: true
+                      }
+                    }
+                  },
+                  orderBy: {
+                    updatedAt: "asc"
+                  }
+                },
+                proposer: {
+                  select: {
+                    id: true,
+                    name: true
+                  }
+                }
+              }
+            }
+          }
+        })
+
+Unknown field `editedAt` for select statement on model `ChannelMessage`. Available options are marked with ?.
+    at wn (C:\Users\GACHON\Desktop\crunch\crunch-back\node_modules\@prisma\client\runtime\library.js:29:1363)
+    at $n.handleRequestError (C:\Users\GACHON\Desktop\crunch\crunch-back\node_modules\@prisma\client\runtime\library.js:121:6958)
+    at $n.handleAndLogRequestError (C:\Users\GACHON\Desktop\crunch\crunch-back\node_modules\@prisma\client\runtime\library.js:121:6623)
+    at $n.request (C:\Users\GACHON\Desktop\crunch\crunch-back\node_modules\@prisma\client\runtime\library.js:121:6307)
+    at l (C:\Users\GACHON\Desktop\crunch\crunch-back\node_modules\@prisma\client\runtime\library.js:130:9633)
+    at async Promise.all (index 0)
+    at getChannelMessages (C:\Users\GACHON\Desktop\crunch\crunch-back\src\controllers\channel.controller.ts:106:33) {
+  clientVersion: '5.22.0'
+}
+Error: listen EADDRINUSE: address already in use :::4000
+    at Server.setupListenHandle [as _listen2] (node:net:1948:16)
+    at listenInCluster (node:net:2005:12)
+    at Server.listen (node:net:2110:7)
+    at Object.<anonymous> (C:\Users\GACHON\Desktop\crunch\crunch-back\src\index.ts:71:12)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1812:14)
+    at Module._compile (C:\Users\GACHON\Desktop\crunch\crunch-back\node_modules\source-map-support\source-map-support.js:568:25)
+    at Module.m._compile (C:\Users\GACHON\AppData\Local\Temp\ts-node-dev-hook-20752313940723066.js:69:33)
+    at node:internal/modules/cjs/loader:1943:10
+    at require.extensions..jsx.require.extensions..js (C:\Users\GACHON\AppData\Local\Temp\ts-node-dev-hook-20752313940723066.js:114:20)
+    at require.extensions.<computed> (C:\Users\GACHON\AppData\Local\Temp\ts-node-dev-hook-20752313940723066.js:71:20)

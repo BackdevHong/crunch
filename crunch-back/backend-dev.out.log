@@ -1,0 +1,1186 @@
+
+> crunch-backend@1.0.0 dev
+> ts-node-dev --respawn --transpile-only src/index.ts
+
+[INFO] 13:58:52 ts-node-dev ver. 2.0.0 (using ts-node ver. 10.9.2, typescript ver. 5.9.3)
+🚀 서버 실행 중 → http://localhost:4000
+   환경: development
+[0mGET /health [32m200[0m 3.282 ms - 54[0m
+[INFO] 14:03:11 Restarting: C:\Users\GACHON\Desktop\crunch\crunch-back\src\socket.ts has been modified
+🚀 서버 실행 중 → http://localhost:4000
+   환경: development
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT 1
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name`, `crunch`.`users`.`email`, `crunch`.`users`.`role`, `crunch`.`users`.`avatar_url`, `crunch`.`users`.`created_at` FROM `crunch`.`users` WHERE (`crunch`.`users`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`freelancers`.`id`, `crunch`.`freelancers`.`role`, `crunch`.`freelancers`.`badge`, `crunch`.`freelancers`.`rating`, `crunch`.`freelancers`.`completed_jobs`, `crunch`.`freelancers`.`hourly_rate`, `crunch`.`freelancers`.`online`, `crunch`.`freelancers`.`user_id` FROM `crunch`.`freelancers` WHERE `crunch`.`freelancers`.`user_id` IN (?)
+[0mGET /api/auth/me [36m304[0m 7.212 ms - -[0m
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name`, `crunch`.`users`.`email`, `crunch`.`users`.`role`, `crunch`.`users`.`avatar_url`, `crunch`.`users`.`created_at` FROM `crunch`.`users` WHERE (`crunch`.`users`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`freelancers`.`id`, `crunch`.`freelancers`.`role`, `crunch`.`freelancers`.`badge`, `crunch`.`freelancers`.`rating`, `crunch`.`freelancers`.`completed_jobs`, `crunch`.`freelancers`.`hourly_rate`, `crunch`.`freelancers`.`online`, `crunch`.`freelancers`.`user_id` FROM `crunch`.`freelancers` WHERE `crunch`.`freelancers`.`user_id` IN (?)
+[0mGET /api/auth/me [36m304[0m 4.461 ms - -[0m
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name`, `crunch`.`users`.`email`, `crunch`.`users`.`role`, `crunch`.`users`.`avatar_url`, `crunch`.`users`.`created_at` FROM `crunch`.`users` WHERE (`crunch`.`users`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`freelancers`.`id`, `crunch`.`freelancers`.`role`, `crunch`.`freelancers`.`badge`, `crunch`.`freelancers`.`rating`, `crunch`.`freelancers`.`completed_jobs`, `crunch`.`freelancers`.`hourly_rate`, `crunch`.`freelancers`.`online`, `crunch`.`freelancers`.`user_id` FROM `crunch`.`freelancers` WHERE `crunch`.`freelancers`.`user_id` IN (?)
+[0mGET /api/auth/me [36m304[0m 3.166 ms - -[0m
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name`, `crunch`.`users`.`email`, `crunch`.`users`.`role`, `crunch`.`users`.`avatar_url`, `crunch`.`users`.`created_at` FROM `crunch`.`users` WHERE (`crunch`.`users`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`freelancers`.`id`, `crunch`.`freelancers`.`role`, `crunch`.`freelancers`.`badge`, `crunch`.`freelancers`.`rating`, `crunch`.`freelancers`.`completed_jobs`, `crunch`.`freelancers`.`hourly_rate`, `crunch`.`freelancers`.`online`, `crunch`.`freelancers`.`user_id` FROM `crunch`.`freelancers` WHERE `crunch`.`freelancers`.`user_id` IN (?)
+[0mGET /api/auth/me [36m304[0m 2.007 ms - -[0m
+[INFO] 14:05:28 Restarting: C:\Users\GACHON\Desktop\crunch\crunch-back\src\socket.ts has been modified
+🚀 서버 실행 중 → http://localhost:4000
+   환경: development
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+[INFO] 14:05:52 Restarting: C:\Users\GACHON\Desktop\crunch\crunch-back\src\socket.ts has been modified
+🚀 서버 실행 중 → http://localhost:4000
+   환경: development
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+[INFO] 14:10:41 Restarting: C:\Users\GACHON\Desktop\crunch\crunch-back\src\socket.ts has been modified
+🚀 서버 실행 중 → http://localhost:4000
+   환경: development
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) OR (`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) OR (`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) OR (`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?))
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) OR (`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) OR (`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) OR (`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?))
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+[INFO] 14:10:53 Restarting: C:\Users\GACHON\Desktop\crunch\crunch-back\src\socket.ts has been modified
+🚀 서버 실행 중 → http://localhost:4000
+   환경: development
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+[INFO] 14:15:19 Restarting: C:\Users\GACHON\Desktop\crunch\crunch-back\src\socket.ts has been modified
+🚀 서버 실행 중 → http://localhost:4000
+   환경: development
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name`, `crunch`.`users`.`email`, `crunch`.`users`.`role`, `crunch`.`users`.`avatar_url`, `crunch`.`users`.`created_at` FROM `crunch`.`users` WHERE (`crunch`.`users`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`freelancers`.`id`, `crunch`.`freelancers`.`role`, `crunch`.`freelancers`.`badge`, `crunch`.`freelancers`.`rating`, `crunch`.`freelancers`.`completed_jobs`, `crunch`.`freelancers`.`hourly_rate`, `crunch`.`freelancers`.`online`, `crunch`.`freelancers`.`user_id` FROM `crunch`.`freelancers` WHERE `crunch`.`freelancers`.`user_id` IN (?)
+[0mGET /api/auth/me [36m304[0m 17.619 ms - -[0m
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name`, `crunch`.`users`.`email`, `crunch`.`users`.`role`, `crunch`.`users`.`avatar_url`, `crunch`.`users`.`created_at` FROM `crunch`.`users` WHERE (`crunch`.`users`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`freelancers`.`id`, `crunch`.`freelancers`.`role`, `crunch`.`freelancers`.`badge`, `crunch`.`freelancers`.`rating`, `crunch`.`freelancers`.`completed_jobs`, `crunch`.`freelancers`.`hourly_rate`, `crunch`.`freelancers`.`online`, `crunch`.`freelancers`.`user_id` FROM `crunch`.`freelancers` WHERE `crunch`.`freelancers`.`user_id` IN (?)
+[0mGET /api/auth/me [36m304[0m 3.045 ms - -[0m
+[INFO] 14:18:07 Restarting: C:\Users\GACHON\Desktop\crunch\crunch-back\src\socket.ts has been modified
+🚀 서버 실행 중 → http://localhost:4000
+   환경: development
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT 1
+prisma:query SELECT 1
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT 1
+prisma:query SELECT 1
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+[INFO] 14:28:37 Restarting: C:\Users\GACHON\Desktop\crunch\crunch-back\src\socket.ts has been modified
+🚀 서버 실행 중 → http://localhost:4000
+   환경: development
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) OR (`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?))
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) OR (`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?))
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT 1
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name`, `crunch`.`users`.`email`, `crunch`.`users`.`role`, `crunch`.`users`.`avatar_url`, `crunch`.`users`.`created_at` FROM `crunch`.`users` WHERE (`crunch`.`users`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`freelancers`.`id`, `crunch`.`freelancers`.`role`, `crunch`.`freelancers`.`badge`, `crunch`.`freelancers`.`rating`, `crunch`.`freelancers`.`completed_jobs`, `crunch`.`freelancers`.`hourly_rate`, `crunch`.`freelancers`.`online`, `crunch`.`freelancers`.`user_id` FROM `crunch`.`freelancers` WHERE `crunch`.`freelancers`.`user_id` IN (?)
+[0mGET /api/auth/me [36m304[0m 7.211 ms - -[0m
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name`, `crunch`.`users`.`email`, `crunch`.`users`.`role`, `crunch`.`users`.`avatar_url`, `crunch`.`users`.`created_at` FROM `crunch`.`users` WHERE (`crunch`.`users`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`freelancers`.`id`, `crunch`.`freelancers`.`role`, `crunch`.`freelancers`.`badge`, `crunch`.`freelancers`.`rating`, `crunch`.`freelancers`.`completed_jobs`, `crunch`.`freelancers`.`hourly_rate`, `crunch`.`freelancers`.`online`, `crunch`.`freelancers`.`user_id` FROM `crunch`.`freelancers` WHERE `crunch`.`freelancers`.`user_id` IN (?)
+[0mGET /api/auth/me [36m304[0m 2.522 ms - -[0m
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name`, `crunch`.`users`.`email`, `crunch`.`users`.`role`, `crunch`.`users`.`avatar_url`, `crunch`.`users`.`created_at` FROM `crunch`.`users` WHERE (`crunch`.`users`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`freelancers`.`id`, `crunch`.`freelancers`.`role`, `crunch`.`freelancers`.`badge`, `crunch`.`freelancers`.`rating`, `crunch`.`freelancers`.`completed_jobs`, `crunch`.`freelancers`.`hourly_rate`, `crunch`.`freelancers`.`online`, `crunch`.`freelancers`.`user_id` FROM `crunch`.`freelancers` WHERE `crunch`.`freelancers`.`user_id` IN (?)
+[0mGET /api/auth/me [36m304[0m 2.890 ms - -[0m
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name`, `crunch`.`users`.`email`, `crunch`.`users`.`role`, `crunch`.`users`.`avatar_url`, `crunch`.`users`.`created_at` FROM `crunch`.`users` WHERE (`crunch`.`users`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`freelancers`.`id`, `crunch`.`freelancers`.`role`, `crunch`.`freelancers`.`badge`, `crunch`.`freelancers`.`rating`, `crunch`.`freelancers`.`completed_jobs`, `crunch`.`freelancers`.`hourly_rate`, `crunch`.`freelancers`.`online`, `crunch`.`freelancers`.`user_id` FROM `crunch`.`freelancers` WHERE `crunch`.`freelancers`.`user_id` IN (?)
+[0mGET /api/auth/me [36m304[0m 1.563 ms - -[0m
+[INFO] 14:42:21 Restarting: C:\Users\GACHON\Desktop\crunch\crunch-back\src\socket.ts has been modified
+🚀 서버 실행 중 → http://localhost:4000
+   환경: development
+[0mGET /api/auth/me [33m401[0m 2.272 ms - 85[0m
+[0mGET /api/auth/me [33m401[0m 0.519 ms - 85[0m
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name`, `crunch`.`users`.`email`, `crunch`.`users`.`password_hash`, `crunch`.`users`.`avatar_url`, `crunch`.`users`.`role`, `crunch`.`users`.`created_at`, `crunch`.`users`.`updated_at`, `crunch`.`users`.`refresh_token` FROM `crunch`.`users` WHERE (`crunch`.`users`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name`, `crunch`.`users`.`email`, `crunch`.`users`.`password_hash`, `crunch`.`users`.`avatar_url`, `crunch`.`users`.`role`, `crunch`.`users`.`created_at`, `crunch`.`users`.`updated_at`, `crunch`.`users`.`refresh_token` FROM `crunch`.`users` WHERE (`crunch`.`users`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query BEGIN
+prisma:query SELECT `crunch`.`users`.`id` FROM `crunch`.`users` WHERE (`crunch`.`users`.`id` = ? AND 1=1)
+prisma:query BEGIN
+prisma:query SELECT `crunch`.`users`.`id` FROM `crunch`.`users` WHERE (`crunch`.`users`.`id` = ? AND 1=1)
+prisma:query UPDATE `crunch`.`users` SET `refresh_token` = ?, `updated_at` = ? WHERE (`crunch`.`users`.`id` IN (?) AND (`crunch`.`users`.`id` = ? AND 1=1))
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name`, `crunch`.`users`.`email`, `crunch`.`users`.`password_hash`, `crunch`.`users`.`avatar_url`, `crunch`.`users`.`role`, `crunch`.`users`.`created_at`, `crunch`.`users`.`updated_at`, `crunch`.`users`.`refresh_token` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` = ? LIMIT ? OFFSET ?
+prisma:query COMMIT
+prisma:query UPDATE `crunch`.`users` SET `refresh_token` = ?, `updated_at` = ? WHERE (`crunch`.`users`.`id` IN (?) AND (`crunch`.`users`.`id` = ? AND 1=1))
+[0mPOST /api/auth/refresh [32m200[0m 31.219 ms - 302[0m
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name`, `crunch`.`users`.`email`, `crunch`.`users`.`password_hash`, `crunch`.`users`.`avatar_url`, `crunch`.`users`.`role`, `crunch`.`users`.`created_at`, `crunch`.`users`.`updated_at`, `crunch`.`users`.`refresh_token` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` = ? LIMIT ? OFFSET ?
+prisma:query COMMIT
+[0mPOST /api/auth/refresh [32m200[0m 20.700 ms - 302[0m
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name`, `crunch`.`users`.`email`, `crunch`.`users`.`role`, `crunch`.`users`.`avatar_url`, `crunch`.`users`.`created_at` FROM `crunch`.`users` WHERE (`crunch`.`users`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`freelancers`.`id`, `crunch`.`freelancers`.`role`, `crunch`.`freelancers`.`badge`, `crunch`.`freelancers`.`rating`, `crunch`.`freelancers`.`completed_jobs`, `crunch`.`freelancers`.`hourly_rate`, `crunch`.`freelancers`.`online`, `crunch`.`freelancers`.`user_id` FROM `crunch`.`freelancers` WHERE `crunch`.`freelancers`.`user_id` IN (?)
+[0mGET /api/auth/me [36m304[0m 2.917 ms - -[0m
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name`, `crunch`.`users`.`email`, `crunch`.`users`.`role`, `crunch`.`users`.`avatar_url`, `crunch`.`users`.`created_at` FROM `crunch`.`users` WHERE (`crunch`.`users`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`freelancers`.`id`, `crunch`.`freelancers`.`role`, `crunch`.`freelancers`.`badge`, `crunch`.`freelancers`.`rating`, `crunch`.`freelancers`.`completed_jobs`, `crunch`.`freelancers`.`hourly_rate`, `crunch`.`freelancers`.`online`, `crunch`.`freelancers`.`user_id` FROM `crunch`.`freelancers` WHERE `crunch`.`freelancers`.`user_id` IN (?)
+[0mGET /api/auth/me [36m304[0m 1.861 ms - -[0m
+[INFO] 14:48:42 Restarting: C:\Users\GACHON\Desktop\crunch\crunch-back\src\socket.ts has been modified
+🚀 서버 실행 중 → http://localhost:4000
+   환경: development
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT 1
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT 1
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT 1
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name`, `crunch`.`users`.`email`, `crunch`.`users`.`role`, `crunch`.`users`.`avatar_url`, `crunch`.`users`.`created_at` FROM `crunch`.`users` WHERE (`crunch`.`users`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`freelancers`.`id`, `crunch`.`freelancers`.`role`, `crunch`.`freelancers`.`badge`, `crunch`.`freelancers`.`rating`, `crunch`.`freelancers`.`completed_jobs`, `crunch`.`freelancers`.`hourly_rate`, `crunch`.`freelancers`.`online`, `crunch`.`freelancers`.`user_id` FROM `crunch`.`freelancers` WHERE `crunch`.`freelancers`.`user_id` IN (?)
+[0mGET /api/auth/me [36m304[0m 9.058 ms - -[0m
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name`, `crunch`.`users`.`email`, `crunch`.`users`.`role`, `crunch`.`users`.`avatar_url`, `crunch`.`users`.`created_at` FROM `crunch`.`users` WHERE (`crunch`.`users`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`freelancers`.`id`, `crunch`.`freelancers`.`role`, `crunch`.`freelancers`.`badge`, `crunch`.`freelancers`.`rating`, `crunch`.`freelancers`.`completed_jobs`, `crunch`.`freelancers`.`hourly_rate`, `crunch`.`freelancers`.`online`, `crunch`.`freelancers`.`user_id` FROM `crunch`.`freelancers` WHERE `crunch`.`freelancers`.`user_id` IN (?)
+[0mGET /api/auth/me [36m304[0m 6.121 ms - -[0m
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name`, `crunch`.`users`.`email`, `crunch`.`users`.`role`, `crunch`.`users`.`avatar_url`, `crunch`.`users`.`created_at` FROM `crunch`.`users` WHERE (`crunch`.`users`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`freelancers`.`id`, `crunch`.`freelancers`.`role`, `crunch`.`freelancers`.`badge`, `crunch`.`freelancers`.`rating`, `crunch`.`freelancers`.`completed_jobs`, `crunch`.`freelancers`.`hourly_rate`, `crunch`.`freelancers`.`online`, `crunch`.`freelancers`.`user_id` FROM `crunch`.`freelancers` WHERE `crunch`.`freelancers`.`user_id` IN (?)
+[0mGET /api/auth/me [36m304[0m 3.585 ms - -[0m
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name`, `crunch`.`users`.`email`, `crunch`.`users`.`role`, `crunch`.`users`.`avatar_url`, `crunch`.`users`.`created_at` FROM `crunch`.`users` WHERE (`crunch`.`users`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`freelancers`.`id`, `crunch`.`freelancers`.`role`, `crunch`.`freelancers`.`badge`, `crunch`.`freelancers`.`rating`, `crunch`.`freelancers`.`completed_jobs`, `crunch`.`freelancers`.`hourly_rate`, `crunch`.`freelancers`.`online`, `crunch`.`freelancers`.`user_id` FROM `crunch`.`freelancers` WHERE `crunch`.`freelancers`.`user_id` IN (?)
+[0mGET /api/auth/me [36m304[0m 2.353 ms - -[0m
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`user_id` = ? ORDER BY `crunch`.`channel_members`.`joined_at` DESC
+prisma:query SELECT `crunch`.`channels`.`id`, `crunch`.`channels`.`name`, `crunch`.`channels`.`project_id`, `crunch`.`channels`.`created_at` FROM `crunch`.`channels` WHERE `crunch`.`channels`.`id` IN (?)
+prisma:query SELECT `crunch`.`projects`.`id`, `crunch`.`projects`.`title`, `crunch`.`projects`.`author_id` FROM `crunch`.`projects` WHERE `crunch`.`projects`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`channel_id` IN (?)
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?,?)
+prisma:query SELECT `crunch`.`channel_messages`.`id`, `crunch`.`channel_messages`.`channel_id`, `crunch`.`channel_messages`.`sender_id`, `crunch`.`channel_messages`.`content`, `crunch`.`channel_messages`.`file_url`, `crunch`.`channel_messages`.`file_name`, `crunch`.`channel_messages`.`file_type`, `crunch`.`channel_messages`.`file_size`, `crunch`.`channel_messages`.`message_type`, `crunch`.`channel_messages`.`created_at` FROM `crunch`.`channel_messages` WHERE `crunch`.`channel_messages`.`channel_id` IN (?) ORDER BY `crunch`.`channel_messages`.`created_at` DESC LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+[0mGET /api/channels [36m304[0m 5.225 ms - -[0m
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`user_id` = ? ORDER BY `crunch`.`channel_members`.`joined_at` DESC
+prisma:query SELECT `crunch`.`channels`.`id`, `crunch`.`channels`.`name`, `crunch`.`channels`.`project_id`, `crunch`.`channels`.`created_at` FROM `crunch`.`channels` WHERE `crunch`.`channels`.`id` IN (?)
+prisma:query SELECT `crunch`.`projects`.`id`, `crunch`.`projects`.`title`, `crunch`.`projects`.`author_id` FROM `crunch`.`projects` WHERE `crunch`.`projects`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`channel_id` IN (?)
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?,?)
+prisma:query SELECT `crunch`.`channel_messages`.`id`, `crunch`.`channel_messages`.`channel_id`, `crunch`.`channel_messages`.`sender_id`, `crunch`.`channel_messages`.`content`, `crunch`.`channel_messages`.`file_url`, `crunch`.`channel_messages`.`file_name`, `crunch`.`channel_messages`.`file_type`, `crunch`.`channel_messages`.`file_size`, `crunch`.`channel_messages`.`message_type`, `crunch`.`channel_messages`.`created_at` FROM `crunch`.`channel_messages` WHERE `crunch`.`channel_messages`.`channel_id` IN (?) ORDER BY `crunch`.`channel_messages`.`created_at` DESC LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+[0mGET /api/channels [36m304[0m 3.864 ms - -[0m
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`todo_lists`.`id`, `crunch`.`todo_lists`.`channel_id`, `crunch`.`todo_lists`.`title`, `crunch`.`todo_lists`.`created_by_id`, `crunch`.`todo_lists`.`created_at` FROM `crunch`.`todo_lists` WHERE `crunch`.`todo_lists`.`channel_id` = ? ORDER BY `crunch`.`todo_lists`.`created_at` ASC
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`todo_items`.`id`, `crunch`.`todo_items`.`todo_list_id`, `crunch`.`todo_items`.`text`, `crunch`.`todo_items`.`completed_at`, `crunch`.`todo_items`.`completed_by_id`, `crunch`.`todo_items`.`created_at` FROM `crunch`.`todo_items` WHERE `crunch`.`todo_items`.`todo_list_id` IN (?) ORDER BY `crunch`.`todo_items`.`created_at` ASC
+[0mGET /api/channels/9f1c6bcc-3eb6-4964-8e1e-883e8883da34/todos [36m304[0m 5.254 ms - -[0m
+prisma:query SELECT `crunch`.`channel_messages`.`id`, `crunch`.`channel_messages`.`channel_id`, `crunch`.`channel_messages`.`sender_id`, `crunch`.`channel_messages`.`content`, `crunch`.`channel_messages`.`file_url`, `crunch`.`channel_messages`.`file_name`, `crunch`.`channel_messages`.`file_type`, `crunch`.`channel_messages`.`file_size`, `crunch`.`channel_messages`.`message_type`, `crunch`.`channel_messages`.`created_at` FROM `crunch`.`channel_messages` WHERE `crunch`.`channel_messages`.`channel_id` = ? ORDER BY `crunch`.`channel_messages`.`created_at` DESC LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name`, `crunch`.`users`.`avatar_url` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?,?)
+prisma:query SELECT `crunch`.`meeting_proposals`.`id`, `crunch`.`meeting_proposals`.`message_id`, `crunch`.`meeting_proposals`.`channel_id`, `crunch`.`meeting_proposals`.`proposer_id`, `crunch`.`meeting_proposals`.`title`, `crunch`.`meeting_proposals`.`scheduled_at`, `crunch`.`meeting_proposals`.`created_at` FROM `crunch`.`meeting_proposals` WHERE `crunch`.`meeting_proposals`.`message_id` IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+prisma:query SELECT `crunch`.`meeting_responses`.`meeting_id`, `crunch`.`meeting_responses`.`user_id`, `crunch`.`meeting_responses`.`response`, `crunch`.`meeting_responses`.`updated_at` FROM `crunch`.`meeting_responses` WHERE `crunch`.`meeting_responses`.`meeting_id` IN (?,?) ORDER BY `crunch`.`meeting_responses`.`updated_at` ASC
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?)
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?)
+[0mGET /api/channels/9f1c6bcc-3eb6-4964-8e1e-883e8883da34/messages [36m304[0m 9.186 ms - -[0m
+[0mGET /uploads/f912d920-039d-4684-834a-8503e792cbdc.jfif [36m304[0m 1.528 ms - -[0m
+[0mGET /uploads/543ef5c0-0f8a-421a-a88c-5cd864333182.mp4 [36m304[0m 0.623 ms - -[0m
+[0mGET /uploads/543ef5c0-0f8a-421a-a88c-5cd864333182.mp4 [36m304[0m 0.302 ms - -[0m
+[0mGET /uploads/543ef5c0-0f8a-421a-a88c-5cd864333182.mp4 [36m304[0m 0.339 ms - -[0m
+[0mGET /uploads/543ef5c0-0f8a-421a-a88c-5cd864333182.mp4 [36m304[0m 0.324 ms - -[0m
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`user_id` = ? ORDER BY `crunch`.`channel_members`.`joined_at` DESC
+prisma:query SELECT `crunch`.`channels`.`id`, `crunch`.`channels`.`name`, `crunch`.`channels`.`project_id`, `crunch`.`channels`.`created_at` FROM `crunch`.`channels` WHERE `crunch`.`channels`.`id` IN (?)
+prisma:query SELECT `crunch`.`projects`.`id`, `crunch`.`projects`.`title`, `crunch`.`projects`.`author_id` FROM `crunch`.`projects` WHERE `crunch`.`projects`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`channel_id` IN (?)
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?,?)
+prisma:query SELECT `crunch`.`channel_messages`.`id`, `crunch`.`channel_messages`.`channel_id`, `crunch`.`channel_messages`.`sender_id`, `crunch`.`channel_messages`.`content`, `crunch`.`channel_messages`.`file_url`, `crunch`.`channel_messages`.`file_name`, `crunch`.`channel_messages`.`file_type`, `crunch`.`channel_messages`.`file_size`, `crunch`.`channel_messages`.`message_type`, `crunch`.`channel_messages`.`created_at` FROM `crunch`.`channel_messages` WHERE `crunch`.`channel_messages`.`channel_id` IN (?) ORDER BY `crunch`.`channel_messages`.`created_at` DESC LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+[0mGET /api/channels [32m200[0m 4.519 ms - 1382[0m
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`user_id` = ? ORDER BY `crunch`.`channel_members`.`joined_at` DESC
+prisma:query SELECT `crunch`.`channels`.`id`, `crunch`.`channels`.`name`, `crunch`.`channels`.`project_id`, `crunch`.`channels`.`created_at` FROM `crunch`.`channels` WHERE `crunch`.`channels`.`id` IN (?)
+prisma:query SELECT `crunch`.`projects`.`id`, `crunch`.`projects`.`title`, `crunch`.`projects`.`author_id` FROM `crunch`.`projects` WHERE `crunch`.`projects`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`channel_id` IN (?)
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?,?)
+prisma:query SELECT `crunch`.`channel_messages`.`id`, `crunch`.`channel_messages`.`channel_id`, `crunch`.`channel_messages`.`sender_id`, `crunch`.`channel_messages`.`content`, `crunch`.`channel_messages`.`file_url`, `crunch`.`channel_messages`.`file_name`, `crunch`.`channel_messages`.`file_type`, `crunch`.`channel_messages`.`file_size`, `crunch`.`channel_messages`.`message_type`, `crunch`.`channel_messages`.`created_at` FROM `crunch`.`channel_messages` WHERE `crunch`.`channel_messages`.`channel_id` IN (?) ORDER BY `crunch`.`channel_messages`.`created_at` DESC LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+[0mGET /api/channels [36m304[0m 3.945 ms - -[0m
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`todo_lists`.`id`, `crunch`.`todo_lists`.`channel_id`, `crunch`.`todo_lists`.`title`, `crunch`.`todo_lists`.`created_by_id`, `crunch`.`todo_lists`.`created_at` FROM `crunch`.`todo_lists` WHERE `crunch`.`todo_lists`.`channel_id` = ? ORDER BY `crunch`.`todo_lists`.`created_at` ASC
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_messages`.`id`, `crunch`.`channel_messages`.`channel_id`, `crunch`.`channel_messages`.`sender_id`, `crunch`.`channel_messages`.`content`, `crunch`.`channel_messages`.`file_url`, `crunch`.`channel_messages`.`file_name`, `crunch`.`channel_messages`.`file_type`, `crunch`.`channel_messages`.`file_size`, `crunch`.`channel_messages`.`message_type`, `crunch`.`channel_messages`.`created_at` FROM `crunch`.`channel_messages` WHERE `crunch`.`channel_messages`.`channel_id` = ? ORDER BY `crunch`.`channel_messages`.`created_at` DESC LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`todo_items`.`id`, `crunch`.`todo_items`.`todo_list_id`, `crunch`.`todo_items`.`text`, `crunch`.`todo_items`.`completed_at`, `crunch`.`todo_items`.`completed_by_id`, `crunch`.`todo_items`.`created_at` FROM `crunch`.`todo_items` WHERE `crunch`.`todo_items`.`todo_list_id` IN (?) ORDER BY `crunch`.`todo_items`.`created_at` ASC
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name`, `crunch`.`users`.`avatar_url` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?,?)
+[0mGET /api/channels/9f1c6bcc-3eb6-4964-8e1e-883e8883da34/todos [32m200[0m 5.053 ms - 782[0m
+prisma:query SELECT `crunch`.`meeting_proposals`.`id`, `crunch`.`meeting_proposals`.`message_id`, `crunch`.`meeting_proposals`.`channel_id`, `crunch`.`meeting_proposals`.`proposer_id`, `crunch`.`meeting_proposals`.`title`, `crunch`.`meeting_proposals`.`scheduled_at`, `crunch`.`meeting_proposals`.`created_at` FROM `crunch`.`meeting_proposals` WHERE `crunch`.`meeting_proposals`.`message_id` IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+prisma:query SELECT `crunch`.`meeting_responses`.`meeting_id`, `crunch`.`meeting_responses`.`user_id`, `crunch`.`meeting_responses`.`response`, `crunch`.`meeting_responses`.`updated_at` FROM `crunch`.`meeting_responses` WHERE `crunch`.`meeting_responses`.`meeting_id` IN (?,?) ORDER BY `crunch`.`meeting_responses`.`updated_at` ASC
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?)
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?)
+[0mGET /api/channels/9f1c6bcc-3eb6-4964-8e1e-883e8883da34/messages [32m200[0m 7.135 ms - 17978[0m
+[0mGET /uploads/f912d920-039d-4684-834a-8503e792cbdc.jfif [36m304[0m 0.401 ms - -[0m
+[0mGET /uploads/543ef5c0-0f8a-421a-a88c-5cd864333182.mp4 [36m304[0m 0.447 ms - -[0m
+[0mGET /uploads/543ef5c0-0f8a-421a-a88c-5cd864333182.mp4 [36m304[0m 0.327 ms - -[0m
+[0mGET /uploads/543ef5c0-0f8a-421a-a88c-5cd864333182.mp4 [36m304[0m 0.538 ms - -[0m
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT 1
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+[INFO] 14:59:28 Restarting: C:\Users\GACHON\Desktop\crunch\crunch-back\src\socket.ts has been modified
+🚀 서버 실행 중 → http://localhost:4000
+   환경: development
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+[INFO] 15:28:33 Restarting: C:\Users\GACHON\Desktop\crunch\crunch-back\src\socket.ts has been modified
+🚀 서버 실행 중 → http://localhost:4000
+   환경: development
+[INFO] 15:35:06 Restarting: C:\Users\GACHON\Desktop\crunch\crunch-back\src\socket.ts has been modified
+🚀 서버 실행 중 → http://localhost:4000
+   환경: development
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT 1
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT 1
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT 1
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT 1
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+[INFO] 15:39:52 Restarting: C:\Users\GACHON\Desktop\crunch\crunch-back\src\socket.ts has been modified
+🚀 서버 실행 중 → http://localhost:4000
+   환경: development
+[INFO] 15:42:25 Restarting: C:\Users\GACHON\Desktop\crunch\crunch-back\src\socket.ts has been modified
+🚀 서버 실행 중 → http://localhost:4000
+   환경: development
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name`, `crunch`.`users`.`email`, `crunch`.`users`.`role`, `crunch`.`users`.`avatar_url`, `crunch`.`users`.`created_at` FROM `crunch`.`users` WHERE (`crunch`.`users`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`freelancers`.`id`, `crunch`.`freelancers`.`role`, `crunch`.`freelancers`.`badge`, `crunch`.`freelancers`.`rating`, `crunch`.`freelancers`.`completed_jobs`, `crunch`.`freelancers`.`hourly_rate`, `crunch`.`freelancers`.`online`, `crunch`.`freelancers`.`user_id` FROM `crunch`.`freelancers` WHERE `crunch`.`freelancers`.`user_id` IN (?)
+[0mGET /api/auth/me [36m304[0m 17.775 ms - -[0m
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name`, `crunch`.`users`.`email`, `crunch`.`users`.`role`, `crunch`.`users`.`avatar_url`, `crunch`.`users`.`created_at` FROM `crunch`.`users` WHERE (`crunch`.`users`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`freelancers`.`id`, `crunch`.`freelancers`.`role`, `crunch`.`freelancers`.`badge`, `crunch`.`freelancers`.`rating`, `crunch`.`freelancers`.`completed_jobs`, `crunch`.`freelancers`.`hourly_rate`, `crunch`.`freelancers`.`online`, `crunch`.`freelancers`.`user_id` FROM `crunch`.`freelancers` WHERE `crunch`.`freelancers`.`user_id` IN (?)
+[0mGET /api/auth/me [36m304[0m 3.537 ms - -[0m
+[INFO] 15:51:19 Restarting: C:\Users\GACHON\Desktop\crunch\crunch-back\src\controllers\channel.controller.ts has been modified
+🚀 서버 실행 중 → http://localhost:4000
+   환경: development
+[INFO] 15:51:27 Restarting: C:\Users\GACHON\Desktop\crunch\crunch-back\src\routes\channel.route.ts has been modified
+🚀 서버 실행 중 → http://localhost:4000
+   환경: development
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`user_id` = ? ORDER BY `crunch`.`channel_members`.`joined_at` DESC
+prisma:query SELECT `crunch`.`channels`.`id`, `crunch`.`channels`.`name`, `crunch`.`channels`.`project_id`, `crunch`.`channels`.`created_at` FROM `crunch`.`channels` WHERE `crunch`.`channels`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`user_id` = ? ORDER BY `crunch`.`channel_members`.`joined_at` DESC
+prisma:query SELECT `crunch`.`projects`.`id`, `crunch`.`projects`.`title`, `crunch`.`projects`.`author_id` FROM `crunch`.`projects` WHERE `crunch`.`projects`.`id` IN (?)
+prisma:query SELECT `crunch`.`channels`.`id`, `crunch`.`channels`.`name`, `crunch`.`channels`.`project_id`, `crunch`.`channels`.`created_at` FROM `crunch`.`channels` WHERE `crunch`.`channels`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`channel_id` IN (?)
+prisma:query SELECT `crunch`.`projects`.`id`, `crunch`.`projects`.`title`, `crunch`.`projects`.`author_id` FROM `crunch`.`projects` WHERE `crunch`.`projects`.`id` IN (?)
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?,?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`channel_id` IN (?)
+prisma:query SELECT `crunch`.`channel_messages`.`id`, `crunch`.`channel_messages`.`channel_id`, `crunch`.`channel_messages`.`sender_id`, `crunch`.`channel_messages`.`content`, `crunch`.`channel_messages`.`file_url`, `crunch`.`channel_messages`.`file_name`, `crunch`.`channel_messages`.`file_type`, `crunch`.`channel_messages`.`file_size`, `crunch`.`channel_messages`.`message_type`, `crunch`.`channel_messages`.`created_at` FROM `crunch`.`channel_messages` WHERE `crunch`.`channel_messages`.`channel_id` IN (?) ORDER BY `crunch`.`channel_messages`.`created_at` DESC LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?,?)
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_messages`.`id`, `crunch`.`channel_messages`.`channel_id`, `crunch`.`channel_messages`.`sender_id`, `crunch`.`channel_messages`.`content`, `crunch`.`channel_messages`.`file_url`, `crunch`.`channel_messages`.`file_name`, `crunch`.`channel_messages`.`file_type`, `crunch`.`channel_messages`.`file_size`, `crunch`.`channel_messages`.`message_type`, `crunch`.`channel_messages`.`created_at` FROM `crunch`.`channel_messages` WHERE `crunch`.`channel_messages`.`channel_id` IN (?) ORDER BY `crunch`.`channel_messages`.`created_at` DESC LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+[0mGET /api/channels [36m304[0m 30.730 ms - -[0m
+[0mGET /api/channels [36m304[0m 26.316 ms - -[0m
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`todo_lists`.`id`, `crunch`.`todo_lists`.`channel_id`, `crunch`.`todo_lists`.`title`, `crunch`.`todo_lists`.`created_by_id`, `crunch`.`todo_lists`.`created_at` FROM `crunch`.`todo_lists` WHERE `crunch`.`todo_lists`.`channel_id` = ? ORDER BY `crunch`.`todo_lists`.`created_at` ASC
+prisma:query SELECT `crunch`.`channel_messages`.`id`, `crunch`.`channel_messages`.`channel_id`, `crunch`.`channel_messages`.`sender_id`, `crunch`.`channel_messages`.`content`, `crunch`.`channel_messages`.`file_url`, `crunch`.`channel_messages`.`file_name`, `crunch`.`channel_messages`.`file_type`, `crunch`.`channel_messages`.`file_size`, `crunch`.`channel_messages`.`message_type`, `crunch`.`channel_messages`.`created_at` FROM `crunch`.`channel_messages` WHERE `crunch`.`channel_messages`.`channel_id` = ? ORDER BY `crunch`.`channel_messages`.`created_at` DESC LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name`, `crunch`.`users`.`avatar_url` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?,?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`meeting_proposals`.`id`, `crunch`.`meeting_proposals`.`message_id`, `crunch`.`meeting_proposals`.`channel_id`, `crunch`.`meeting_proposals`.`proposer_id`, `crunch`.`meeting_proposals`.`title`, `crunch`.`meeting_proposals`.`scheduled_at`, `crunch`.`meeting_proposals`.`created_at` FROM `crunch`.`meeting_proposals` WHERE `crunch`.`meeting_proposals`.`message_id` IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+[0mGET /api/channels/9f1c6bcc-3eb6-4964-8e1e-883e8883da34/todos [36m304[0m 6.064 ms - -[0m
+prisma:query SELECT `crunch`.`meeting_responses`.`meeting_id`, `crunch`.`meeting_responses`.`user_id`, `crunch`.`meeting_responses`.`response`, `crunch`.`meeting_responses`.`updated_at` FROM `crunch`.`meeting_responses` WHERE `crunch`.`meeting_responses`.`meeting_id` IN (?,?) ORDER BY `crunch`.`meeting_responses`.`updated_at` ASC
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?)
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?)
+[0mGET /api/channels/9f1c6bcc-3eb6-4964-8e1e-883e8883da34/messages [36m304[0m 11.581 ms - -[0m
+prisma:query SELECT `crunch`.`todo_lists`.`id`, `crunch`.`todo_lists`.`channel_id`, `crunch`.`todo_lists`.`title`, `crunch`.`todo_lists`.`created_by_id`, `crunch`.`todo_lists`.`created_at` FROM `crunch`.`todo_lists` WHERE `crunch`.`todo_lists`.`channel_id` = ? ORDER BY `crunch`.`todo_lists`.`created_at` ASC
+prisma:query SELECT `crunch`.`channel_messages`.`id`, `crunch`.`channel_messages`.`channel_id`, `crunch`.`channel_messages`.`sender_id`, `crunch`.`channel_messages`.`content`, `crunch`.`channel_messages`.`file_url`, `crunch`.`channel_messages`.`file_name`, `crunch`.`channel_messages`.`file_type`, `crunch`.`channel_messages`.`file_size`, `crunch`.`channel_messages`.`message_type`, `crunch`.`channel_messages`.`created_at` FROM `crunch`.`channel_messages` WHERE `crunch`.`channel_messages`.`channel_id` = ? ORDER BY `crunch`.`channel_messages`.`created_at` DESC LIMIT ? OFFSET ?
+[0mGET /api/channels/9f1c6bcc-3eb6-4964-8e1e-883e8883da34/todos [36m304[0m 6.376 ms - -[0m
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name`, `crunch`.`users`.`avatar_url` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?,?)
+prisma:query SELECT `crunch`.`meeting_proposals`.`id`, `crunch`.`meeting_proposals`.`message_id`, `crunch`.`meeting_proposals`.`channel_id`, `crunch`.`meeting_proposals`.`proposer_id`, `crunch`.`meeting_proposals`.`title`, `crunch`.`meeting_proposals`.`scheduled_at`, `crunch`.`meeting_proposals`.`created_at` FROM `crunch`.`meeting_proposals` WHERE `crunch`.`meeting_proposals`.`message_id` IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+prisma:query SELECT `crunch`.`meeting_responses`.`meeting_id`, `crunch`.`meeting_responses`.`user_id`, `crunch`.`meeting_responses`.`response`, `crunch`.`meeting_responses`.`updated_at` FROM `crunch`.`meeting_responses` WHERE `crunch`.`meeting_responses`.`meeting_id` IN (?,?) ORDER BY `crunch`.`meeting_responses`.`updated_at` ASC
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?)
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?)
+[0mGET /api/channels/9f1c6bcc-3eb6-4964-8e1e-883e8883da34/messages [36m304[0m 11.748 ms - -[0m
+[0mGET /uploads/543ef5c0-0f8a-421a-a88c-5cd864333182.mp4 [36m304[0m 2.423 ms - -[0m
+[0mGET /uploads/64331949-c8f0-4b43-b571-e349c4d79298.webm [36m304[0m 1.493 ms - -[0m
+[0mGET /uploads/569af81b-0b6f-42dd-8e12-528a31ecf3cb.webm [36m304[0m 2.114 ms - -[0m
+[0mGET /uploads/36e334f0-384a-43ae-b75d-ef8d2347a3d0.pdf [36m304[0m 0.574 ms - -[0m
+[0mGET /uploads/543ef5c0-0f8a-421a-a88c-5cd864333182.mp4 [36m304[0m 0.516 ms - -[0m
+[0mGET /uploads/543ef5c0-0f8a-421a-a88c-5cd864333182.mp4 [36m304[0m 0.515 ms - -[0m
+[0mGET /uploads/64331949-c8f0-4b43-b571-e349c4d79298.webm [36m304[0m 0.909 ms - -[0m
+[0mGET /uploads/569af81b-0b6f-42dd-8e12-528a31ecf3cb.webm [36m304[0m 0.508 ms - -[0m
+[0mGET /uploads/543ef5c0-0f8a-421a-a88c-5cd864333182.mp4 [36m304[0m 0.938 ms - -[0m
+[0mGET /uploads/543ef5c0-0f8a-421a-a88c-5cd864333182.mp4 [36m304[0m 1.145 ms - -[0m
+[0mGET /uploads/36e334f0-384a-43ae-b75d-ef8d2347a3d0.pdf [36m304[0m 1.334 ms - -[0m
+[0mGET /uploads/543ef5c0-0f8a-421a-a88c-5cd864333182.mp4 [36m304[0m 0.723 ms - -[0m
+[0mGET /uploads/36e334f0-384a-43ae-b75d-ef8d2347a3d0.pdf [36m304[0m 0.563 ms - -[0m
+[0mGET /uploads/36e334f0-384a-43ae-b75d-ef8d2347a3d0.pdf [36m304[0m 0.560 ms - -[0m
+[INFO] 16:01:47 Restarting: C:\Users\GACHON\Desktop\crunch\crunch-back\src\controllers\channel.controller.ts has been modified
+🚀 서버 실행 중 → http://localhost:4000
+   환경: development
+[INFO] 16:01:56 Restarting: C:\Users\GACHON\Desktop\crunch\crunch-back\src\socket.ts has been modified
+[ERROR] 16:01:57 Error: listen EADDRINUSE: address already in use :::4000
+[INFO] 16:11:27 Restarting: C:\Users\GACHON\Desktop\crunch\crunch-back\src\controllers\channel.controller.ts has been modified
+🚀 서버 실행 중 → http://localhost:4000
+   환경: development
+[INFO] 16:11:34 Restarting: C:\Users\GACHON\Desktop\crunch\crunch-back\src\controllers\channel.controller.ts has been modified
+🚀 서버 실행 중 → http://localhost:4000
+   환경: development
+[INFO] 16:11:41 Restarting: C:\Users\GACHON\Desktop\crunch\crunch-back\src\socket.ts has been modified
+[ERROR] 16:11:42 Error: listen EADDRINUSE: address already in use :::4000
+[INFO] 16:16:20 Restarting: C:\Users\GACHON\Desktop\crunch\crunch-back\src\controllers\channel.controller.ts has been modified
+🚀 서버 실행 중 → http://localhost:4000
+   환경: development
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE (`crunch`.`users`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE (`crunch`.`users`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`user_id` = ? ORDER BY `crunch`.`channel_members`.`joined_at` DESC
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`user_id` = ? ORDER BY `crunch`.`channel_members`.`joined_at` DESC
+prisma:query SELECT `crunch`.`channels`.`id`, `crunch`.`channels`.`name`, `crunch`.`channels`.`project_id`, `crunch`.`channels`.`created_at` FROM `crunch`.`channels` WHERE `crunch`.`channels`.`id` IN (?)
+prisma:query SELECT `crunch`.`channels`.`id`, `crunch`.`channels`.`name`, `crunch`.`channels`.`project_id`, `crunch`.`channels`.`created_at` FROM `crunch`.`channels` WHERE `crunch`.`channels`.`id` IN (?)
+prisma:query SELECT `crunch`.`projects`.`id`, `crunch`.`projects`.`title`, `crunch`.`projects`.`author_id` FROM `crunch`.`projects` WHERE `crunch`.`projects`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`channel_id` IN (?)
+prisma:query SELECT `crunch`.`projects`.`id`, `crunch`.`projects`.`title`, `crunch`.`projects`.`author_id` FROM `crunch`.`projects` WHERE `crunch`.`projects`.`id` IN (?)
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`channel_id` IN (?)
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?)
+prisma:query SELECT `crunch`.`channel_messages`.`id`, `crunch`.`channel_messages`.`channel_id`, `crunch`.`channel_messages`.`sender_id`, `crunch`.`channel_messages`.`content`, `crunch`.`channel_messages`.`file_url`, `crunch`.`channel_messages`.`file_name`, `crunch`.`channel_messages`.`file_type`, `crunch`.`channel_messages`.`file_size`, `crunch`.`channel_messages`.`message_type`, `crunch`.`channel_messages`.`is_pinned`, `crunch`.`channel_messages`.`pinned_at`, `crunch`.`channel_messages`.`pinned_by_id`, `crunch`.`channel_messages`.`reply_to_id`, `crunch`.`channel_messages`.`created_at` FROM `crunch`.`channel_messages` WHERE `crunch`.`channel_messages`.`channel_id` IN (?) ORDER BY `crunch`.`channel_messages`.`created_at` DESC LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_messages`.`id`, `crunch`.`channel_messages`.`channel_id`, `crunch`.`channel_messages`.`sender_id`, `crunch`.`channel_messages`.`content`, `crunch`.`channel_messages`.`file_url`, `crunch`.`channel_messages`.`file_name`, `crunch`.`channel_messages`.`file_type`, `crunch`.`channel_messages`.`file_size`, `crunch`.`channel_messages`.`message_type`, `crunch`.`channel_messages`.`is_pinned`, `crunch`.`channel_messages`.`pinned_at`, `crunch`.`channel_messages`.`pinned_by_id`, `crunch`.`channel_messages`.`reply_to_id`, `crunch`.`channel_messages`.`created_at` FROM `crunch`.`channel_messages` WHERE `crunch`.`channel_messages`.`channel_id` IN (?) ORDER BY `crunch`.`channel_messages`.`created_at` DESC LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT COUNT(*) FROM (SELECT `crunch`.`channel_messages`.`id` FROM `crunch`.`channel_messages` WHERE (`crunch`.`channel_messages`.`channel_id` = ? AND `crunch`.`channel_messages`.`sender_id` <> ? AND `crunch`.`channel_messages`.`created_at` > ?)) AS `sub`
+prisma:query SELECT COUNT(*) FROM (SELECT `crunch`.`channel_messages`.`id` FROM `crunch`.`channel_messages` WHERE (`crunch`.`channel_messages`.`channel_id` = ? AND `crunch`.`channel_messages`.`sender_id` <> ? AND `crunch`.`channel_messages`.`created_at` > ? AND `crunch`.`channel_messages`.`content` LIKE ?)) AS `sub`
+[0mGET /api/channels [32m200[0m 24.950 ms - 1331[0m
+prisma:query SELECT COUNT(*) FROM (SELECT `crunch`.`channel_messages`.`id` FROM `crunch`.`channel_messages` WHERE (`crunch`.`channel_messages`.`channel_id` = ? AND `crunch`.`channel_messages`.`sender_id` <> ? AND `crunch`.`channel_messages`.`created_at` > ? AND `crunch`.`channel_messages`.`content` LIKE ?)) AS `sub`
+prisma:query SELECT COUNT(*) FROM (SELECT `crunch`.`channel_messages`.`id` FROM `crunch`.`channel_messages` WHERE (`crunch`.`channel_messages`.`channel_id` = ? AND `crunch`.`channel_messages`.`sender_id` <> ? AND `crunch`.`channel_messages`.`created_at` > ?)) AS `sub`
+[0mGET /api/channels [32m200[0m 22.774 ms - 1331[0m
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`channel_id` = ?
+prisma:query SELECT `crunch`.`todo_lists`.`id`, `crunch`.`todo_lists`.`channel_id`, `crunch`.`todo_lists`.`title`, `crunch`.`todo_lists`.`created_by_id`, `crunch`.`todo_lists`.`created_at` FROM `crunch`.`todo_lists` WHERE `crunch`.`todo_lists`.`channel_id` = ? ORDER BY `crunch`.`todo_lists`.`created_at` ASC
+prisma:query SELECT `crunch`.`channel_messages`.`id`, `crunch`.`channel_messages`.`channel_id`, `crunch`.`channel_messages`.`sender_id`, `crunch`.`channel_messages`.`content`, `crunch`.`channel_messages`.`file_url`, `crunch`.`channel_messages`.`file_name`, `crunch`.`channel_messages`.`file_type`, `crunch`.`channel_messages`.`file_size`, `crunch`.`channel_messages`.`message_type`, `crunch`.`channel_messages`.`is_pinned`, `crunch`.`channel_messages`.`pinned_at`, `crunch`.`channel_messages`.`pinned_by_id`, `crunch`.`channel_messages`.`reply_to_id`, `crunch`.`channel_messages`.`created_at` FROM `crunch`.`channel_messages` WHERE `crunch`.`channel_messages`.`channel_id` = ? ORDER BY `crunch`.`channel_messages`.`created_at` DESC LIMIT ? OFFSET ?
+[0mGET /api/channels/fd854868-a6b2-463e-a2a7-0656a028cf35/todos [36m304[0m 4.879 ms - -[0m
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name`, `crunch`.`users`.`avatar_url` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?)
+prisma:query SELECT `crunch`.`channel_messages`.`id`, `crunch`.`channel_messages`.`content`, `crunch`.`channel_messages`.`file_name`, `crunch`.`channel_messages`.`message_type`, `crunch`.`channel_messages`.`sender_id` FROM `crunch`.`channel_messages` WHERE `crunch`.`channel_messages`.`id` IN (?,?)
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name`, `crunch`.`users`.`avatar_url` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?)
+prisma:query SELECT `crunch`.`meeting_proposals`.`id`, `crunch`.`meeting_proposals`.`message_id`, `crunch`.`meeting_proposals`.`channel_id`, `crunch`.`meeting_proposals`.`proposer_id`, `crunch`.`meeting_proposals`.`title`, `crunch`.`meeting_proposals`.`scheduled_at`, `crunch`.`meeting_proposals`.`created_at` FROM `crunch`.`meeting_proposals` WHERE `crunch`.`meeting_proposals`.`message_id` IN (?,?,?,?,?,?,?,?,?,?,?)
+[0mGET /api/channels/fd854868-a6b2-463e-a2a7-0656a028cf35/messages [32m200[0m 8.905 ms - 6019[0m
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`channel_id` = ?
+prisma:query SELECT `crunch`.`channel_messages`.`id`, `crunch`.`channel_messages`.`channel_id`, `crunch`.`channel_messages`.`sender_id`, `crunch`.`channel_messages`.`content`, `crunch`.`channel_messages`.`file_url`, `crunch`.`channel_messages`.`file_name`, `crunch`.`channel_messages`.`file_type`, `crunch`.`channel_messages`.`file_size`, `crunch`.`channel_messages`.`message_type`, `crunch`.`channel_messages`.`is_pinned`, `crunch`.`channel_messages`.`pinned_at`, `crunch`.`channel_messages`.`pinned_by_id`, `crunch`.`channel_messages`.`reply_to_id`, `crunch`.`channel_messages`.`created_at` FROM `crunch`.`channel_messages` WHERE `crunch`.`channel_messages`.`channel_id` = ? ORDER BY `crunch`.`channel_messages`.`created_at` DESC LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name`, `crunch`.`users`.`avatar_url` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?)
+prisma:query SELECT `crunch`.`todo_lists`.`id`, `crunch`.`todo_lists`.`channel_id`, `crunch`.`todo_lists`.`title`, `crunch`.`todo_lists`.`created_by_id`, `crunch`.`todo_lists`.`created_at` FROM `crunch`.`todo_lists` WHERE `crunch`.`todo_lists`.`channel_id` = ? ORDER BY `crunch`.`todo_lists`.`created_at` ASC
+[0mGET /api/channels/fd854868-a6b2-463e-a2a7-0656a028cf35/todos [36m304[0m 2.997 ms - -[0m
+prisma:query SELECT `crunch`.`channel_messages`.`id`, `crunch`.`channel_messages`.`content`, `crunch`.`channel_messages`.`file_name`, `crunch`.`channel_messages`.`message_type`, `crunch`.`channel_messages`.`sender_id` FROM `crunch`.`channel_messages` WHERE `crunch`.`channel_messages`.`id` IN (?,?)
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name`, `crunch`.`users`.`avatar_url` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?)
+prisma:query SELECT `crunch`.`meeting_proposals`.`id`, `crunch`.`meeting_proposals`.`message_id`, `crunch`.`meeting_proposals`.`channel_id`, `crunch`.`meeting_proposals`.`proposer_id`, `crunch`.`meeting_proposals`.`title`, `crunch`.`meeting_proposals`.`scheduled_at`, `crunch`.`meeting_proposals`.`created_at` FROM `crunch`.`meeting_proposals` WHERE `crunch`.`meeting_proposals`.`message_id` IN (?,?,?,?,?,?,?,?,?,?,?)
+[0mGET /api/channels/fd854868-a6b2-463e-a2a7-0656a028cf35/messages [32m200[0m 5.019 ms - 6019[0m
+prisma:query BEGIN
+prisma:query UPDATE `crunch`.`channel_members` SET `last_read_at` = ? WHERE (`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?)
+prisma:query BEGIN
+prisma:query COMMIT
+prisma:query UPDATE `crunch`.`channel_members` SET `last_read_at` = ? WHERE (`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?)
+prisma:query COMMIT
+prisma:query SELECT 1
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE (`crunch`.`users`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`user_id` = ? ORDER BY `crunch`.`channel_members`.`joined_at` DESC
+prisma:query SELECT `crunch`.`channels`.`id`, `crunch`.`channels`.`name`, `crunch`.`channels`.`project_id`, `crunch`.`channels`.`created_at` FROM `crunch`.`channels` WHERE `crunch`.`channels`.`id` IN (?)
+prisma:query SELECT 1
+prisma:query SELECT `crunch`.`projects`.`id`, `crunch`.`projects`.`title`, `crunch`.`projects`.`author_id` FROM `crunch`.`projects` WHERE `crunch`.`projects`.`id` IN (?)
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE (`crunch`.`users`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`channel_id` IN (?)
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?)
+prisma:query SELECT `crunch`.`channel_messages`.`id`, `crunch`.`channel_messages`.`channel_id`, `crunch`.`channel_messages`.`sender_id`, `crunch`.`channel_messages`.`content`, `crunch`.`channel_messages`.`file_url`, `crunch`.`channel_messages`.`file_name`, `crunch`.`channel_messages`.`file_type`, `crunch`.`channel_messages`.`file_size`, `crunch`.`channel_messages`.`message_type`, `crunch`.`channel_messages`.`is_pinned`, `crunch`.`channel_messages`.`pinned_at`, `crunch`.`channel_messages`.`pinned_by_id`, `crunch`.`channel_messages`.`reply_to_id`, `crunch`.`channel_messages`.`created_at` FROM `crunch`.`channel_messages` WHERE `crunch`.`channel_messages`.`channel_id` IN (?) ORDER BY `crunch`.`channel_messages`.`created_at` DESC LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`user_id` = ? ORDER BY `crunch`.`channel_members`.`joined_at` DESC
+prisma:query SELECT `crunch`.`channels`.`id`, `crunch`.`channels`.`name`, `crunch`.`channels`.`project_id`, `crunch`.`channels`.`created_at` FROM `crunch`.`channels` WHERE `crunch`.`channels`.`id` IN (?)
+prisma:query SELECT 1
+prisma:query SELECT `crunch`.`projects`.`id`, `crunch`.`projects`.`title`, `crunch`.`projects`.`author_id` FROM `crunch`.`projects` WHERE `crunch`.`projects`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`channel_id` IN (?)
+prisma:query SELECT COUNT(*) FROM (SELECT `crunch`.`channel_messages`.`id` FROM `crunch`.`channel_messages` WHERE (`crunch`.`channel_messages`.`channel_id` = ? AND `crunch`.`channel_messages`.`sender_id` <> ? AND `crunch`.`channel_messages`.`created_at` > ?)) AS `sub`
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?)
+prisma:query SELECT COUNT(*) FROM (SELECT `crunch`.`channel_messages`.`id` FROM `crunch`.`channel_messages` WHERE (`crunch`.`channel_messages`.`channel_id` = ? AND `crunch`.`channel_messages`.`sender_id` <> ? AND `crunch`.`channel_messages`.`created_at` > ? AND `crunch`.`channel_messages`.`content` LIKE ?)) AS `sub`
+prisma:query SELECT `crunch`.`channel_messages`.`id`, `crunch`.`channel_messages`.`channel_id`, `crunch`.`channel_messages`.`sender_id`, `crunch`.`channel_messages`.`content`, `crunch`.`channel_messages`.`file_url`, `crunch`.`channel_messages`.`file_name`, `crunch`.`channel_messages`.`file_type`, `crunch`.`channel_messages`.`file_size`, `crunch`.`channel_messages`.`message_type`, `crunch`.`channel_messages`.`is_pinned`, `crunch`.`channel_messages`.`pinned_at`, `crunch`.`channel_messages`.`pinned_by_id`, `crunch`.`channel_messages`.`reply_to_id`, `crunch`.`channel_messages`.`created_at` FROM `crunch`.`channel_messages` WHERE `crunch`.`channel_messages`.`channel_id` IN (?) ORDER BY `crunch`.`channel_messages`.`created_at` DESC LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+[0mGET /api/channels [32m200[0m 9.521 ms - 1331[0m
+prisma:query SELECT COUNT(*) FROM (SELECT `crunch`.`channel_messages`.`id` FROM `crunch`.`channel_messages` WHERE (`crunch`.`channel_messages`.`channel_id` = ? AND `crunch`.`channel_messages`.`sender_id` <> ? AND `crunch`.`channel_messages`.`created_at` > ? AND `crunch`.`channel_messages`.`content` LIKE ?)) AS `sub`
+prisma:query SELECT COUNT(*) FROM (SELECT `crunch`.`channel_messages`.`id` FROM `crunch`.`channel_messages` WHERE (`crunch`.`channel_messages`.`channel_id` = ? AND `crunch`.`channel_messages`.`sender_id` <> ? AND `crunch`.`channel_messages`.`created_at` > ?)) AS `sub`
+[0mGET /api/channels [32m200[0m 7.579 ms - 1331[0m
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`channel_id` = ?
+prisma:query SELECT `crunch`.`channel_messages`.`id`, `crunch`.`channel_messages`.`channel_id`, `crunch`.`channel_messages`.`sender_id`, `crunch`.`channel_messages`.`content`, `crunch`.`channel_messages`.`file_url`, `crunch`.`channel_messages`.`file_name`, `crunch`.`channel_messages`.`file_type`, `crunch`.`channel_messages`.`file_size`, `crunch`.`channel_messages`.`message_type`, `crunch`.`channel_messages`.`is_pinned`, `crunch`.`channel_messages`.`pinned_at`, `crunch`.`channel_messages`.`pinned_by_id`, `crunch`.`channel_messages`.`reply_to_id`, `crunch`.`channel_messages`.`created_at` FROM `crunch`.`channel_messages` WHERE `crunch`.`channel_messages`.`channel_id` = ? ORDER BY `crunch`.`channel_messages`.`created_at` DESC LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`todo_lists`.`id`, `crunch`.`todo_lists`.`channel_id`, `crunch`.`todo_lists`.`title`, `crunch`.`todo_lists`.`created_by_id`, `crunch`.`todo_lists`.`created_at` FROM `crunch`.`todo_lists` WHERE `crunch`.`todo_lists`.`channel_id` = ? ORDER BY `crunch`.`todo_lists`.`created_at` ASC
+[0mGET /api/channels/fd854868-a6b2-463e-a2a7-0656a028cf35/todos [36m304[0m 3.288 ms - -[0m
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name`, `crunch`.`users`.`avatar_url` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?)
+prisma:query SELECT `crunch`.`channel_messages`.`id`, `crunch`.`channel_messages`.`content`, `crunch`.`channel_messages`.`file_name`, `crunch`.`channel_messages`.`message_type`, `crunch`.`channel_messages`.`sender_id` FROM `crunch`.`channel_messages` WHERE `crunch`.`channel_messages`.`id` IN (?,?)
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name`, `crunch`.`users`.`avatar_url` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?)
+prisma:query SELECT `crunch`.`meeting_proposals`.`id`, `crunch`.`meeting_proposals`.`message_id`, `crunch`.`meeting_proposals`.`channel_id`, `crunch`.`meeting_proposals`.`proposer_id`, `crunch`.`meeting_proposals`.`title`, `crunch`.`meeting_proposals`.`scheduled_at`, `crunch`.`meeting_proposals`.`created_at` FROM `crunch`.`meeting_proposals` WHERE `crunch`.`meeting_proposals`.`message_id` IN (?,?,?,?,?,?,?,?,?,?,?)
+[0mGET /api/channels/fd854868-a6b2-463e-a2a7-0656a028cf35/messages [32m200[0m 6.836 ms - 6019[0m
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`channel_id` = ?
+prisma:query SELECT `crunch`.`todo_lists`.`id`, `crunch`.`todo_lists`.`channel_id`, `crunch`.`todo_lists`.`title`, `crunch`.`todo_lists`.`created_by_id`, `crunch`.`todo_lists`.`created_at` FROM `crunch`.`todo_lists` WHERE `crunch`.`todo_lists`.`channel_id` = ? ORDER BY `crunch`.`todo_lists`.`created_at` ASC
+[0mGET /api/channels/fd854868-a6b2-463e-a2a7-0656a028cf35/todos [36m304[0m 3.764 ms - -[0m
+prisma:query SELECT `crunch`.`channel_messages`.`id`, `crunch`.`channel_messages`.`channel_id`, `crunch`.`channel_messages`.`sender_id`, `crunch`.`channel_messages`.`content`, `crunch`.`channel_messages`.`file_url`, `crunch`.`channel_messages`.`file_name`, `crunch`.`channel_messages`.`file_type`, `crunch`.`channel_messages`.`file_size`, `crunch`.`channel_messages`.`message_type`, `crunch`.`channel_messages`.`is_pinned`, `crunch`.`channel_messages`.`pinned_at`, `crunch`.`channel_messages`.`pinned_by_id`, `crunch`.`channel_messages`.`reply_to_id`, `crunch`.`channel_messages`.`created_at` FROM `crunch`.`channel_messages` WHERE `crunch`.`channel_messages`.`channel_id` = ? ORDER BY `crunch`.`channel_messages`.`created_at` DESC LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name`, `crunch`.`users`.`avatar_url` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?)
+prisma:query SELECT `crunch`.`channel_messages`.`id`, `crunch`.`channel_messages`.`content`, `crunch`.`channel_messages`.`file_name`, `crunch`.`channel_messages`.`message_type`, `crunch`.`channel_messages`.`sender_id` FROM `crunch`.`channel_messages` WHERE `crunch`.`channel_messages`.`id` IN (?,?)
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name`, `crunch`.`users`.`avatar_url` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?)
+prisma:query SELECT `crunch`.`meeting_proposals`.`id`, `crunch`.`meeting_proposals`.`message_id`, `crunch`.`meeting_proposals`.`channel_id`, `crunch`.`meeting_proposals`.`proposer_id`, `crunch`.`meeting_proposals`.`title`, `crunch`.`meeting_proposals`.`scheduled_at`, `crunch`.`meeting_proposals`.`created_at` FROM `crunch`.`meeting_proposals` WHERE `crunch`.`meeting_proposals`.`message_id` IN (?,?,?,?,?,?,?,?,?,?,?)
+[0mGET /api/channels/fd854868-a6b2-463e-a2a7-0656a028cf35/messages [32m200[0m 7.056 ms - 6019[0m
+prisma:query BEGIN
+prisma:query UPDATE `crunch`.`channel_members` SET `last_read_at` = ? WHERE (`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?)
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query UPDATE `crunch`.`channel_members` SET `last_read_at` = ? WHERE (`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?)
+prisma:query COMMIT
+prisma:query SELECT 1
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE (`crunch`.`users`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`user_id` = ? ORDER BY `crunch`.`channel_members`.`joined_at` DESC
+prisma:query SELECT `crunch`.`channels`.`id`, `crunch`.`channels`.`name`, `crunch`.`channels`.`project_id`, `crunch`.`channels`.`created_at` FROM `crunch`.`channels` WHERE `crunch`.`channels`.`id` IN (?)
+prisma:query SELECT `crunch`.`projects`.`id`, `crunch`.`projects`.`title`, `crunch`.`projects`.`author_id` FROM `crunch`.`projects` WHERE `crunch`.`projects`.`id` IN (?)
+prisma:query SELECT 1
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`channel_id` IN (?)
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?)
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE (`crunch`.`users`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_messages`.`id`, `crunch`.`channel_messages`.`channel_id`, `crunch`.`channel_messages`.`sender_id`, `crunch`.`channel_messages`.`content`, `crunch`.`channel_messages`.`file_url`, `crunch`.`channel_messages`.`file_name`, `crunch`.`channel_messages`.`file_type`, `crunch`.`channel_messages`.`file_size`, `crunch`.`channel_messages`.`message_type`, `crunch`.`channel_messages`.`is_pinned`, `crunch`.`channel_messages`.`pinned_at`, `crunch`.`channel_messages`.`pinned_by_id`, `crunch`.`channel_messages`.`reply_to_id`, `crunch`.`channel_messages`.`created_at` FROM `crunch`.`channel_messages` WHERE `crunch`.`channel_messages`.`channel_id` IN (?) ORDER BY `crunch`.`channel_messages`.`created_at` DESC LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`user_id` = ? ORDER BY `crunch`.`channel_members`.`joined_at` DESC
+prisma:query SELECT 1
+prisma:query SELECT `crunch`.`channels`.`id`, `crunch`.`channels`.`name`, `crunch`.`channels`.`project_id`, `crunch`.`channels`.`created_at` FROM `crunch`.`channels` WHERE `crunch`.`channels`.`id` IN (?)
+prisma:query SELECT COUNT(*) FROM (SELECT `crunch`.`channel_messages`.`id` FROM `crunch`.`channel_messages` WHERE (`crunch`.`channel_messages`.`channel_id` = ? AND `crunch`.`channel_messages`.`sender_id` <> ? AND `crunch`.`channel_messages`.`created_at` > ?)) AS `sub`
+prisma:query SELECT `crunch`.`projects`.`id`, `crunch`.`projects`.`title`, `crunch`.`projects`.`author_id` FROM `crunch`.`projects` WHERE `crunch`.`projects`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`channel_id` IN (?)
+prisma:query SELECT COUNT(*) FROM (SELECT `crunch`.`channel_messages`.`id` FROM `crunch`.`channel_messages` WHERE (`crunch`.`channel_messages`.`channel_id` = ? AND `crunch`.`channel_messages`.`sender_id` <> ? AND `crunch`.`channel_messages`.`created_at` > ? AND `crunch`.`channel_messages`.`content` LIKE ?)) AS `sub`
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?)
+[0mGET /api/channels [32m200[0m 7.458 ms - 1331[0m
+prisma:query SELECT `crunch`.`channel_messages`.`id`, `crunch`.`channel_messages`.`channel_id`, `crunch`.`channel_messages`.`sender_id`, `crunch`.`channel_messages`.`content`, `crunch`.`channel_messages`.`file_url`, `crunch`.`channel_messages`.`file_name`, `crunch`.`channel_messages`.`file_type`, `crunch`.`channel_messages`.`file_size`, `crunch`.`channel_messages`.`message_type`, `crunch`.`channel_messages`.`is_pinned`, `crunch`.`channel_messages`.`pinned_at`, `crunch`.`channel_messages`.`pinned_by_id`, `crunch`.`channel_messages`.`reply_to_id`, `crunch`.`channel_messages`.`created_at` FROM `crunch`.`channel_messages` WHERE `crunch`.`channel_messages`.`channel_id` IN (?) ORDER BY `crunch`.`channel_messages`.`created_at` DESC LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT COUNT(*) FROM (SELECT `crunch`.`channel_messages`.`id` FROM `crunch`.`channel_messages` WHERE (`crunch`.`channel_messages`.`channel_id` = ? AND `crunch`.`channel_messages`.`sender_id` <> ? AND `crunch`.`channel_messages`.`created_at` > ?)) AS `sub`
+prisma:query SELECT COUNT(*) FROM (SELECT `crunch`.`channel_messages`.`id` FROM `crunch`.`channel_messages` WHERE (`crunch`.`channel_messages`.`channel_id` = ? AND `crunch`.`channel_messages`.`sender_id` <> ? AND `crunch`.`channel_messages`.`created_at` > ? AND `crunch`.`channel_messages`.`content` LIKE ?)) AS `sub`
+[0mGET /api/channels [32m200[0m 6.470 ms - 1331[0m
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`channel_id` = ?
+prisma:query SELECT `crunch`.`channel_messages`.`id`, `crunch`.`channel_messages`.`channel_id`, `crunch`.`channel_messages`.`sender_id`, `crunch`.`channel_messages`.`content`, `crunch`.`channel_messages`.`file_url`, `crunch`.`channel_messages`.`file_name`, `crunch`.`channel_messages`.`file_type`, `crunch`.`channel_messages`.`file_size`, `crunch`.`channel_messages`.`message_type`, `crunch`.`channel_messages`.`is_pinned`, `crunch`.`channel_messages`.`pinned_at`, `crunch`.`channel_messages`.`pinned_by_id`, `crunch`.`channel_messages`.`reply_to_id`, `crunch`.`channel_messages`.`created_at` FROM `crunch`.`channel_messages` WHERE `crunch`.`channel_messages`.`channel_id` = ? ORDER BY `crunch`.`channel_messages`.`created_at` DESC LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`todo_lists`.`id`, `crunch`.`todo_lists`.`channel_id`, `crunch`.`todo_lists`.`title`, `crunch`.`todo_lists`.`created_by_id`, `crunch`.`todo_lists`.`created_at` FROM `crunch`.`todo_lists` WHERE `crunch`.`todo_lists`.`channel_id` = ? ORDER BY `crunch`.`todo_lists`.`created_at` ASC
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name`, `crunch`.`users`.`avatar_url` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?)
+[0mGET /api/channels/fd854868-a6b2-463e-a2a7-0656a028cf35/todos [36m304[0m 3.463 ms - -[0m
+prisma:query SELECT `crunch`.`channel_messages`.`id`, `crunch`.`channel_messages`.`content`, `crunch`.`channel_messages`.`file_name`, `crunch`.`channel_messages`.`message_type`, `crunch`.`channel_messages`.`sender_id` FROM `crunch`.`channel_messages` WHERE `crunch`.`channel_messages`.`id` IN (?,?)
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name`, `crunch`.`users`.`avatar_url` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?)
+prisma:query SELECT `crunch`.`meeting_proposals`.`id`, `crunch`.`meeting_proposals`.`message_id`, `crunch`.`meeting_proposals`.`channel_id`, `crunch`.`meeting_proposals`.`proposer_id`, `crunch`.`meeting_proposals`.`title`, `crunch`.`meeting_proposals`.`scheduled_at`, `crunch`.`meeting_proposals`.`created_at` FROM `crunch`.`meeting_proposals` WHERE `crunch`.`meeting_proposals`.`message_id` IN (?,?,?,?,?,?,?,?,?,?,?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+[0mGET /api/channels/fd854868-a6b2-463e-a2a7-0656a028cf35/messages [32m200[0m 5.559 ms - 6019[0m
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`channel_id` = ?
+prisma:query SELECT `crunch`.`todo_lists`.`id`, `crunch`.`todo_lists`.`channel_id`, `crunch`.`todo_lists`.`title`, `crunch`.`todo_lists`.`created_by_id`, `crunch`.`todo_lists`.`created_at` FROM `crunch`.`todo_lists` WHERE `crunch`.`todo_lists`.`channel_id` = ? ORDER BY `crunch`.`todo_lists`.`created_at` ASC
+prisma:query SELECT `crunch`.`channel_messages`.`id`, `crunch`.`channel_messages`.`channel_id`, `crunch`.`channel_messages`.`sender_id`, `crunch`.`channel_messages`.`content`, `crunch`.`channel_messages`.`file_url`, `crunch`.`channel_messages`.`file_name`, `crunch`.`channel_messages`.`file_type`, `crunch`.`channel_messages`.`file_size`, `crunch`.`channel_messages`.`message_type`, `crunch`.`channel_messages`.`is_pinned`, `crunch`.`channel_messages`.`pinned_at`, `crunch`.`channel_messages`.`pinned_by_id`, `crunch`.`channel_messages`.`reply_to_id`, `crunch`.`channel_messages`.`created_at` FROM `crunch`.`channel_messages` WHERE `crunch`.`channel_messages`.`channel_id` = ? ORDER BY `crunch`.`channel_messages`.`created_at` DESC LIMIT ? OFFSET ?
+[0mGET /api/channels/fd854868-a6b2-463e-a2a7-0656a028cf35/todos [36m304[0m 4.136 ms - -[0m
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name`, `crunch`.`users`.`avatar_url` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?)
+prisma:query SELECT `crunch`.`channel_messages`.`id`, `crunch`.`channel_messages`.`content`, `crunch`.`channel_messages`.`file_name`, `crunch`.`channel_messages`.`message_type`, `crunch`.`channel_messages`.`sender_id` FROM `crunch`.`channel_messages` WHERE `crunch`.`channel_messages`.`id` IN (?,?)
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name`, `crunch`.`users`.`avatar_url` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?)
+prisma:query SELECT `crunch`.`meeting_proposals`.`id`, `crunch`.`meeting_proposals`.`message_id`, `crunch`.`meeting_proposals`.`channel_id`, `crunch`.`meeting_proposals`.`proposer_id`, `crunch`.`meeting_proposals`.`title`, `crunch`.`meeting_proposals`.`scheduled_at`, `crunch`.`meeting_proposals`.`created_at` FROM `crunch`.`meeting_proposals` WHERE `crunch`.`meeting_proposals`.`message_id` IN (?,?,?,?,?,?,?,?,?,?,?)
+[0mGET /api/channels/fd854868-a6b2-463e-a2a7-0656a028cf35/messages [32m200[0m 7.348 ms - 6019[0m
+prisma:query BEGIN
+prisma:query UPDATE `crunch`.`channel_members` SET `last_read_at` = ? WHERE (`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?)
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query UPDATE `crunch`.`channel_members` SET `last_read_at` = ? WHERE (`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?)
+prisma:query COMMIT
+[INFO] 16:21:52 Restarting: C:\Users\GACHON\Desktop\crunch\crunch-back\src\controllers\channel.controller.ts has been modified
+🚀 서버 실행 중 → http://localhost:4000
+   환경: development
+[INFO] 16:21:57 Restarting: C:\Users\GACHON\Desktop\crunch\crunch-back\src\routes\channel.route.ts has been modified
+🚀 서버 실행 중 → http://localhost:4000
+   환경: development
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE (`crunch`.`users`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE (`crunch`.`users`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`user_id` = ? ORDER BY `crunch`.`channel_members`.`joined_at` DESC
+prisma:query SELECT `crunch`.`channels`.`id`, `crunch`.`channels`.`name`, `crunch`.`channels`.`project_id`, `crunch`.`channels`.`created_at` FROM `crunch`.`channels` WHERE `crunch`.`channels`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`user_id` = ? ORDER BY `crunch`.`channel_members`.`joined_at` DESC
+prisma:query SELECT `crunch`.`projects`.`id`, `crunch`.`projects`.`title`, `crunch`.`projects`.`author_id` FROM `crunch`.`projects` WHERE `crunch`.`projects`.`id` IN (?)
+prisma:query SELECT `crunch`.`channels`.`id`, `crunch`.`channels`.`name`, `crunch`.`channels`.`project_id`, `crunch`.`channels`.`created_at` FROM `crunch`.`channels` WHERE `crunch`.`channels`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`channel_id` IN (?)
+prisma:query SELECT `crunch`.`projects`.`id`, `crunch`.`projects`.`title`, `crunch`.`projects`.`author_id` FROM `crunch`.`projects` WHERE `crunch`.`projects`.`id` IN (?)
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`channel_id` IN (?)
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?)
+prisma:query SELECT `crunch`.`channel_messages`.`id`, `crunch`.`channel_messages`.`channel_id`, `crunch`.`channel_messages`.`sender_id`, `crunch`.`channel_messages`.`content`, `crunch`.`channel_messages`.`file_url`, `crunch`.`channel_messages`.`file_name`, `crunch`.`channel_messages`.`file_type`, `crunch`.`channel_messages`.`file_size`, `crunch`.`channel_messages`.`message_type`, `crunch`.`channel_messages`.`is_pinned`, `crunch`.`channel_messages`.`pinned_at`, `crunch`.`channel_messages`.`pinned_by_id`, `crunch`.`channel_messages`.`reply_to_id`, `crunch`.`channel_messages`.`created_at` FROM `crunch`.`channel_messages` WHERE `crunch`.`channel_messages`.`channel_id` IN (?) ORDER BY `crunch`.`channel_messages`.`created_at` DESC LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_messages`.`id`, `crunch`.`channel_messages`.`channel_id`, `crunch`.`channel_messages`.`sender_id`, `crunch`.`channel_messages`.`content`, `crunch`.`channel_messages`.`file_url`, `crunch`.`channel_messages`.`file_name`, `crunch`.`channel_messages`.`file_type`, `crunch`.`channel_messages`.`file_size`, `crunch`.`channel_messages`.`message_type`, `crunch`.`channel_messages`.`is_pinned`, `crunch`.`channel_messages`.`pinned_at`, `crunch`.`channel_messages`.`pinned_by_id`, `crunch`.`channel_messages`.`reply_to_id`, `crunch`.`channel_messages`.`created_at` FROM `crunch`.`channel_messages` WHERE `crunch`.`channel_messages`.`channel_id` IN (?) ORDER BY `crunch`.`channel_messages`.`created_at` DESC LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT COUNT(*) FROM (SELECT `crunch`.`channel_messages`.`id` FROM `crunch`.`channel_messages` WHERE (`crunch`.`channel_messages`.`channel_id` = ? AND `crunch`.`channel_messages`.`sender_id` <> ? AND `crunch`.`channel_messages`.`created_at` > ?)) AS `sub`
+prisma:query SELECT COUNT(*) FROM (SELECT `crunch`.`channel_messages`.`id` FROM `crunch`.`channel_messages` WHERE (`crunch`.`channel_messages`.`channel_id` = ? AND `crunch`.`channel_messages`.`sender_id` <> ? AND `crunch`.`channel_messages`.`created_at` > ? AND `crunch`.`channel_messages`.`content` LIKE ?)) AS `sub`
+[0mGET /api/channels [32m200[0m 24.143 ms - 1339[0m
+prisma:query SELECT COUNT(*) FROM (SELECT `crunch`.`channel_messages`.`id` FROM `crunch`.`channel_messages` WHERE (`crunch`.`channel_messages`.`channel_id` = ? AND `crunch`.`channel_messages`.`sender_id` <> ? AND `crunch`.`channel_messages`.`created_at` > ?)) AS `sub`
+prisma:query SELECT COUNT(*) FROM (SELECT `crunch`.`channel_messages`.`id` FROM `crunch`.`channel_messages` WHERE (`crunch`.`channel_messages`.`channel_id` = ? AND `crunch`.`channel_messages`.`sender_id` <> ? AND `crunch`.`channel_messages`.`created_at` > ? AND `crunch`.`channel_messages`.`content` LIKE ?)) AS `sub`
+[0mGET /api/channels [32m200[0m 21.839 ms - 1339[0m
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:error 
+Invalid `prisma.channelMessage.findMany()` invocation in
+C:\Users\GACHON\Desktop\crunch\crunch-back\src\controllers\channel.controller.ts:107:29
+
+  104 }
+  105 
+  106 const [messages, members] = await Promise.all([
+→ 107   prisma.channelMessage.findMany({
+          where: {
+            channelId: "fd854868-a6b2-463e-a2a7-0656a028cf35"
+          },
+          orderBy: {
+            createdAt: "desc"
+          },
+          take: 40,
+          include: {
+            sender: {
+              select: {
+                id: true,
+                name: true,
+                avatarUrl: true
+              }
+            },
+            replyTo: {
+              select: {
+                id: true,
+                content: true,
+                fileName: true,
+                messageType: true,
+                editedAt: true,
+                ~~~~~~~~
+                deletedAt: true,
+                sender: {
+                  select: {
+                    id: true,
+                    name: true,
+                    avatarUrl: true
+                  }
+                },
+        ?       channelId?: true,
+        ?       senderId?: true,
+        ?       fileUrl?: true,
+        ?       fileType?: true,
+        ?       fileSize?: true,
+        ?       isPinned?: true,
+        ?       pinnedAt?: true,
+        ?       pinnedById?: true,
+        ?       replyToId?: true,
+        ?       createdAt?: true,
+        ?       channel?: true,
+        ?       replyTo?: true,
+        ?       replies?: true,
+        ?       meeting?: true,
+        ?       _count?: true
+              }
+            },
+            meeting: {
+              include: {
+                responses: {
+                  include: {
+                    user: {
+                      select: {
+                        id: true,
+                        name: true
+                      }
+                    }
+                  },
+                  orderBy: {
+                    updatedAt: "asc"
+                  }
+                },
+                proposer: {
+                  select: {
+                    id: true,
+                    name: true
+                  }
+                }
+              }
+            }
+          }
+        })
+
+Unknown field `editedAt` for select statement on model `ChannelMessage`. Available options are marked with ?.
+[0mGET /api/channels/fd854868-a6b2-463e-a2a7-0656a028cf35/messages [31m500[0m 16.870 ms - 66[0m
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`channel_id` = ?
+prisma:query SELECT `crunch`.`todo_lists`.`id`, `crunch`.`todo_lists`.`channel_id`, `crunch`.`todo_lists`.`title`, `crunch`.`todo_lists`.`created_by_id`, `crunch`.`todo_lists`.`created_at` FROM `crunch`.`todo_lists` WHERE `crunch`.`todo_lists`.`channel_id` = ? ORDER BY `crunch`.`todo_lists`.`created_at` ASC
+[0mGET /api/channels/fd854868-a6b2-463e-a2a7-0656a028cf35/todos [36m304[0m 17.540 ms - -[0m
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:error 
+Invalid `prisma.channelMessage.findMany()` invocation in
+C:\Users\GACHON\Desktop\crunch\crunch-back\src\controllers\channel.controller.ts:107:29
+
+  104 }
+  105 
+  106 const [messages, members] = await Promise.all([
+→ 107   prisma.channelMessage.findMany({
+          where: {
+            channelId: "fd854868-a6b2-463e-a2a7-0656a028cf35"
+          },
+          orderBy: {
+            createdAt: "desc"
+          },
+          take: 40,
+          include: {
+            sender: {
+              select: {
+                id: true,
+                name: true,
+                avatarUrl: true
+              }
+            },
+            replyTo: {
+              select: {
+                id: true,
+                content: true,
+                fileName: true,
+                messageType: true,
+                editedAt: true,
+                ~~~~~~~~
+                deletedAt: true,
+                sender: {
+                  select: {
+                    id: true,
+                    name: true,
+                    avatarUrl: true
+                  }
+                },
+        ?       channelId?: true,
+        ?       senderId?: true,
+        ?       fileUrl?: true,
+        ?       fileType?: true,
+        ?       fileSize?: true,
+        ?       isPinned?: true,
+        ?       pinnedAt?: true,
+        ?       pinnedById?: true,
+        ?       replyToId?: true,
+        ?       createdAt?: true,
+        ?       channel?: true,
+        ?       replyTo?: true,
+        ?       replies?: true,
+        ?       meeting?: true,
+        ?       _count?: true
+              }
+            },
+            meeting: {
+              include: {
+                responses: {
+                  include: {
+                    user: {
+                      select: {
+                        id: true,
+                        name: true
+                      }
+                    }
+                  },
+                  orderBy: {
+                    updatedAt: "asc"
+                  }
+                },
+                proposer: {
+                  select: {
+                    id: true,
+                    name: true
+                  }
+                }
+              }
+            }
+          }
+        })
+
+Unknown field `editedAt` for select statement on model `ChannelMessage`. Available options are marked with ?.
+[0mGET /api/channels/fd854868-a6b2-463e-a2a7-0656a028cf35/messages [31m500[0m 5.208 ms - 66[0m
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`channel_id` = ?
+prisma:query SELECT `crunch`.`todo_lists`.`id`, `crunch`.`todo_lists`.`channel_id`, `crunch`.`todo_lists`.`title`, `crunch`.`todo_lists`.`created_by_id`, `crunch`.`todo_lists`.`created_at` FROM `crunch`.`todo_lists` WHERE `crunch`.`todo_lists`.`channel_id` = ? ORDER BY `crunch`.`todo_lists`.`created_at` ASC
+[0mGET /api/channels/fd854868-a6b2-463e-a2a7-0656a028cf35/todos [36m304[0m 5.175 ms - -[0m
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE (`crunch`.`users`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`user_id` = ? ORDER BY `crunch`.`channel_members`.`joined_at` DESC
+prisma:query SELECT `crunch`.`channels`.`id`, `crunch`.`channels`.`name`, `crunch`.`channels`.`project_id`, `crunch`.`channels`.`created_at` FROM `crunch`.`channels` WHERE `crunch`.`channels`.`id` IN (?)
+prisma:query SELECT `crunch`.`projects`.`id`, `crunch`.`projects`.`title`, `crunch`.`projects`.`author_id` FROM `crunch`.`projects` WHERE `crunch`.`projects`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`channel_id` IN (?)
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?)
+prisma:query SELECT `crunch`.`channel_messages`.`id`, `crunch`.`channel_messages`.`channel_id`, `crunch`.`channel_messages`.`sender_id`, `crunch`.`channel_messages`.`content`, `crunch`.`channel_messages`.`file_url`, `crunch`.`channel_messages`.`file_name`, `crunch`.`channel_messages`.`file_type`, `crunch`.`channel_messages`.`file_size`, `crunch`.`channel_messages`.`message_type`, `crunch`.`channel_messages`.`is_pinned`, `crunch`.`channel_messages`.`pinned_at`, `crunch`.`channel_messages`.`pinned_by_id`, `crunch`.`channel_messages`.`reply_to_id`, `crunch`.`channel_messages`.`created_at` FROM `crunch`.`channel_messages` WHERE `crunch`.`channel_messages`.`channel_id` IN (?) ORDER BY `crunch`.`channel_messages`.`created_at` DESC LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE (`crunch`.`users`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT COUNT(*) FROM (SELECT `crunch`.`channel_messages`.`id` FROM `crunch`.`channel_messages` WHERE (`crunch`.`channel_messages`.`channel_id` = ? AND `crunch`.`channel_messages`.`sender_id` <> ? AND `crunch`.`channel_messages`.`created_at` > ?)) AS `sub`
+prisma:query SELECT COUNT(*) FROM (SELECT `crunch`.`channel_messages`.`id` FROM `crunch`.`channel_messages` WHERE (`crunch`.`channel_messages`.`channel_id` = ? AND `crunch`.`channel_messages`.`sender_id` <> ? AND `crunch`.`channel_messages`.`created_at` > ? AND `crunch`.`channel_messages`.`content` LIKE ?)) AS `sub`
+[0mGET /api/channels [36m304[0m 8.088 ms - -[0m
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`user_id` = ? ORDER BY `crunch`.`channel_members`.`joined_at` DESC
+prisma:query SELECT `crunch`.`channels`.`id`, `crunch`.`channels`.`name`, `crunch`.`channels`.`project_id`, `crunch`.`channels`.`created_at` FROM `crunch`.`channels` WHERE `crunch`.`channels`.`id` IN (?)
+prisma:query SELECT `crunch`.`projects`.`id`, `crunch`.`projects`.`title`, `crunch`.`projects`.`author_id` FROM `crunch`.`projects` WHERE `crunch`.`projects`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`channel_id` IN (?)
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?)
+prisma:query SELECT `crunch`.`channel_messages`.`id`, `crunch`.`channel_messages`.`channel_id`, `crunch`.`channel_messages`.`sender_id`, `crunch`.`channel_messages`.`content`, `crunch`.`channel_messages`.`file_url`, `crunch`.`channel_messages`.`file_name`, `crunch`.`channel_messages`.`file_type`, `crunch`.`channel_messages`.`file_size`, `crunch`.`channel_messages`.`message_type`, `crunch`.`channel_messages`.`is_pinned`, `crunch`.`channel_messages`.`pinned_at`, `crunch`.`channel_messages`.`pinned_by_id`, `crunch`.`channel_messages`.`reply_to_id`, `crunch`.`channel_messages`.`created_at` FROM `crunch`.`channel_messages` WHERE `crunch`.`channel_messages`.`channel_id` IN (?) ORDER BY `crunch`.`channel_messages`.`created_at` DESC LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT 1
+prisma:query SELECT COUNT(*) FROM (SELECT `crunch`.`channel_messages`.`id` FROM `crunch`.`channel_messages` WHERE (`crunch`.`channel_messages`.`channel_id` = ? AND `crunch`.`channel_messages`.`sender_id` <> ? AND `crunch`.`channel_messages`.`created_at` > ?)) AS `sub`
+prisma:query SELECT COUNT(*) FROM (SELECT `crunch`.`channel_messages`.`id` FROM `crunch`.`channel_messages` WHERE (`crunch`.`channel_messages`.`channel_id` = ? AND `crunch`.`channel_messages`.`sender_id` <> ? AND `crunch`.`channel_messages`.`created_at` > ? AND `crunch`.`channel_messages`.`content` LIKE ?)) AS `sub`
+[0mGET /api/channels [36m304[0m 9.538 ms - -[0m
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT 1
+prisma:query SELECT 1
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`channel_id` = ?
+prisma:error 
+Invalid `prisma.channelMessage.findMany()` invocation in
+C:\Users\GACHON\Desktop\crunch\crunch-back\src\controllers\channel.controller.ts:107:29
+
+  104 }
+  105 
+  106 const [messages, members] = await Promise.all([
+→ 107   prisma.channelMessage.findMany({
+          where: {
+            channelId: "fd854868-a6b2-463e-a2a7-0656a028cf35"
+          },
+          orderBy: {
+            createdAt: "desc"
+          },
+          take: 40,
+          include: {
+            sender: {
+              select: {
+                id: true,
+                name: true,
+                avatarUrl: true
+              }
+            },
+            replyTo: {
+              select: {
+                id: true,
+                content: true,
+                fileName: true,
+                messageType: true,
+                editedAt: true,
+                ~~~~~~~~
+                deletedAt: true,
+                sender: {
+                  select: {
+                    id: true,
+                    name: true,
+                    avatarUrl: true
+                  }
+                },
+        ?       channelId?: true,
+        ?       senderId?: true,
+        ?       fileUrl?: true,
+        ?       fileType?: true,
+        ?       fileSize?: true,
+        ?       isPinned?: true,
+        ?       pinnedAt?: true,
+        ?       pinnedById?: true,
+        ?       replyToId?: true,
+        ?       createdAt?: true,
+        ?       channel?: true,
+        ?       replyTo?: true,
+        ?       replies?: true,
+        ?       meeting?: true,
+        ?       _count?: true
+              }
+            },
+            meeting: {
+              include: {
+                responses: {
+                  include: {
+                    user: {
+                      select: {
+                        id: true,
+                        name: true
+                      }
+                    }
+                  },
+                  orderBy: {
+                    updatedAt: "asc"
+                  }
+                },
+                proposer: {
+                  select: {
+                    id: true,
+                    name: true
+                  }
+                }
+              }
+            }
+          }
+        })
+
+Unknown field `editedAt` for select statement on model `ChannelMessage`. Available options are marked with ?.
+[0mGET /api/channels/fd854868-a6b2-463e-a2a7-0656a028cf35/messages [31m500[0m 7.134 ms - 66[0m
+prisma:query SELECT `crunch`.`todo_lists`.`id`, `crunch`.`todo_lists`.`channel_id`, `crunch`.`todo_lists`.`title`, `crunch`.`todo_lists`.`created_by_id`, `crunch`.`todo_lists`.`created_at` FROM `crunch`.`todo_lists` WHERE `crunch`.`todo_lists`.`channel_id` = ? ORDER BY `crunch`.`todo_lists`.`created_at` ASC
+[0mGET /api/channels/fd854868-a6b2-463e-a2a7-0656a028cf35/todos [36m304[0m 7.869 ms - -[0m
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`todo_lists`.`id`, `crunch`.`todo_lists`.`channel_id`, `crunch`.`todo_lists`.`title`, `crunch`.`todo_lists`.`created_by_id`, `crunch`.`todo_lists`.`created_at` FROM `crunch`.`todo_lists` WHERE `crunch`.`todo_lists`.`channel_id` = ? ORDER BY `crunch`.`todo_lists`.`created_at` ASC
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`channel_id` = ?
+prisma:error 
+Invalid `prisma.channelMessage.findMany()` invocation in
+C:\Users\GACHON\Desktop\crunch\crunch-back\src\controllers\channel.controller.ts:107:29
+
+  104 }
+  105 
+  106 const [messages, members] = await Promise.all([
+→ 107   prisma.channelMessage.findMany({
+          where: {
+            channelId: "fd854868-a6b2-463e-a2a7-0656a028cf35"
+          },
+          orderBy: {
+            createdAt: "desc"
+          },
+          take: 40,
+          include: {
+            sender: {
+              select: {
+                id: true,
+                name: true,
+                avatarUrl: true
+              }
+            },
+            replyTo: {
+              select: {
+                id: true,
+                content: true,
+                fileName: true,
+                messageType: true,
+                editedAt: true,
+                ~~~~~~~~
+                deletedAt: true,
+                sender: {
+                  select: {
+                    id: true,
+                    name: true,
+                    avatarUrl: true
+                  }
+                },
+        ?       channelId?: true,
+        ?       senderId?: true,
+        ?       fileUrl?: true,
+        ?       fileType?: true,
+        ?       fileSize?: true,
+        ?       isPinned?: true,
+        ?       pinnedAt?: true,
+        ?       pinnedById?: true,
+        ?       replyToId?: true,
+        ?       createdAt?: true,
+        ?       channel?: true,
+        ?       replyTo?: true,
+        ?       replies?: true,
+        ?       meeting?: true,
+        ?       _count?: true
+              }
+            },
+            meeting: {
+              include: {
+                responses: {
+                  include: {
+                    user: {
+                      select: {
+                        id: true,
+                        name: true
+                      }
+                    }
+                  },
+                  orderBy: {
+                    updatedAt: "asc"
+                  }
+                },
+                proposer: {
+                  select: {
+                    id: true,
+                    name: true
+                  }
+                }
+              }
+            }
+          }
+        })
+
+Unknown field `editedAt` for select statement on model `ChannelMessage`. Available options are marked with ?.
+[0mGET /api/channels/fd854868-a6b2-463e-a2a7-0656a028cf35/messages [31m500[0m 4.085 ms - 66[0m
+[0mGET /api/channels/fd854868-a6b2-463e-a2a7-0656a028cf35/todos [36m304[0m 5.455 ms - -[0m
+prisma:query SELECT 1
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE (`crunch`.`users`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`user_id` = ? ORDER BY `crunch`.`channel_members`.`joined_at` DESC
+prisma:query SELECT 1
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE (`crunch`.`users`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channels`.`id`, `crunch`.`channels`.`name`, `crunch`.`channels`.`project_id`, `crunch`.`channels`.`created_at` FROM `crunch`.`channels` WHERE `crunch`.`channels`.`id` IN (?)
+prisma:query SELECT `crunch`.`projects`.`id`, `crunch`.`projects`.`title`, `crunch`.`projects`.`author_id` FROM `crunch`.`projects` WHERE `crunch`.`projects`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`channel_id` IN (?)
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`user_id` = ? ORDER BY `crunch`.`channel_members`.`joined_at` DESC
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?)
+prisma:query SELECT `crunch`.`channels`.`id`, `crunch`.`channels`.`name`, `crunch`.`channels`.`project_id`, `crunch`.`channels`.`created_at` FROM `crunch`.`channels` WHERE `crunch`.`channels`.`id` IN (?)
+prisma:query SELECT `crunch`.`projects`.`id`, `crunch`.`projects`.`title`, `crunch`.`projects`.`author_id` FROM `crunch`.`projects` WHERE `crunch`.`projects`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_messages`.`id`, `crunch`.`channel_messages`.`channel_id`, `crunch`.`channel_messages`.`sender_id`, `crunch`.`channel_messages`.`content`, `crunch`.`channel_messages`.`file_url`, `crunch`.`channel_messages`.`file_name`, `crunch`.`channel_messages`.`file_type`, `crunch`.`channel_messages`.`file_size`, `crunch`.`channel_messages`.`message_type`, `crunch`.`channel_messages`.`is_pinned`, `crunch`.`channel_messages`.`pinned_at`, `crunch`.`channel_messages`.`pinned_by_id`, `crunch`.`channel_messages`.`reply_to_id`, `crunch`.`channel_messages`.`created_at` FROM `crunch`.`channel_messages` WHERE `crunch`.`channel_messages`.`channel_id` IN (?) ORDER BY `crunch`.`channel_messages`.`created_at` DESC LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`channel_id` IN (?)
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?,?)
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT `crunch`.`channel_messages`.`id`, `crunch`.`channel_messages`.`channel_id`, `crunch`.`channel_messages`.`sender_id`, `crunch`.`channel_messages`.`content`, `crunch`.`channel_messages`.`file_url`, `crunch`.`channel_messages`.`file_name`, `crunch`.`channel_messages`.`file_type`, `crunch`.`channel_messages`.`file_size`, `crunch`.`channel_messages`.`message_type`, `crunch`.`channel_messages`.`is_pinned`, `crunch`.`channel_messages`.`pinned_at`, `crunch`.`channel_messages`.`pinned_by_id`, `crunch`.`channel_messages`.`reply_to_id`, `crunch`.`channel_messages`.`created_at` FROM `crunch`.`channel_messages` WHERE `crunch`.`channel_messages`.`channel_id` IN (?) ORDER BY `crunch`.`channel_messages`.`created_at` DESC LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`users`.`id`, `crunch`.`users`.`name` FROM `crunch`.`users` WHERE `crunch`.`users`.`id` IN (?)
+prisma:query SELECT COUNT(*) FROM (SELECT `crunch`.`channel_messages`.`id` FROM `crunch`.`channel_messages` WHERE (`crunch`.`channel_messages`.`channel_id` = ? AND `crunch`.`channel_messages`.`sender_id` <> ? AND `crunch`.`channel_messages`.`created_at` > ?)) AS `sub`
+prisma:query SELECT 1
+prisma:query SELECT 1
+prisma:query SELECT COUNT(*) FROM (SELECT `crunch`.`channel_messages`.`id` FROM `crunch`.`channel_messages` WHERE (`crunch`.`channel_messages`.`channel_id` = ? AND `crunch`.`channel_messages`.`sender_id` <> ? AND `crunch`.`channel_messages`.`created_at` > ?)) AS `sub`
+prisma:query SELECT COUNT(*) FROM (SELECT `crunch`.`channel_messages`.`id` FROM `crunch`.`channel_messages` WHERE (`crunch`.`channel_messages`.`channel_id` = ? AND `crunch`.`channel_messages`.`sender_id` <> ? AND `crunch`.`channel_messages`.`created_at` > ? AND `crunch`.`channel_messages`.`content` LIKE ?)) AS `sub`
+prisma:query SELECT COUNT(*) FROM (SELECT `crunch`.`channel_messages`.`id` FROM `crunch`.`channel_messages` WHERE (`crunch`.`channel_messages`.`channel_id` = ? AND `crunch`.`channel_messages`.`sender_id` <> ? AND `crunch`.`channel_messages`.`created_at` > ? AND `crunch`.`channel_messages`.`content` LIKE ?)) AS `sub`
+[0mGET /api/channels [36m304[0m 6.546 ms - -[0m
+[0mGET /api/channels [36m304[0m 10.431 ms - -[0m
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`channel_id` = ?
+prisma:query SELECT `crunch`.`todo_lists`.`id`, `crunch`.`todo_lists`.`channel_id`, `crunch`.`todo_lists`.`title`, `crunch`.`todo_lists`.`created_by_id`, `crunch`.`todo_lists`.`created_at` FROM `crunch`.`todo_lists` WHERE `crunch`.`todo_lists`.`channel_id` = ? ORDER BY `crunch`.`todo_lists`.`created_at` ASC
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:error 
+Invalid `prisma.channelMessage.findMany()` invocation in
+C:\Users\GACHON\Desktop\crunch\crunch-back\src\controllers\channel.controller.ts:107:29
+
+  104 }
+  105 
+  106 const [messages, members] = await Promise.all([
+→ 107   prisma.channelMessage.findMany({
+          where: {
+            channelId: "fd854868-a6b2-463e-a2a7-0656a028cf35"
+          },
+          orderBy: {
+            createdAt: "desc"
+          },
+          take: 40,
+          include: {
+            sender: {
+              select: {
+                id: true,
+                name: true,
+                avatarUrl: true
+              }
+            },
+            replyTo: {
+              select: {
+                id: true,
+                content: true,
+                fileName: true,
+                messageType: true,
+                editedAt: true,
+                ~~~~~~~~
+                deletedAt: true,
+                sender: {
+                  select: {
+                    id: true,
+                    name: true,
+                    avatarUrl: true
+                  }
+                },
+        ?       channelId?: true,
+        ?       senderId?: true,
+        ?       fileUrl?: true,
+        ?       fileType?: true,
+        ?       fileSize?: true,
+        ?       isPinned?: true,
+        ?       pinnedAt?: true,
+        ?       pinnedById?: true,
+        ?       replyToId?: true,
+        ?       createdAt?: true,
+        ?       channel?: true,
+        ?       replyTo?: true,
+        ?       replies?: true,
+        ?       meeting?: true,
+        ?       _count?: true
+              }
+            },
+            meeting: {
+              include: {
+                responses: {
+                  include: {
+                    user: {
+                      select: {
+                        id: true,
+                        name: true
+                      }
+                    }
+                  },
+                  orderBy: {
+                    updatedAt: "asc"
+                  }
+                },
+                proposer: {
+                  select: {
+                    id: true,
+                    name: true
+                  }
+                }
+              }
+            }
+          }
+        })
+
+Unknown field `editedAt` for select statement on model `ChannelMessage`. Available options are marked with ?.
+[0mGET /api/channels/fd854868-a6b2-463e-a2a7-0656a028cf35/messages [31m500[0m 5.585 ms - 66[0m
+[0mGET /api/channels/fd854868-a6b2-463e-a2a7-0656a028cf35/todos [36m304[0m 5.109 ms - -[0m
+prisma:error 
+Invalid `prisma.channelMessage.findMany()` invocation in
+C:\Users\GACHON\Desktop\crunch\crunch-back\src\controllers\channel.controller.ts:107:29
+
+  104 }
+  105 
+  106 const [messages, members] = await Promise.all([
+→ 107   prisma.channelMessage.findMany({
+          where: {
+            channelId: "fd854868-a6b2-463e-a2a7-0656a028cf35"
+          },
+          orderBy: {
+            createdAt: "desc"
+          },
+          take: 40,
+          include: {
+            sender: {
+              select: {
+                id: true,
+                name: true,
+                avatarUrl: true
+              }
+            },
+            replyTo: {
+              select: {
+                id: true,
+                content: true,
+                fileName: true,
+                messageType: true,
+                editedAt: true,
+                ~~~~~~~~
+                deletedAt: true,
+                sender: {
+                  select: {
+                    id: true,
+                    name: true,
+                    avatarUrl: true
+                  }
+                },
+        ?       channelId?: true,
+        ?       senderId?: true,
+        ?       fileUrl?: true,
+        ?       fileType?: true,
+        ?       fileSize?: true,
+        ?       isPinned?: true,
+        ?       pinnedAt?: true,
+        ?       pinnedById?: true,
+        ?       replyToId?: true,
+        ?       createdAt?: true,
+        ?       channel?: true,
+        ?       replyTo?: true,
+        ?       replies?: true,
+        ?       meeting?: true,
+        ?       _count?: true
+              }
+            },
+            meeting: {
+              include: {
+                responses: {
+                  include: {
+                    user: {
+                      select: {
+                        id: true,
+                        name: true
+                      }
+                    }
+                  },
+                  orderBy: {
+                    updatedAt: "asc"
+                  }
+                },
+                proposer: {
+                  select: {
+                    id: true,
+                    name: true
+                  }
+                }
+              }
+            }
+          }
+        })
+
+Unknown field `editedAt` for select statement on model `ChannelMessage`. Available options are marked with ?.
+[0mGET /api/channels/fd854868-a6b2-463e-a2a7-0656a028cf35/messages [31m500[0m 6.173 ms - 66[0m
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE `crunch`.`channel_members`.`channel_id` = ?
+prisma:query SELECT `crunch`.`channel_members`.`channel_id`, `crunch`.`channel_members`.`user_id`, `crunch`.`channel_members`.`joined_at`, `crunch`.`channel_members`.`last_read_at` FROM `crunch`.`channel_members` WHERE ((`crunch`.`channel_members`.`channel_id` = ? AND `crunch`.`channel_members`.`user_id` = ?) AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `crunch`.`todo_lists`.`id`, `crunch`.`todo_lists`.`channel_id`, `crunch`.`todo_lists`.`title`, `crunch`.`todo_lists`.`created_by_id`, `crunch`.`todo_lists`.`created_at` FROM `crunch`.`todo_lists` WHERE `crunch`.`todo_lists`.`channel_id` = ? ORDER BY `crunch`.`todo_lists`.`created_at` ASC
+[0mGET /api/channels/fd854868-a6b2-463e-a2a7-0656a028cf35/todos [36m304[0m 3.901 ms - -[0m
+[INFO] 16:25:08 Restarting: C:\Users\GACHON\Desktop\crunch\crunch-back\src\socket.ts has been modified
+🚀 서버 실행 중 → http://localhost:4000
+   환경: development
+[INFO] 16:30:01 Restarting: C:\Users\GACHON\Desktop\crunch\crunch-back\src\controllers\channel.controller.ts has been modified
+🚀 서버 실행 중 → http://localhost:4000
+   환경: development
+[INFO] 16:30:10 Restarting: C:\Users\GACHON\Desktop\crunch\crunch-back\src\routes\channel.route.ts has been modified
+🚀 서버 실행 중 → http://localhost:4000
+   환경: development
+[INFO] 16:30:17 Restarting: C:\Users\GACHON\Desktop\crunch\crunch-back\src\socket.ts has been modified
+[ERROR] 16:30:18 Error: listen EADDRINUSE: address already in use :::4000
