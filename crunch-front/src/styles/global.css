@@ -15,6 +15,20 @@
   --color-accent: #ff6b35;
   --color-accent-bg: #fff0e8;
   --color-accent-text: #c04a1a;
+  --color-info: #185fa5;
+  --color-info-hover: #378add;
+  --color-purple: #6d3fcc;
+  --color-purple-hover: #a07ade;
+  --color-success: #3b6d11;
+  --color-success-bg: #eaf3de;
+  --color-warning: #854f0b;
+  --color-warning-bg: #faeeda;
+  --color-danger: #a32d2d;
+  --color-danger-bg: #fcebeb;
+  --color-hero-warm: linear-gradient(135deg, #fff8f5 0%, #fff3ee 50%, #ffe8de 100%);
+  --color-hero-warm-strong: linear-gradient(160deg, #fff8f5 0%, #fff0e8 60%, #ffe0cc 100%);
+  --color-hero-blue: linear-gradient(135deg, #f0f6ff 0%, #e6effd 100%);
+  --color-hero-purple: linear-gradient(135deg, #f5f0ff 0%, #e8deff 100%);
   --color-bg-primary: #ffffff;
   --color-bg-secondary: #f7f7f5;
   --color-bg-tertiary: #f1efe8;
@@ -23,10 +37,45 @@
   --radius-lg: 12px;
 }
 
+[data-theme='dark'] {
+  --color-bg-primary: #171717;
+  --color-bg-secondary: #222220;
+  --color-bg-tertiary: #10100f;
+  --color-text-primary: #f4f1ea;
+  --color-text-secondary: #aaa49a;
+  --color-border: rgba(255, 255, 255, 0.12);
+  --color-border-hover: rgba(255, 255, 255, 0.28);
+  --color-accent: #ff7a45;
+  --color-accent-bg: rgba(255, 122, 69, 0.14);
+  --color-accent-text: #ffb08c;
+  --color-info: #7bb7f0;
+  --color-info-hover: #9dccf7;
+  --color-purple: #b79cff;
+  --color-purple-hover: #cfbdff;
+  --color-success: #a3d977;
+  --color-success-bg: rgba(99, 166, 48, 0.18);
+  --color-warning: #f0c174;
+  --color-warning-bg: rgba(196, 128, 26, 0.18);
+  --color-danger: #ff9b9b;
+  --color-danger-bg: rgba(220, 74, 74, 0.18);
+  --color-hero-warm: linear-gradient(135deg, #241813 0%, #1b1715 52%, #12110f 100%);
+  --color-hero-warm-strong: linear-gradient(160deg, #2a1b14 0%, #211713 58%, #11100f 100%);
+  --color-hero-blue: linear-gradient(135deg, #121a24 0%, #10141b 100%);
+  --color-hero-purple: linear-gradient(135deg, #1b1728 0%, #13111b 100%);
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
   background: var(--color-bg-tertiary);
   color: var(--color-text-primary);
   font-size: 16px;
   line-height: 1.7;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+
+button,
+input,
+select,
+textarea {
+  color-scheme: inherit;
 }

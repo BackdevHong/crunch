@@ -34,7 +34,7 @@
 
 /* ── HERO ── */
 .hero {
-  background: linear-gradient(160deg, #FFF8F5 0%, #FFF0E8 60%, #FFE0CC 100%);
+  background: var(--color-hero-warm-strong);
   padding: 72px 24px 64px;
   text-align: center;
   border-bottom: 0.5px solid var(--color-border);

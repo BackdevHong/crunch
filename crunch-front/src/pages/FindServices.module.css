@@ -2,7 +2,7 @@
 
 /* HERO */
 .hero {
-  background: linear-gradient(135deg, #fff8f5 0%, #fff3ee 50%, #ffe8de 100%);
+  background: var(--color-hero-warm);
   padding: 40px 24px 32px;
   border-bottom: 0.5px solid var(--color-border);
   text-align: center;

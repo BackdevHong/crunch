@@ -40,4 +40,4 @@
 }
 .logoutBtn:hover { color: white; border-color: rgba(255,255,255,0.4); }
 
-.content { flex: 1; background: #f1efe8; overflow-y: auto; }
+.content { flex: 1; background: var(--color-bg-tertiary); overflow-y: auto; }

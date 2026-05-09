@@ -4,8 +4,8 @@ import api from '../../lib/api'
 import styles from './AdminPage.module.css'
 
 const ROLE_LABEL = { client: '의뢰인', freelancer: '프리랜서', admin: '어드민' }
-const ROLE_COLOR = { client: '#185FA5', freelancer: '#3B6D11', admin: '#854F0B' }
-const ROLE_BG    = { client: '#E6F1FB', freelancer: '#EAF3DE', admin: '#FAEEDA' }
+const ROLE_COLOR = { client: 'var(--color-info)', freelancer: 'var(--color-success)', admin: 'var(--color-warning)' }
+const ROLE_BG    = { client: 'var(--color-hero-blue)', freelancer: 'var(--color-success-bg)', admin: 'var(--color-warning-bg)' }
 
 export default function AdminUsers({ activePage, onNavigate }) {
   const [users, setUsers] = useState([])

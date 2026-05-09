@@ -2,13 +2,13 @@
 
 /* HERO */
 .hero {
-  background: linear-gradient(135deg, #f0f6ff 0%, #e6effd 100%);
+  background: var(--color-hero-blue);
   padding: 40px 24px 32px;
   border-bottom: 0.5px solid var(--color-border);
   text-align: center;
 }
 .hero h1 { font-size: 28px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 16px; line-height: 1.3; }
-.hero h1 span { color: #185fa5; }
+.hero h1 span { color: var(--color-info); }
 
 .searchRow { max-width: 600px; margin: 0 auto 14px; }
 .searchBox {
@@ -25,7 +25,7 @@
 }
 .searchBox input::placeholder { color: var(--color-text-secondary); }
 .searchBox button {
-  padding: 9px 18px; background: #185fa5; border: none;
+  padding: 9px 18px; background: var(--color-info); border: none;
   color: white; font-size: 14px; font-weight: 500; cursor: pointer;
   margin: 4px; border-radius: 8px; transition: opacity 0.15s;
 }
@@ -37,7 +37,7 @@
   border: 0.5px solid var(--color-border); background: var(--color-bg-primary);
   color: var(--color-text-secondary); cursor: pointer; transition: all 0.12s;
 }
-.tag:hover { border-color: #378add; color: #185fa5; }
+.tag:hover { border-color: var(--color-info-hover); color: var(--color-info); }
 .tagOn { background: #e6f1fb; border-color: #378add; color: #185fa5; }
 
 /* BODY */

@@ -3,9 +3,10 @@ import styles from './Navbar.module.css'
 
 const isFreelancer = (user) => user?.role === 'freelancer'
 
-export default function Navbar({ activePage, onNavigate, onLogin, onSignup }) {
+export default function Navbar({ activePage, onNavigate, onLogin, onSignup, theme, onToggleTheme }) {
   const { currentUser, logout } = useApp()
   const freelancer = isFreelancer(currentUser)
+  const isDark = theme === 'dark'
 
   const navItems = [
     { label: '홈', page: 'home' },
@@ -55,6 +56,15 @@ export default function Navbar({ activePage, onNavigate, onLogin, onSignup }) {
       </div>
 
       <div className={styles.navActions}>
+        <button
+          className={styles.themeToggle}
+          type="button"
+          onClick={onToggleTheme}
+          title={isDark ? '라이트 모드로 전환' : '다크 모드로 전환'}
+          aria-label={isDark ? '라이트 모드로 전환' : '다크 모드로 전환'}
+        >
+          <span aria-hidden="true">{isDark ? '☀' : '☾'}</span>
+        </button>
         {currentUser ? (
           <>
             <div

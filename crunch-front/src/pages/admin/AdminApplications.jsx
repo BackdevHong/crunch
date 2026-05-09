@@ -4,8 +4,8 @@ import api from '../../lib/api'
 import styles from './AdminPage.module.css'
 
 const STATUS_LABEL = { PENDING: '대기중', APPROVED: '승인', REJECTED: '거절' }
-const STATUS_COLOR = { PENDING: '#854F0B', APPROVED: '#3B6D11', REJECTED: '#A32D2D' }
-const STATUS_BG    = { PENDING: '#FAEEDA', APPROVED: '#EAF3DE', REJECTED: '#FCEBEB' }
+const STATUS_COLOR = { PENDING: 'var(--color-warning)', APPROVED: 'var(--color-success)', REJECTED: 'var(--color-danger)' }
+const STATUS_BG    = { PENDING: 'var(--color-warning-bg)', APPROVED: 'var(--color-success-bg)', REJECTED: 'var(--color-danger-bg)' }
 const CATEGORY_LABEL = {
   DEV: '개발·IT', DESIGN: '디자인', MARKETING: '마케팅',
   WRITING: '글쓰기·번역', VIDEO: '영상·사진', MUSIC: '음악·오디오',

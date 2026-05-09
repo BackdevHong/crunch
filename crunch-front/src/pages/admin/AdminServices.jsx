@@ -83,8 +83,8 @@ export default function AdminServices({ activePage, onNavigate }) {
                 <span className={styles.sub}>⭐ {Number(svc.rating).toFixed(1)}</span>
                 <span>
                   <span className={styles.statusBadge} style={{
-                    background: svc.isActive ? '#EAF3DE' : '#f1efe8',
-                    color: svc.isActive ? '#3B6D11' : '#6b6b67',
+                    background: svc.isActive ? 'var(--color-success-bg)' : 'var(--color-bg-secondary)',
+                    color: svc.isActive ? 'var(--color-success)' : 'var(--color-text-secondary)',
                   }}>
                     {svc.isActive ? '활성' : '비활성'}
                   </span>

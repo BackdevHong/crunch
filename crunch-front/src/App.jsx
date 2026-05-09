@@ -22,6 +22,17 @@ import PostService from './pages/PostService'
 import BrowseProjects from './pages/BrowseProjects'
 import socket, { reconnectSocket } from './lib/socket'
 
+const THEME_STORAGE_KEY = 'crunch-theme'
+
+function getInitialTheme() {
+  if (typeof window === 'undefined') return 'light'
+
+  const savedTheme = window.localStorage.getItem(THEME_STORAGE_KEY)
+  if (savedTheme === 'dark' || savedTheme === 'light') return savedTheme
+
+  return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+}
+
 export default function App() {
   return (
     <AppProvider>
@@ -35,6 +46,13 @@ function AppInner() {
   const [activePage, setActivePage] = useState('home')
   const [authModal, setAuthModal] = useState(null)
   const [callInfo, setCallInfo] = useState(null) // { channelId, channelName }
+  const [theme, setTheme] = useState(getInitialTheme)
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme
+    document.documentElement.style.colorScheme = theme
+    window.localStorage.setItem(THEME_STORAGE_KEY, theme)
+  }, [theme])
 
   // 로그인 시 소켓 연결, 로그아웃 시 해제
   useEffect(() => {
@@ -77,6 +95,8 @@ function AppInner() {
       onNavigate={navigate}
       onLogin={openLogin}
       onSignup={openSignup}
+      theme={theme}
+      onToggleTheme={() => setTheme(prev => prev === 'dark' ? 'light' : 'dark')}
     />
   )
 

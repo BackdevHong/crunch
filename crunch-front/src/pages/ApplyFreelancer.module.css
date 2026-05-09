@@ -1,13 +1,13 @@
 .page { background: var(--color-bg-tertiary); min-height: 100vh; }
 
 .hero {
-  background: linear-gradient(135deg, #f0f6ff 0%, #e6effd 100%);
+  background: var(--color-hero-blue);
   padding: 40px 24px 32px;
   text-align: center;
   border-bottom: 0.5px solid var(--color-border);
 }
 .hero h1 { font-size: 26px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 6px; }
-.hero h1 span { color: #185fa5; }
+.hero h1 span { color: var(--color-info); }
 .hero p { font-size: 14px; color: var(--color-text-secondary); }
 
 .formWrap { max-width: 640px; margin: 0 auto; padding: 28px 24px 48px; }
