@@ -32,6 +32,8 @@ export default function AdminServices({ activePage, onNavigate }) {
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(false)
   const [query, setQuery] = useState('')
+  const [approvalFilter, setApprovalFilter] = useState('PENDING')
+  const [activeFilter, setActiveFilter] = useState('ALL')
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [selected, setSelected] = useState(null)
@@ -44,7 +46,13 @@ export default function AdminServices({ activePage, onNavigate }) {
     setLoading(true)
     try {
       const { data } = await api.get('/api/admin/services', {
-        params: { q: query || undefined, page, limit: 20 },
+        params: {
+          q: query || undefined,
+          approvalStatus: approvalFilter === 'ALL' ? undefined : approvalFilter,
+          active: activeFilter === 'ALL' ? undefined : activeFilter,
+          page,
+          limit: 20,
+        },
       })
       setServices(data.data.services)
       setTotal(data.data.pagination.total)
@@ -54,7 +62,7 @@ export default function AdminServices({ activePage, onNavigate }) {
     } finally {
       setLoading(false)
     }
-  }, [query, page])
+  }, [query, approvalFilter, activeFilter, page])
 
   useEffect(() => { fetchServices() }, [fetchServices])
 
@@ -106,9 +114,30 @@ export default function AdminServices({ activePage, onNavigate }) {
         </div>
 
         <div className={styles.toolbar}>
-          <div />
-          <input className={styles.searchInput} placeholder="서비스명 또는 판매자 검색"
-            value={query} onChange={e => { setQuery(e.target.value); setPage(1) }} />
+          <div className={styles.tabs}>
+            {['PENDING', 'APPROVED', 'REJECTED', 'ALL'].map(status => (
+              <button
+                key={status}
+                className={`${styles.tab} ${approvalFilter === status ? styles.tabActive : ''}`}
+                onClick={() => { setApprovalFilter(status); setPage(1) }}
+              >
+                {status === 'ALL' ? '전체' : APPROVAL_LABEL[status]}
+              </button>
+            ))}
+          </div>
+          <div className={styles.toolbarRight}>
+            <select
+              className={styles.roleSelect}
+              value={activeFilter}
+              onChange={e => { setActiveFilter(e.target.value); setPage(1) }}
+            >
+              <option value="ALL">노출 전체</option>
+              <option value="true">활성</option>
+              <option value="false">비활성</option>
+            </select>
+            <input className={styles.searchInput} placeholder="서비스명 또는 판매자 검색"
+              value={query} onChange={e => { setQuery(e.target.value); setPage(1) }} />
+          </div>
         </div>
 
         {loading ? <div className={styles.empty}>불러오는 중...</div>

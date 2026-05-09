@@ -21,9 +21,20 @@ const ORDER_STATUS_BG = {
   REVIEW: '#EAF3DE', DONE: '#EAF3DE',
   CANCELLED: '#f1efe8', REFUNDED: '#FCEBEB',
 }
+const SERVICE_APPROVAL_LABEL = { PENDING: '심사중', APPROVED: '승인', REJECTED: '반려' }
+const SERVICE_APPROVAL_COLOR = {
+  PENDING: 'var(--color-warning)',
+  APPROVED: 'var(--color-success)',
+  REJECTED: 'var(--color-danger)',
+}
+const SERVICE_APPROVAL_BG = {
+  PENDING: 'var(--color-warning-bg)',
+  APPROVED: 'var(--color-success-bg)',
+  REJECTED: 'var(--color-danger-bg)',
+}
 
 const TABS_CLIENT     = ['프로필', '주문 내역', '내 프로젝트']
-const TABS_FREELANCER = ['프로필', '프리랜서 프로필', '주문 내역', '판매 내역', '내 프로젝트', '내 제안']
+const TABS_FREELANCER = ['프로필', '프리랜서 프로필', '내 서비스', '주문 내역', '판매 내역', '내 프로젝트', '내 제안']
 
 export default function MyPage({ onNavigate }) {
   const { currentUser } = useApp()
@@ -92,6 +103,7 @@ export default function MyPage({ onNavigate }) {
             />
           )}
           {activeTab === '주문 내역' && <OrdersTab />}
+          {activeTab === '내 서비스' && isFreelancer && <MyServicesTab onNavigate={onNavigate} />}
           {activeTab === '판매 내역' && isFreelancer && <SalesTab />}
           {activeTab === '내 프로젝트' && <ProjectsTab />}
           {activeTab === '내 제안' && isFreelancer && <MyProposalsTab />}
@@ -269,6 +281,70 @@ function FreelancerProfileTab({ freelancer, onUpdate, onNavigate }) {
           {saving ? '저장 중...' : '저장하기'}
         </button>
       </div>
+    </div>
+  )
+}
+
+// ── 내 서비스 탭 (프리랜서) ─────────────────────────────────
+function MyServicesTab({ onNavigate }) {
+  const [services, setServices] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    api.get('/api/mypage/services')
+      .then(({ data }) => setServices(data.data))
+      .catch(console.error)
+      .finally(() => setLoading(false))
+  }, [])
+
+  if (loading) return <div className={styles.loading}>불러오는 중...</div>
+  if (services.length === 0) return (
+    <div className={styles.emptyState}>
+      <div className={styles.emptyIcon}>🧾</div>
+      <p>아직 등록한 서비스가 없습니다.</p>
+      <button className={styles.btnPrimary} onClick={() => onNavigate('post-service')}>
+        서비스 등록하기
+      </button>
+    </div>
+  )
+
+  return (
+    <div className={styles.listWrap}>
+      {services.map(service => (
+        <div key={service.id} className={styles.listItem}>
+          <div className={styles.listLeft}>
+            <div className={styles.listTitle}>{service.title}</div>
+            <div className={styles.listSub}>
+              {service.category} · {service.price.toLocaleString()}원 · {service.deliveryDays}일 납기
+            </div>
+            <div className={styles.listSub}>
+              주문 {service._count?.orders ?? 0}건 · 리뷰 {service.reviewCount}개 · 평점 {Number(service.rating).toFixed(1)}
+            </div>
+            {service.approvalStatus === 'REJECTED' && service.rejectedReason && (
+              <div className={styles.rejectReason}>
+                반려 사유: {service.rejectedReason}
+              </div>
+            )}
+          </div>
+          <div className={styles.listRight}>
+            <span className={styles.statusBadge}
+              style={{
+                background: SERVICE_APPROVAL_BG[service.approvalStatus],
+                color: SERVICE_APPROVAL_COLOR[service.approvalStatus],
+              }}>
+              {SERVICE_APPROVAL_LABEL[service.approvalStatus]}
+            </span>
+            <span className={styles.statusBadge}
+              style={{
+                background: service.isActive ? 'var(--color-success-bg)' : 'var(--color-bg-secondary)',
+                color: service.isActive ? 'var(--color-success)' : 'var(--color-text-secondary)',
+              }}>
+              {service.isActive ? '노출 중' : '미노출'}
+            </span>
+            <div className={styles.listSub}>{new Date(service.createdAt).toLocaleDateString('ko-KR')}</div>
+          </div>
+        </div>
+      ))}
     </div>
   )
 }

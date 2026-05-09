@@ -5,6 +5,7 @@
 .badge { font-size: 12px; background: var(--color-bg-primary); border: 0.5px solid var(--color-border); border-radius: 99px; padding: 3px 10px; color: var(--color-text-secondary); }
 
 .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 12px; }
+.toolbarRight { display: flex; align-items: center; gap: 8px; }
 .tabs { display: flex; gap: 4px; }
 .tab { padding: 7px 14px; border-radius: 8px; border: 0.5px solid var(--color-border); background: var(--color-bg-primary); font-size: 13px; color: var(--color-text-secondary); cursor: pointer; font-family: inherit; transition: all 0.12s; }
 .tab:hover { border-color: var(--color-border-hover); color: var(--color-text-primary); }
@@ -102,6 +103,17 @@
 .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--color-text-primary); color: var(--color-bg-primary); font-size: 14px; padding: 12px 24px; border-radius: 99px; z-index: 300; }
 
 @media (max-width: 760px) {
+  .toolbar,
+  .toolbarRight,
+  .tabs {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .searchInput {
+    width: 100%;
+  }
+
   .infoGrid,
   .statGrid {
     grid-template-columns: 1fr;

@@ -135,6 +135,35 @@ export async function getMySales(req: Request, res: Response): Promise<void> {
   }
 }
 
+// 내 서비스 목록 (프리랜서)
+export async function getMyServices(req: Request, res: Response): Promise<void> {
+  try {
+    const services = await prisma.service.findMany({
+      where: { sellerId: req.user!.userId },
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        title: true,
+        category: true,
+        price: true,
+        deliveryDays: true,
+        rating: true,
+        reviewCount: true,
+        isActive: true,
+        approvalStatus: true,
+        rejectedReason: true,
+        createdAt: true,
+        _count: { select: { orders: true } },
+      },
+    })
+
+    ok(res, services)
+  } catch (err) {
+    console.error('[getMyServices]', err)
+    serverError(res)
+  }
+}
+
 // 내 제안 목록 (프리랜서)
 export async function getMyProposals(req: Request, res: Response): Promise<void> {
   try {

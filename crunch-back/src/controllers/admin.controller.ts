@@ -252,11 +252,14 @@ export async function updateUserRole(req: Request, res: Response): Promise<void>
 // 서비스 목록 (어드민용 — 비활성 포함 전체)
 export async function getAdminServices(req: Request, res: Response): Promise<void> {
   try {
-    const { q, page = '1', limit = '20' } = req.query
+    const { q, approvalStatus, active, page = '1', limit = '20' } = req.query
     const pageNum = Math.max(1, Number(page))
     const limitNum = Number(limit)
 
     const where: Prisma.ServiceWhereInput = {
+      ...(approvalStatus && approvalStatus !== 'ALL' ? { approvalStatus: approvalStatus as any } : {}),
+      ...(active === 'true' ? { isActive: true } : {}),
+      ...(active === 'false' ? { isActive: false } : {}),
       ...(q && {
         OR: [
           { title: { contains: String(q) } },

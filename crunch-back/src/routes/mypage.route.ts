@@ -6,6 +6,7 @@ import {
   updateFreelancerProfile,
   getMyOrders,
   getMySales,
+  getMyServices,
   getMyProjects,
   getMyProposals,
 } from '../controllers/mypage.controller'
@@ -19,6 +20,7 @@ router.patch('/profile', updateMyProfile)
 router.patch('/profile/freelancer', updateFreelancerProfile)
 router.get('/orders', getMyOrders)
 router.get('/sales', getMySales)
+router.get('/services', getMyServices)
 router.get('/projects', getMyProjects)
 router.get('/proposals', getMyProposals)
 
