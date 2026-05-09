@@ -38,6 +38,9 @@ export default function AdminServices({ activePage, onNavigate }) {
   const [totalPages, setTotalPages] = useState(1)
   const [selected, setSelected] = useState(null)
   const [detailLoading, setDetailLoading] = useState(false)
+  const [rejectTarget, setRejectTarget] = useState(null)
+  const [rejectReason, setRejectReason] = useState('')
+  const [rejecting, setRejecting] = useState(false)
   const [toast, setToast] = useState('')
 
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(''), 3000) }
@@ -79,16 +82,44 @@ export default function AdminServices({ activePage, onNavigate }) {
   }
 
   const handleApproval = async (id, status) => {
-    const reason = status === 'REJECTED' ? prompt('반려 사유를 입력해주세요.') : ''
-    if (status === 'REJECTED' && reason === null) return
     if (!confirm(`서비스를 ${APPROVAL_LABEL[status]} 처리하시겠습니까?`)) return
 
     try {
-      await api.patch(`/api/admin/services/${id}/approval`, { status, reason })
+      await api.patch(`/api/admin/services/${id}/approval`, { status })
       showToast(`✅ ${APPROVAL_LABEL[status]} 처리 완료!`)
       fetchServices()
     } catch (err) {
       showToast('❌ ' + (err.response?.data?.message ?? '오류 발생'))
+    }
+  }
+
+  const openRejectModal = (service) => {
+    setRejectTarget(service)
+    setRejectReason('')
+  }
+
+  const submitReject = async () => {
+    if (!rejectTarget) return
+    if (!rejectReason.trim()) {
+      showToast('반려 사유를 입력해주세요.')
+      return
+    }
+
+    setRejecting(true)
+    try {
+      await api.patch(`/api/admin/services/${rejectTarget.id}/approval`, {
+        status: 'REJECTED',
+        reason: rejectReason.trim(),
+      })
+      showToast('✅ 반려 처리 완료!')
+      setRejectTarget(null)
+      setRejectReason('')
+      setSelected(null)
+      fetchServices()
+    } catch (err) {
+      showToast('❌ ' + (err.response?.data?.message ?? '오류 발생'))
+    } finally {
+      setRejecting(false)
     }
   }
 
@@ -181,7 +212,7 @@ export default function AdminServices({ activePage, onNavigate }) {
                   {svc.approvalStatus === 'PENDING' ? (
                     <>
                       <button className={styles.detailBtn} onClick={() => handleApproval(svc.id, 'APPROVED')}>승인</button>
-                      <button className={styles.detailBtn} onClick={() => handleApproval(svc.id, 'REJECTED')}>반려</button>
+                      <button className={styles.detailBtn} onClick={() => openRejectModal(svc)}>반려</button>
                     </>
                   ) : (
                     <button className={styles.detailBtn}
@@ -223,9 +254,23 @@ export default function AdminServices({ activePage, onNavigate }) {
             setSelected(null)
           }}
           onApproval={async (status) => {
-            await handleApproval(selected.service.id, status)
-            setSelected(null)
+            if (status === 'REJECTED') {
+              openRejectModal(selected.service)
+            } else {
+              await handleApproval(selected.service.id, status)
+              setSelected(null)
+            }
           }}
+        />
+      )}
+      {rejectTarget && (
+        <RejectServiceModal
+          service={rejectTarget}
+          reason={rejectReason}
+          setReason={setRejectReason}
+          submitting={rejecting}
+          onClose={() => { setRejectTarget(null); setRejectReason('') }}
+          onSubmit={submitReject}
         />
       )}
       {toast && <div className={styles.toast}>{toast}</div>}
@@ -310,6 +355,41 @@ function ServiceDetailModal({ detail, onClose, onToggleActive, onApproval }) {
                 {service.isActive ? '비활성화' : '활성화'}
               </button>
             )}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function RejectServiceModal({ service, reason, setReason, submitting, onClose, onSubmit }) {
+  return (
+    <div className={styles.overlay} onClick={onClose}>
+      <div className={styles.modal} onClick={e => e.stopPropagation()}>
+        <div className={styles.modalHeader}>
+          <h2>서비스 반려</h2>
+          <button className={styles.closeBtn} onClick={onClose}>✕</button>
+        </div>
+        <div className={styles.modalBody}>
+          <div className={styles.rejectNote}>
+            <div className={styles.sectionLabel}>대상 서비스</div>
+            <p>{service.title}</p>
+          </div>
+          <div className={styles.section}>
+            <div className={styles.sectionLabel}>반려 사유</div>
+            <textarea
+              className={styles.rejectTextarea}
+              placeholder="프리랜서가 수정할 수 있도록 구체적인 사유를 입력해주세요."
+              value={reason}
+              onChange={e => setReason(e.target.value)}
+              autoFocus
+            />
+          </div>
+          <div className={styles.modalActions}>
+            <button className={styles.detailBtn} onClick={onClose} disabled={submitting}>취소</button>
+            <button className={styles.btnReject} onClick={onSubmit} disabled={submitting}>
+              {submitting ? '처리 중...' : '반려 처리'}
+            </button>
           </div>
         </div>
       </div>
