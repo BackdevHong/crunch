@@ -123,6 +123,103 @@ export async function getUsers(req: Request, res: Response): Promise<void> {
   }
 }
 
+// 유저 상세
+export async function getUserDetail(req: Request, res: Response): Promise<void> {
+  try {
+    const { id } = req.params
+
+    const user = await prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        avatarUrl: true,
+        createdAt: true,
+        application: {
+          select: {
+            id: true,
+            role: true,
+            category: true,
+            experience: true,
+            hourlyRate: true,
+            status: true,
+            rejectedReason: true,
+            createdAt: true,
+          },
+        },
+        freelancer: {
+          select: {
+            id: true,
+            role: true,
+            category: true,
+            rating: true,
+            completedJobs: true,
+            hourlyRate: true,
+            online: true,
+            experience: true,
+            skills: { select: { skill: true } },
+          },
+        },
+        _count: {
+          select: {
+            services: true,
+            projects: true,
+            buyerOrders: true,
+            sellerOrders: true,
+            channelMemberships: true,
+          },
+        },
+      },
+    })
+
+    if (!user) {
+      res.status(404).json({ success: false, message: '유저를 찾을 수 없습니다.' })
+      return
+    }
+
+    const [recentServices, recentProjects, recentOrders] = await Promise.all([
+      prisma.service.findMany({
+        where: { sellerId: id },
+        orderBy: { createdAt: 'desc' },
+        take: 5,
+        select: { id: true, title: true, price: true, isActive: true, createdAt: true },
+      }),
+      prisma.project.findMany({
+        where: { authorId: id },
+        orderBy: { createdAt: 'desc' },
+        take: 5,
+        select: { id: true, title: true, status: true, createdAt: true },
+      }),
+      prisma.order.findMany({
+        where: { OR: [{ buyerId: id }, { sellerId: id }] },
+        orderBy: { createdAt: 'desc' },
+        take: 5,
+        select: {
+          id: true,
+          amount: true,
+          status: true,
+          createdAt: true,
+          service: { select: { title: true } },
+        },
+      }),
+    ])
+
+    ok(res, {
+      user,
+      recent: {
+        services: recentServices,
+        projects: recentProjects,
+        orders: recentOrders,
+      },
+    })
+  } catch (err) {
+    console.error('[admin/getUserDetail]', err)
+    serverError(res)
+  }
+}
+
 // 유저 역할 변경
 export async function updateUserRole(req: Request, res: Response): Promise<void> {
   try {

@@ -4,6 +4,7 @@ import { requireAdmin } from '../middlewares/requireAdmin'
 import {
   getSummary,
   getUsers,
+  getUserDetail,
   updateUserRole,
   getAdminServices,
   toggleServiceActive,
@@ -15,6 +16,7 @@ router.use(authenticate, requireAdmin)
 
 router.get('/summary', getSummary)
 router.get('/users', getUsers)
+router.get('/users/:id', getUserDetail)
 router.patch('/users/:id/role', updateUserRole)
 router.get('/services', getAdminServices)
 router.patch('/services/:id/active', toggleServiceActive)

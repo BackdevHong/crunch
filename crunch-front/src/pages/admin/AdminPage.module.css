@@ -45,12 +45,14 @@
 /* MODAL */
 .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.55); display: flex; align-items: center; justify-content: center; z-index: 200; padding: 24px; }
 .modal { background: var(--color-bg-primary); border: 0.5px solid var(--color-border); border-radius: 16px; width: 100%; max-width: 520px; max-height: 85vh; overflow-y: auto; }
+.wideModal { max-width: 760px; }
 .modalHeader { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 0.5px solid var(--color-border); }
 .modalHeader h2 { font-size: 16px; font-weight: 500; color: var(--color-text-primary); }
 .closeBtn { background: none; border: none; font-size: 16px; color: var(--color-text-secondary); cursor: pointer; }
 .modalBody { padding: 20px 24px; }
 
 .infoGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+.statGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
 .infoItem { background: var(--color-bg-secondary); border-radius: 8px; padding: 10px 14px; }
 .infoItem span { display: block; font-size: 11px; color: var(--color-text-secondary); margin-bottom: 3px; }
 .infoItem strong { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
@@ -62,6 +64,25 @@
 .tag { font-size: 12px; padding: 3px 10px; border-radius: 99px; background: var(--color-hero-blue); color: var(--color-info); }
 .link { font-size: 13px; color: var(--color-info); text-decoration: none; }
 .link:hover { text-decoration: underline; }
+
+.compactList {
+  border: 0.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.compactItem {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border-bottom: 0.5px solid var(--color-border);
+  color: var(--color-text-primary);
+  font-size: 13px;
+}
+
+.compactItem:last-child { border-bottom: none; }
+.compactItem small { color: var(--color-text-secondary); white-space: nowrap; }
 
 .rejectNote { background: var(--color-danger-bg); border-radius: 8px; padding: 12px 14px; margin-bottom: 16px; }
 .rejectNote p { font-size: 13px; color: var(--color-danger); line-height: 1.5; }
@@ -76,3 +97,15 @@
 .btnApprove:disabled, .btnReject:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--color-text-primary); color: var(--color-bg-primary); font-size: 14px; padding: 12px 24px; border-radius: 99px; z-index: 300; }
+
+@media (max-width: 760px) {
+  .infoGrid,
+  .statGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .compactItem {
+    flex-direction: column;
+    gap: 4px;
+  }
+}
