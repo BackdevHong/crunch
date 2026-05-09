@@ -10,21 +10,31 @@ const SERVICE_EMOJIS = ['🌐', '💻', '⚡', '🤖', '🛡️', '📊', '🎨'
 
 const DELIVERY_OPTIONS = ['1일', '2일', '3일', '5일', '7일', '14일', '30일']
 
+const CATEGORY_ENUM_TO_LABEL = {
+  DEV: '개발·IT',
+  DESIGN: '디자인',
+  MARKETING: '마케팅',
+  WRITING: '글쓰기·번역',
+  VIDEO: '영상·사진',
+  MUSIC: '음악·오디오',
+}
+
 export default function PostService({ onNavigate }) {
-  const { currentUser } = useApp()
+  const { currentUser, editingService, setEditingService } = useApp()
+  const isEditMode = Boolean(editingService?.id)
   const [step, setStep] = useState(1)
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState('')
 
   const [form, setForm] = useState({
-    title: '',
-    category: '',
-    emoji: '🌐',
-    skills: [],
-    price: '',
-    deliveryDays: '7일',
-    description: '',
+    title: editingService?.title ?? '',
+    category: CATEGORY_ENUM_TO_LABEL[editingService?.category] ?? editingService?.category ?? '',
+    emoji: editingService?.thumbnailUrl ?? '🌐',
+    skills: (editingService?.skills ?? []).map(skill => skill.skill ?? skill),
+    price: editingService?.price ? String(editingService.price) : '',
+    deliveryDays: editingService?.deliveryDays ? `${editingService.deliveryDays}일` : '7일',
+    description: editingService?.description ?? '',
   })
 
   const set = (key, value) => setForm(prev => ({ ...prev, [key]: value }))
@@ -44,7 +54,7 @@ export default function PostService({ onNavigate }) {
     setSubmitting(true)
     setError('')
     try {
-      await api.post('/api/services', {
+      const payload = {
         title: form.title,
         category: form.category,
         emoji: form.emoji,
@@ -52,7 +62,14 @@ export default function PostService({ onNavigate }) {
         price: Number(form.price.replace(/,/g, '')),
         deliveryDays: Number(form.deliveryDays.replace('일', '')),
         description: form.description,
-      })
+      }
+
+      if (isEditMode) {
+        await api.patch(`/api/services/${editingService.id}`, payload)
+      } else {
+        await api.post('/api/services', payload)
+      }
+      setEditingService(null)
       setSubmitted(true)
     } catch (err) {
       setError(err.response?.data?.message ?? '등록 중 오류가 발생했습니다.')
@@ -66,10 +83,10 @@ export default function PostService({ onNavigate }) {
       <div className={styles.page}>
         <div className={styles.successWrap}>
           <div className={styles.successIcon}>🎉</div>
-          <h2>서비스가 심사 요청되었습니다!</h2>
+          <h2>{isEditMode ? '서비스가 재심사 요청되었습니다!' : '서비스가 심사 요청되었습니다!'}</h2>
           <p>어드민 승인 후 서비스 목록에 노출됩니다.</p>
-          <button className={styles.btnNext} onClick={() => onNavigate('services')}>
-            서비스 목록 보러 가기
+          <button className={styles.btnNext} onClick={() => onNavigate('mypage')}>
+            마이페이지로 돌아가기
           </button>
         </div>
       </div>
@@ -79,8 +96,8 @@ export default function PostService({ onNavigate }) {
   return (
     <div className={styles.page}>
       <div className={`${styles.hero} ${styles.serviceHero}`}>
-        <h1><span className={styles.serviceHeroAccent}>서비스</span>를 등록하세요</h1>
-        <p>내 전문 서비스를 올리고 클라이언트를 만나보세요</p>
+        <h1><span className={styles.serviceHeroAccent}>서비스</span>를 {isEditMode ? '수정하세요' : '등록하세요'}</h1>
+        <p>{isEditMode ? '수정한 내용은 다시 심사를 거쳐 노출됩니다' : '내 전문 서비스를 올리고 클라이언트를 만나보세요'}</p>
       </div>
 
       <Stepper current={step} steps={STEPS} />
@@ -105,7 +122,7 @@ export default function PostService({ onNavigate }) {
           {step < 4
             ? <button className={styles.btnNext} onClick={() => setStep(s => s + 1)}>다음 →</button>
             : <button className={styles.btnSubmit} onClick={handleSubmit} disabled={submitting}>
-                {submitting ? '등록 중...' : '🚀 서비스 등록하기'}
+                {submitting ? '요청 중...' : (isEditMode ? '재심사 요청하기' : '서비스 등록하기')}
               </button>
           }
         </div>

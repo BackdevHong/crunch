@@ -54,6 +54,61 @@ export async function createService(req: Request, res: Response): Promise<void> 
   }
 }
 
+export async function updateMyService(req: Request, res: Response): Promise<void> {
+  try {
+    const sellerId = req.user!.userId
+    const { id } = req.params
+    const { title, category, emoji, skills, price, deliveryDays, description } = req.body
+
+    const existing = await prisma.service.findUnique({
+      where: { id },
+      select: { sellerId: true },
+    })
+
+    if (!existing || existing.sellerId !== sellerId) {
+      res.status(404).json({ success: false, message: '서비스를 찾을 수 없습니다.' })
+      return
+    }
+
+    const categoryEnum = CATEGORY_LABEL_TO_ENUM[category]
+    if (!title || !categoryEnum || price == null || deliveryDays == null) {
+      fail(res, '제목, 카테고리, 가격, 납기일은 필수입니다.')
+      return
+    }
+
+    const service = await prisma.$transaction(async (tx) => {
+      await tx.serviceSkill.deleteMany({ where: { serviceId: id } })
+
+      return tx.service.update({
+        where: { id },
+        data: {
+          title,
+          category: categoryEnum,
+          price: Number(price),
+          deliveryDays: Number(deliveryDays),
+          description: description ?? null,
+          thumbnailUrl: emoji ?? null,
+          isActive: false,
+          approvalStatus: 'PENDING',
+          rejectedReason: null,
+          ...(Array.isArray(skills) && skills.length > 0
+            ? { skills: { create: skills.map((s: string) => ({ skill: s })) } }
+            : {}),
+        },
+        include: {
+          skills: { select: { skill: true } },
+          seller: { select: { id: true, name: true } },
+        },
+      })
+    })
+
+    ok(res, service)
+  } catch (err) {
+    console.error('[updateMyService]', err)
+    serverError(res)
+  }
+}
+
 export async function getServices(req: Request, res: Response): Promise<void> {
   try {
     const {

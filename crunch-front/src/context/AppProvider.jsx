@@ -14,6 +14,7 @@ export function AppProvider({ children }) {
 
   const [selectedService, setSelectedService] = useState(null)
   const [selectedFreelancer, setSelectedFreelancer] = useState(null)
+  const [editingService, setEditingService] = useState(null)
 
   // ── 앱 시작 시 로그인 상태 복원 ──────────────────────────────
   useEffect(() => {
@@ -91,6 +92,7 @@ export function AppProvider({ children }) {
       services, freelancers, projects, addProject,
       selectedService, setSelectedService,
       selectedFreelancer, setSelectedFreelancer,
+      editingService, setEditingService,
     }}>
       {children}
     </AppContext.Provider>

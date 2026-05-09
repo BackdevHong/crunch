@@ -37,7 +37,7 @@ const TABS_CLIENT     = ['프로필', '주문 내역', '내 프로젝트']
 const TABS_FREELANCER = ['프로필', '프리랜서 프로필', '내 서비스', '주문 내역', '판매 내역', '내 프로젝트', '내 제안']
 
 export default function MyPage({ onNavigate }) {
-  const { currentUser } = useApp()
+  const { currentUser, setEditingService } = useApp()
   const [activeTab, setActiveTab] = useState('프로필')
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -103,7 +103,15 @@ export default function MyPage({ onNavigate }) {
             />
           )}
           {activeTab === '주문 내역' && <OrdersTab />}
-          {activeTab === '내 서비스' && isFreelancer && <MyServicesTab onNavigate={onNavigate} />}
+          {activeTab === '내 서비스' && isFreelancer && (
+            <MyServicesTab
+              onNavigate={onNavigate}
+              onEdit={(service) => {
+                setEditingService(service)
+                onNavigate('post-service')
+              }}
+            />
+          )}
           {activeTab === '판매 내역' && isFreelancer && <SalesTab />}
           {activeTab === '내 프로젝트' && <ProjectsTab />}
           {activeTab === '내 제안' && isFreelancer && <MyProposalsTab />}
@@ -286,7 +294,7 @@ function FreelancerProfileTab({ freelancer, onUpdate, onNavigate }) {
 }
 
 // ── 내 서비스 탭 (프리랜서) ─────────────────────────────────
-function MyServicesTab({ onNavigate }) {
+function MyServicesTab({ onNavigate, onEdit }) {
   const [services, setServices] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -342,6 +350,9 @@ function MyServicesTab({ onNavigate }) {
               {service.isActive ? '노출 중' : '미노출'}
             </span>
             <div className={styles.listSub}>{new Date(service.createdAt).toLocaleDateString('ko-KR')}</div>
+            <button className={styles.proposalToggleBtn} onClick={() => onEdit(service)}>
+              수정 후 재심사
+            </button>
           </div>
         </div>
       ))}

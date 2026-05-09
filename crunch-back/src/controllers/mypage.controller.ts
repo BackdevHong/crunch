@@ -149,10 +149,13 @@ export async function getMyServices(req: Request, res: Response): Promise<void> 
         deliveryDays: true,
         rating: true,
         reviewCount: true,
+        description: true,
+        thumbnailUrl: true,
         isActive: true,
         approvalStatus: true,
         rejectedReason: true,
         createdAt: true,
+        skills: { select: { skill: true } },
         _count: { select: { orders: true } },
       },
     })
