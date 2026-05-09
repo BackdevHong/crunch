@@ -128,8 +128,25 @@ model User {
   completedTodoItems  TodoItem[]        @relation("TodoItemCompleter")
   channelMessageReactions ChannelMessageReaction[]
   adminAuditLogs      AdminAuditLog[]
+  notifications       UserNotification[]
 
   @@map("users")
+}
+
+model UserNotification {
+  id        String    @id @default(uuid()) @db.Char(36)
+  userId    String    @map("user_id") @db.Char(36)
+  type      String    @db.VarChar(80)
+  title     String    @db.VarChar(120)
+  message   String    @db.VarChar(255)
+  link      String?   @db.VarChar(80)
+  readAt    DateTime? @map("read_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, readAt])
+  @@map("user_notifications")
 }
 
 model AdminAuditLog {

@@ -2,6 +2,8 @@ import { Router } from 'express'
 import { authenticate } from '../middlewares/authenticate'
 import {
   getMyProfile,
+  getMyNotifications,
+  markMyNotificationsRead,
   updateMyProfile,
   updateFreelancerProfile,
   getMyOrders,
@@ -16,6 +18,8 @@ const router = Router()
 router.use(authenticate)
 
 router.get('/profile', getMyProfile)
+router.get('/notifications', getMyNotifications)
+router.patch('/notifications/read', markMyNotificationsRead)
 router.patch('/profile', updateMyProfile)
 router.patch('/profile/freelancer', updateFreelancerProfile)
 router.get('/orders', getMyOrders)

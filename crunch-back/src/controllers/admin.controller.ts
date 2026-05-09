@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import { prisma } from '../lib/prisma'
 import { ok, serverError } from '../lib/response'
 import { writeAdminAuditLog } from '../lib/adminAudit'
+import { createUserNotification } from '../lib/notification'
 import { Prisma } from '@prisma/client'
 
 // 어드민 대시보드 요약
@@ -356,6 +357,13 @@ export async function updateUserRole(req: Request, res: Response): Promise<void>
       message: `${user.name}님의 역할을 ${role}(으)로 변경했습니다.`,
       metadata: { role },
     })
+    await createUserNotification({
+      userId: user.id,
+      type: 'USER_ROLE_UPDATED',
+      title: '역할이 변경되었습니다',
+      message: `계정 역할이 ${role}(으)로 변경되었습니다.`,
+      link: 'mypage',
+    })
 
     ok(res, user)
   } catch (err) {
@@ -484,7 +492,7 @@ export async function toggleServiceActive(req: Request, res: Response): Promise<
 
     const target = await prisma.service.findUnique({
       where: { id },
-      select: { approvalStatus: true },
+      select: { approvalStatus: true, sellerId: true, title: true },
     })
 
     if (!target) {
@@ -509,6 +517,13 @@ export async function toggleServiceActive(req: Request, res: Response): Promise<
       targetId: service.id,
       message: `서비스 "${service.title}"을 ${isActive ? '활성화' : '비활성화'}했습니다.`,
       metadata: { isActive, approvalStatus: service.approvalStatus },
+    })
+    await createUserNotification({
+      userId: target.sellerId,
+      type: isActive ? 'SERVICE_ACTIVATED' : 'SERVICE_DEACTIVATED',
+      title: `서비스가 ${isActive ? '활성화' : '비활성화'}되었습니다`,
+      message: `"${target.title}" 서비스의 노출 상태가 변경되었습니다.`,
+      link: 'mypage',
     })
 
     ok(res, service)
@@ -536,7 +551,7 @@ export async function updateServiceApproval(req: Request, res: Response): Promis
         rejectedReason: status === 'REJECTED' ? (reason ?? null) : null,
         isActive: status === 'APPROVED',
       },
-      select: { id: true, title: true, isActive: true, approvalStatus: true, rejectedReason: true },
+      select: { id: true, title: true, sellerId: true, isActive: true, approvalStatus: true, rejectedReason: true },
     })
 
     await writeAdminAuditLog({
@@ -546,6 +561,15 @@ export async function updateServiceApproval(req: Request, res: Response): Promis
       targetId: service.id,
       message: `서비스 "${service.title}"을 ${status === 'APPROVED' ? '승인' : status === 'REJECTED' ? '반려' : '심사중으로 변경'}했습니다.`,
       metadata: { status, reason: reason ?? null },
+    })
+    await createUserNotification({
+      userId: service.sellerId,
+      type: `SERVICE_${status}`,
+      title: `서비스가 ${status === 'APPROVED' ? '승인' : status === 'REJECTED' ? '반려' : '심사중'}되었습니다`,
+      message: status === 'REJECTED'
+        ? `"${service.title}" 서비스가 반려되었습니다. 사유를 확인하고 재심사를 요청해주세요.`
+        : `"${service.title}" 서비스 심사 상태가 변경되었습니다.`,
+      link: 'mypage',
     })
 
     ok(res, service)

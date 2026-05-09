@@ -1,4 +1,6 @@
+import { useEffect, useState } from 'react'
 import { useApp } from '../context/useApp'
+import api from '../lib/api'
 import styles from './Navbar.module.css'
 
 const isFreelancer = (user) => user?.role === 'freelancer'
@@ -7,6 +9,39 @@ export default function Navbar({ activePage, onNavigate, onLogin, onSignup, them
   const { currentUser, logout } = useApp()
   const freelancer = isFreelancer(currentUser)
   const isDark = theme === 'dark'
+  const [notifications, setNotifications] = useState([])
+  const [unreadCount, setUnreadCount] = useState(0)
+  const [noticeOpen, setNoticeOpen] = useState(false)
+
+  useEffect(() => {
+    if (!currentUser) {
+      setNotifications([])
+      setUnreadCount(0)
+      setNoticeOpen(false)
+      return
+    }
+
+    api.get('/api/mypage/notifications')
+      .then(({ data }) => {
+        setNotifications(data.data.notifications)
+        setUnreadCount(data.data.unreadCount)
+      })
+      .catch(console.error)
+  }, [currentUser?.id])
+
+  const toggleNotifications = async () => {
+    const nextOpen = !noticeOpen
+    setNoticeOpen(nextOpen)
+    if (nextOpen && unreadCount > 0) {
+      try {
+        await api.patch('/api/mypage/notifications/read')
+        setUnreadCount(0)
+        setNotifications(prev => prev.map(item => ({ ...item, readAt: item.readAt ?? new Date().toISOString() })))
+      } catch (err) {
+        console.error(err)
+      }
+    }
+  }
 
   const navItems = [
     { label: '홈', page: 'home' },
@@ -67,6 +102,39 @@ export default function Navbar({ activePage, onNavigate, onLogin, onSignup, them
         </button>
         {currentUser ? (
           <>
+            <div className={styles.noticeWrap}>
+              <button
+                className={styles.themeToggle}
+                type="button"
+                onClick={toggleNotifications}
+                title="알림"
+                aria-label="알림"
+              >
+                <span aria-hidden="true">!</span>
+                {unreadCount > 0 && <span className={styles.noticeBadge}>{unreadCount > 9 ? '9+' : unreadCount}</span>}
+              </button>
+              {noticeOpen && (
+                <div className={styles.noticePanel}>
+                  <div className={styles.noticeHeader}>알림</div>
+                  {notifications.length === 0 ? (
+                    <div className={styles.noticeEmpty}>새 알림이 없습니다.</div>
+                  ) : notifications.map(item => (
+                    <button
+                      key={item.id}
+                      className={styles.noticeItem}
+                      onClick={() => {
+                        setNoticeOpen(false)
+                        if (item.link) onNavigate(item.link)
+                      }}
+                    >
+                      <strong>{item.title}</strong>
+                      <span>{item.message}</span>
+                      <small>{new Date(item.createdAt).toLocaleString('ko-KR')}</small>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
             <div
               className={styles.userAvatar}
               style={{ background: currentUser.avatarBg, color: currentUser.avatarColor, cursor: 'pointer' }}

@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import { prisma } from '../lib/prisma'
 import { ok, created, fail, serverError } from '../lib/response'
 import { writeAdminAuditLog } from '../lib/adminAudit'
+import { createUserNotification } from '../lib/notification'
 import { CATEGORY_MAP } from '../lib/contains'
 
 // 프리랜서 신청
@@ -173,6 +174,13 @@ export async function approveApplication(req: Request, res: Response): Promise<v
       message: `${application.user.name}님의 프리랜서 신청을 승인했습니다.`,
       metadata: { userId: application.userId },
     })
+    await createUserNotification({
+      userId: application.userId,
+      type: 'FREELANCER_APPLICATION_APPROVED',
+      title: '프리랜서 신청이 승인되었습니다',
+      message: '이제 프리랜서 기능을 사용할 수 있습니다.',
+      link: 'mypage',
+    })
 
     ok(res, { message: '승인이 완료되었습니다.' })
   } catch (err) {
@@ -209,6 +217,13 @@ export async function rejectApplication(req: Request, res: Response): Promise<vo
       targetId: application.id,
       message: '프리랜서 신청을 거절했습니다.',
       metadata: { userId: application.userId, reason: reason ?? null },
+    })
+    await createUserNotification({
+      userId: application.userId,
+      type: 'FREELANCER_APPLICATION_REJECTED',
+      title: '프리랜서 신청이 거절되었습니다',
+      message: '마이페이지에서 거절 사유를 확인해주세요.',
+      link: 'mypage',
     })
 
     ok(res, { message: '거절 처리되었습니다.' })

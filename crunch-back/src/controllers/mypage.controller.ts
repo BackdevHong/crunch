@@ -32,6 +32,63 @@ export async function getMyProfile(req: Request, res: Response): Promise<void> {
   }
 }
 
+// 내 알림 목록
+export async function getMyNotifications(req: Request, res: Response): Promise<void> {
+  try {
+    const userId = req.user!.userId
+    const notifications = await prisma.$queryRaw<Array<{
+      id: string
+      type: string
+      title: string
+      message: string
+      link: string | null
+      readAt: Date | null
+      createdAt: Date
+    }>>`
+      SELECT
+        id,
+        type,
+        title,
+        message,
+        link,
+        read_at AS readAt,
+        created_at AS createdAt
+      FROM user_notifications
+      WHERE user_id = ${userId}
+      ORDER BY created_at DESC
+      LIMIT 20
+    `
+    const unreadRows = await prisma.$queryRaw<Array<{ total: bigint }>>`
+      SELECT COUNT(*) AS total
+      FROM user_notifications
+      WHERE user_id = ${userId} AND read_at IS NULL
+    `
+
+    ok(res, {
+      notifications,
+      unreadCount: Number(unreadRows[0]?.total ?? 0),
+    })
+  } catch (err) {
+    console.error('[getMyNotifications]', err)
+    serverError(res)
+  }
+}
+
+// 내 알림 읽음 처리
+export async function markMyNotificationsRead(req: Request, res: Response): Promise<void> {
+  try {
+    await prisma.$executeRaw`
+      UPDATE user_notifications
+      SET read_at = NOW(3)
+      WHERE user_id = ${req.user!.userId} AND read_at IS NULL
+    `
+    ok(res, { success: true })
+  } catch (err) {
+    console.error('[markMyNotificationsRead]', err)
+    serverError(res)
+  }
+}
+
 // 기본 프로필 수정 (이름, 아바타)
 export async function updateMyProfile(req: Request, res: Response): Promise<void> {
   try {
