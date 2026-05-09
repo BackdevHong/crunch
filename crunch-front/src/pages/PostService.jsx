@@ -66,8 +66,8 @@ export default function PostService({ onNavigate }) {
       <div className={styles.page}>
         <div className={styles.successWrap}>
           <div className={styles.successIcon}>🎉</div>
-          <h2>서비스가 등록되었습니다!</h2>
-          <p>서비스 목록에 노출되어 클라이언트에게 발견될 거예요.</p>
+          <h2>서비스가 심사 요청되었습니다!</h2>
+          <p>어드민 승인 후 서비스 목록에 노출됩니다.</p>
           <button className={styles.btnNext} onClick={() => onNavigate('services')}>
             서비스 목록 보러 가기
           </button>
@@ -78,8 +78,8 @@ export default function PostService({ onNavigate }) {
 
   return (
     <div className={styles.page}>
-      <div className={styles.hero} style={{ background: 'linear-gradient(135deg, #f0f7ff 0%, #daeeff 100%)' }}>
-        <h1><span style={{ color: '#1a73e8' }}>서비스</span>를 등록하세요</h1>
+      <div className={`${styles.hero} ${styles.serviceHero}`}>
+        <h1><span className={styles.serviceHeroAccent}>서비스</span>를 등록하세요</h1>
         <p>내 전문 서비스를 올리고 클라이언트를 만나보세요</p>
       </div>
 
@@ -92,11 +92,7 @@ export default function PostService({ onNavigate }) {
         {step === 4 && <Step4 form={form} currentUser={currentUser} />}
 
         {error && (
-          <div style={{
-            background: '#fcebeb', border: '0.5px solid #f09595',
-            borderRadius: '8px', padding: '10px 14px',
-            fontSize: '13px', color: '#a32d2d', marginBottom: '12px',
-          }}>
+          <div className={styles.errorBox}>
             {error}
           </div>
         )}

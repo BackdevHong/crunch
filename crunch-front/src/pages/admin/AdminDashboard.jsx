@@ -5,6 +5,7 @@ import styles from './AdminDashboard.module.css'
 
 const ROLE_LABEL = { client: '의뢰인', freelancer: '프리랜서', admin: '어드민' }
 const STATUS_LABEL = { PENDING: '대기중', APPROVED: '승인', REJECTED: '거절' }
+const SERVICE_STATUS_LABEL = { PENDING: '심사중', APPROVED: '승인', REJECTED: '반려' }
 const CATEGORY_LABEL = {
   DEV: '개발·IT', DESIGN: '디자인', MARKETING: '마케팅',
   WRITING: '글쓰기·번역', VIDEO: '영상·사진', MUSIC: '음악·오디오',
@@ -51,12 +52,12 @@ export default function AdminDashboard({ activePage, onNavigate }) {
         tone: 'warning',
       },
       {
-        label: '비활성 서비스',
-        value: metrics.services.inactive,
-        detail: `전체 서비스 ${metrics.services.total}개 중 활성 ${metrics.services.active}개`,
+        label: '서비스 심사 대기',
+        value: metrics.services.pending,
+        detail: `승인 활성 ${metrics.services.active}개 · 반려 ${metrics.services.rejected}개`,
         action: '서비스 관리',
         page: 'admin-services',
-        tone: 'danger',
+        tone: 'warning',
       },
       {
         label: '운영 유저',
@@ -142,8 +143,8 @@ export default function AdminDashboard({ activePage, onNavigate }) {
                       <strong>{service.title}</strong>
                       <span>{service.seller?.name ?? '판매자 없음'} · {service.price.toLocaleString()}원</span>
                     </div>
-                    <Badge tone={service.isActive ? 'approved' : 'rejected'}>
-                      {service.isActive ? '활성' : '비활성'}
+                    <Badge tone={service.approvalStatus.toLowerCase()}>
+                      {SERVICE_STATUS_LABEL[service.approvalStatus]}
                     </Badge>
                   </li>
                 ))}

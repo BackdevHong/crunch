@@ -9,7 +9,7 @@ export async function createOrder(req: Request, res: Response): Promise<void> {
     const buyerId = req.user!.userId
 
     const service = await prisma.service.findUnique({
-      where: { id: serviceId, isActive: true },
+      where: { id: serviceId, isActive: true, approvalStatus: 'APPROVED' },
       select: { id: true, sellerId: true, price: true },
     })
 

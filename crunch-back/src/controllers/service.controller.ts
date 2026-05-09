@@ -33,7 +33,8 @@ export async function createService(req: Request, res: Response): Promise<void> 
         deliveryDays: Number(deliveryDays),
         description: description ?? null,
         thumbnailUrl: emoji ?? null,
-        isActive: true,
+        isActive: false,
+        approvalStatus: 'PENDING',
         rating: 0,
         reviewCount: 0,
         ...(Array.isArray(skills) && skills.length > 0
@@ -76,6 +77,7 @@ export async function getServices(req: Request, res: Response): Promise<void> {
     // where 조건 조립
     const where: Prisma.ServiceWhereInput = {
       isActive: true,
+      approvalStatus: 'APPROVED',
       ...(category && { category: category as any }),
       ...(minPrice || maxPrice ? {
         price: {
@@ -161,7 +163,7 @@ export async function getServiceById(req: Request, res: Response): Promise<void>
       },
     })
 
-    if (!service || !service.isActive) {
+    if (!service || !service.isActive || service.approvalStatus !== 'APPROVED') {
       res.status(404).json({ success: false, message: '서비스를 찾을 수 없습니다.' })
       return
     }

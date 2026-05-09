@@ -17,6 +17,8 @@ export async function getSummary(req: Request, res: Response): Promise<void> {
       totalServices,
       activeServices,
       inactiveServices,
+      pendingServices,
+      rejectedServices,
       openProjects,
       totalOrders,
       recentUsers,
@@ -31,8 +33,10 @@ export async function getSummary(req: Request, res: Response): Promise<void> {
       prisma.freelancerApplication.count({ where: { status: 'APPROVED' } }),
       prisma.freelancerApplication.count({ where: { status: 'REJECTED' } }),
       prisma.service.count(),
-      prisma.service.count({ where: { isActive: true } }),
+      prisma.service.count({ where: { isActive: true, approvalStatus: 'APPROVED' } }),
       prisma.service.count({ where: { isActive: false } }),
+      prisma.service.count({ where: { approvalStatus: 'PENDING' } }),
+      prisma.service.count({ where: { approvalStatus: 'REJECTED' } }),
       prisma.project.count({ where: { status: 'OPEN' } }),
       prisma.order.count(),
       prisma.user.findMany({
@@ -56,6 +60,7 @@ export async function getSummary(req: Request, res: Response): Promise<void> {
           category: true,
           price: true,
           isActive: true,
+          approvalStatus: true,
           createdAt: true,
           seller: { select: { id: true, name: true } },
         },
@@ -66,7 +71,7 @@ export async function getSummary(req: Request, res: Response): Promise<void> {
       metrics: {
         users: { total: totalUsers, client: clientUsers, freelancer: freelancerUsers, admin: adminUsers },
         applications: { pending: pendingApplications, approved: approvedApplications, rejected: rejectedApplications },
-        services: { total: totalServices, active: activeServices, inactive: inactiveServices },
+        services: { total: totalServices, active: activeServices, inactive: inactiveServices, pending: pendingServices, rejected: rejectedServices },
         projects: { open: openProjects },
         orders: { total: totalOrders },
       },
@@ -268,7 +273,7 @@ export async function getAdminServices(req: Request, res: Response): Promise<voi
         take: limitNum,
         select: {
           id: true, title: true, category: true,
-          price: true, rating: true, isActive: true, createdAt: true,
+          price: true, rating: true, isActive: true, approvalStatus: true, createdAt: true,
           seller: { select: { id: true, name: true } },
         },
       }),
@@ -285,21 +290,131 @@ export async function getAdminServices(req: Request, res: Response): Promise<voi
   }
 }
 
+// 서비스 상세
+export async function getServiceDetail(req: Request, res: Response): Promise<void> {
+  try {
+    const { id } = req.params
+
+    const service = await prisma.service.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        category: true,
+        price: true,
+        deliveryDays: true,
+        badge: true,
+        rating: true,
+        reviewCount: true,
+        thumbnailUrl: true,
+        isActive: true,
+        approvalStatus: true,
+        rejectedReason: true,
+        createdAt: true,
+        updatedAt: true,
+        seller: { select: { id: true, name: true, email: true, role: true, createdAt: true } },
+        skills: { select: { skill: true } },
+        _count: { select: { orders: true } },
+      },
+    })
+
+    if (!service) {
+      res.status(404).json({ success: false, message: '서비스를 찾을 수 없습니다.' })
+      return
+    }
+
+    const [recentOrders, orderStats] = await Promise.all([
+      prisma.order.findMany({
+        where: { serviceId: id },
+        orderBy: { createdAt: 'desc' },
+        take: 5,
+        select: {
+          id: true,
+          amount: true,
+          status: true,
+          createdAt: true,
+          buyer: { select: { id: true, name: true, email: true } },
+        },
+      }),
+      prisma.order.groupBy({
+        by: ['status'],
+        where: { serviceId: id },
+        _count: { status: true },
+      }),
+    ])
+
+    ok(res, {
+      service,
+      orderStats: orderStats.reduce<Record<string, number>>((acc, row) => {
+        acc[row.status] = row._count.status
+        return acc
+      }, {}),
+      recent: { orders: recentOrders },
+    })
+  } catch (err) {
+    console.error('[admin/getServiceDetail]', err)
+    serverError(res)
+  }
+}
+
 // 서비스 활성/비활성 전환
 export async function toggleServiceActive(req: Request, res: Response): Promise<void> {
   try {
     const { id } = req.params
     const { isActive } = req.body
 
+    const target = await prisma.service.findUnique({
+      where: { id },
+      select: { approvalStatus: true },
+    })
+
+    if (!target) {
+      res.status(404).json({ success: false, message: '서비스를 찾을 수 없습니다.' })
+      return
+    }
+    if (isActive && target.approvalStatus !== 'APPROVED') {
+      res.status(400).json({ success: false, message: '승인된 서비스만 활성화할 수 있습니다.' })
+      return
+    }
+
     const service = await prisma.service.update({
       where: { id },
       data: { isActive },
-      select: { id: true, title: true, isActive: true },
+      select: { id: true, title: true, isActive: true, approvalStatus: true },
     })
 
     ok(res, service)
   } catch (err) {
     console.error('[admin/toggleService]', err)
+    serverError(res)
+  }
+}
+
+// 서비스 승인 상태 변경
+export async function updateServiceApproval(req: Request, res: Response): Promise<void> {
+  try {
+    const { id } = req.params
+    const { status, reason } = req.body
+
+    if (!['PENDING', 'APPROVED', 'REJECTED'].includes(status)) {
+      res.status(400).json({ success: false, message: '유효하지 않은 승인 상태입니다.' })
+      return
+    }
+
+    const service = await prisma.service.update({
+      where: { id },
+      data: {
+        approvalStatus: status,
+        rejectedReason: status === 'REJECTED' ? (reason ?? null) : null,
+        isActive: status === 'APPROVED',
+      },
+      select: { id: true, title: true, isActive: true, approvalStatus: true, rejectedReason: true },
+    })
+
+    ok(res, service)
+  } catch (err) {
+    console.error('[admin/updateServiceApproval]', err)
     serverError(res)
   }
 }

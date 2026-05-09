@@ -7,6 +7,25 @@ const CATEGORY_LABEL = {
   DEV: '개발·IT', DESIGN: '디자인', MARKETING: '마케팅',
   WRITING: '글쓰기·번역', VIDEO: '영상·사진', MUSIC: '음악·오디오',
 }
+const ORDER_STATUS_LABEL = {
+  PENDING: '결제대기',
+  IN_PROGRESS: '진행중',
+  REVIEW: '검수중',
+  DONE: '완료',
+  CANCELLED: '취소',
+  REFUNDED: '환불',
+}
+const APPROVAL_LABEL = { PENDING: '심사중', APPROVED: '승인', REJECTED: '반려' }
+const APPROVAL_COLOR = {
+  PENDING: 'var(--color-warning)',
+  APPROVED: 'var(--color-success)',
+  REJECTED: 'var(--color-danger)',
+}
+const APPROVAL_BG = {
+  PENDING: 'var(--color-warning-bg)',
+  APPROVED: 'var(--color-success-bg)',
+  REJECTED: 'var(--color-danger-bg)',
+}
 
 export default function AdminServices({ activePage, onNavigate }) {
   const [services, setServices] = useState([])
@@ -15,6 +34,8 @@ export default function AdminServices({ activePage, onNavigate }) {
   const [query, setQuery] = useState('')
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
+  const [selected, setSelected] = useState(null)
+  const [detailLoading, setDetailLoading] = useState(false)
   const [toast, setToast] = useState('')
 
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(''), 3000) }
@@ -49,6 +70,33 @@ export default function AdminServices({ activePage, onNavigate }) {
     }
   }
 
+  const handleApproval = async (id, status) => {
+    const reason = status === 'REJECTED' ? prompt('반려 사유를 입력해주세요.') : ''
+    if (status === 'REJECTED' && reason === null) return
+    if (!confirm(`서비스를 ${APPROVAL_LABEL[status]} 처리하시겠습니까?`)) return
+
+    try {
+      await api.patch(`/api/admin/services/${id}/approval`, { status, reason })
+      showToast(`✅ ${APPROVAL_LABEL[status]} 처리 완료!`)
+      fetchServices()
+    } catch (err) {
+      showToast('❌ ' + (err.response?.data?.message ?? '오류 발생'))
+    }
+  }
+
+  const openServiceDetail = async (serviceId) => {
+    setSelected(null)
+    setDetailLoading(true)
+    try {
+      const { data } = await api.get(`/api/admin/services/${serviceId}`)
+      setSelected(data.data)
+    } catch (err) {
+      showToast('❌ ' + (err.response?.data?.message ?? '서비스 상세를 불러오지 못했습니다.'))
+    } finally {
+      setDetailLoading(false)
+    }
+  }
+
   return (
     <AdminLayout activePage={activePage} onNavigate={onNavigate}>
       <div className={styles.page}>
@@ -67,13 +115,13 @@ export default function AdminServices({ activePage, onNavigate }) {
         : services.length === 0 ? <div className={styles.empty}>서비스가 없습니다.</div>
         : (
           <div className={styles.table}>
-            <div className={styles.thead} style={{ gridTemplateColumns: '2.5fr 1fr 1fr 0.8fr 0.8fr 0.7fr 0.7fr' }}>
+            <div className={styles.thead} style={{ gridTemplateColumns: '2.1fr 1fr 1fr 0.8fr 0.8fr 0.8fr 0.7fr 1.4fr' }}>
               <span>서비스명</span><span>판매자</span><span>분야</span>
-              <span>가격</span><span>평점</span><span>상태</span><span>관리</span>
+              <span>가격</span><span>평점</span><span>심사</span><span>노출</span><span>관리</span>
             </div>
             {services.map(svc => (
               <div key={svc.id} className={styles.trow}
-                style={{ gridTemplateColumns: '2.5fr 1fr 1fr 0.8fr 0.8fr 0.7fr 0.7fr' }}>
+                style={{ gridTemplateColumns: '2.1fr 1fr 1fr 0.8fr 0.8fr 0.8fr 0.7fr 1.4fr' }}>
                 <span>
                   <div className={styles.name}>{svc.title}</div>
                 </span>
@@ -83,17 +131,36 @@ export default function AdminServices({ activePage, onNavigate }) {
                 <span className={styles.sub}>⭐ {Number(svc.rating).toFixed(1)}</span>
                 <span>
                   <span className={styles.statusBadge} style={{
+                    background: APPROVAL_BG[svc.approvalStatus],
+                    color: APPROVAL_COLOR[svc.approvalStatus],
+                  }}>
+                    {APPROVAL_LABEL[svc.approvalStatus]}
+                  </span>
+                </span>
+                <span>
+                  <span className={styles.statusBadge} style={{
                     background: svc.isActive ? 'var(--color-success-bg)' : 'var(--color-bg-secondary)',
                     color: svc.isActive ? 'var(--color-success)' : 'var(--color-text-secondary)',
                   }}>
                     {svc.isActive ? '활성' : '비활성'}
                   </span>
                 </span>
-                <span>
-                  <button className={styles.detailBtn}
-                    onClick={() => handleToggleActive(svc.id, svc.isActive)}>
-                    {svc.isActive ? '비활성화' : '활성화'}
+                <span className={styles.actionGroup}>
+                  <button className={styles.detailBtn} onClick={() => openServiceDetail(svc.id)}>
+                    상세
                   </button>
+                  {svc.approvalStatus === 'PENDING' ? (
+                    <>
+                      <button className={styles.detailBtn} onClick={() => handleApproval(svc.id, 'APPROVED')}>승인</button>
+                      <button className={styles.detailBtn} onClick={() => handleApproval(svc.id, 'REJECTED')}>반려</button>
+                    </>
+                  ) : (
+                    <button className={styles.detailBtn}
+                      onClick={() => handleToggleActive(svc.id, svc.isActive)}
+                      disabled={svc.approvalStatus !== 'APPROVED'}>
+                      {svc.isActive ? '비활성화' : '활성화'}
+                    </button>
+                  )}
                 </span>
               </div>
             ))}
@@ -108,7 +175,144 @@ export default function AdminServices({ activePage, onNavigate }) {
           </div>
         )}
       </div>
+      {detailLoading && (
+        <div className={styles.overlay}>
+          <div className={styles.modal}>
+            <div className={styles.modalBody}>
+              <div className={styles.empty}>서비스 상세를 불러오는 중...</div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {selected && (
+        <ServiceDetailModal
+          detail={selected}
+          onClose={() => setSelected(null)}
+          onToggleActive={async () => {
+            await handleToggleActive(selected.service.id, selected.service.isActive)
+            setSelected(null)
+          }}
+          onApproval={async (status) => {
+            await handleApproval(selected.service.id, status)
+            setSelected(null)
+          }}
+        />
+      )}
       {toast && <div className={styles.toast}>{toast}</div>}
     </AdminLayout>
+  )
+}
+
+function ServiceDetailModal({ detail, onClose, onToggleActive, onApproval }) {
+  const { service, orderStats, recent } = detail
+  const orderTotal = service._count.orders
+
+  return (
+    <div className={styles.overlay} onClick={onClose}>
+      <div className={`${styles.modal} ${styles.wideModal}`} onClick={e => e.stopPropagation()}>
+        <div className={styles.modalHeader}>
+          <h2>{service.title}</h2>
+          <button className={styles.closeBtn} onClick={onClose}>✕</button>
+        </div>
+        <div className={styles.modalBody}>
+          <div className={styles.infoGrid}>
+            <InfoItem label="판매자" value={`${service.seller?.name ?? '-'} (${service.seller?.email ?? '-'})`} />
+            <InfoItem label="분야" value={CATEGORY_LABEL[service.category] ?? service.category} />
+            <InfoItem label="가격" value={`${service.price.toLocaleString()}원`} />
+            <InfoItem label="배송일" value={`${service.deliveryDays}일`} />
+            <InfoItem label="평점" value={`${Number(service.rating).toFixed(1)} / 리뷰 ${service.reviewCount}개`} />
+            <InfoItem label="심사 상태" value={APPROVAL_LABEL[service.approvalStatus]} />
+            <InfoItem label="노출 상태" value={service.isActive ? '활성' : '비활성'} />
+            <InfoItem label="주문 수" value={`${orderTotal}건`} />
+            <InfoItem label="등록일" value={new Date(service.createdAt).toLocaleDateString('ko-KR')} />
+          </div>
+
+          {service.approvalStatus === 'REJECTED' && service.rejectedReason && (
+            <div className={styles.rejectNote}>
+              <div className={styles.sectionLabel}>반려 사유</div>
+              <p>{service.rejectedReason}</p>
+            </div>
+          )}
+
+          <div className={styles.section}>
+            <div className={styles.sectionLabel}>서비스 설명</div>
+            <p className={styles.sectionText}>{service.description || '설명이 없습니다.'}</p>
+          </div>
+
+          {service.skills?.length > 0 && (
+            <div className={styles.section}>
+              <div className={styles.sectionLabel}>스킬</div>
+              <div className={styles.tags}>
+                {service.skills.map(({ skill }) => <span key={skill} className={styles.tag}>{skill}</span>)}
+              </div>
+            </div>
+          )}
+
+          <div className={styles.section}>
+            <div className={styles.sectionLabel}>주문 상태</div>
+            <div className={styles.statGrid}>
+              {['PENDING', 'IN_PROGRESS', 'REVIEW', 'DONE'].map(status => (
+                <InfoItem
+                  key={status}
+                  label={ORDER_STATUS_LABEL[status]}
+                  value={`${orderStats[status] ?? 0}건`}
+                />
+              ))}
+            </div>
+          </div>
+
+          <RecentList title="최근 주문" items={recent.orders}
+            render={item => `${item.buyer?.name ?? '구매자 없음'} · ${item.amount.toLocaleString()}원 · ${ORDER_STATUS_LABEL[item.status] ?? item.status}`} />
+
+          <div className={styles.modalActions}>
+            <button className={styles.detailBtn} onClick={onClose}>닫기</button>
+            {service.approvalStatus === 'PENDING' ? (
+              <>
+                <button className={styles.btnReject} onClick={() => onApproval('REJECTED')}>반려</button>
+                <button className={styles.btnApprove} onClick={() => onApproval('APPROVED')}>승인</button>
+              </>
+            ) : (
+              <button
+                className={service.isActive ? styles.btnReject : styles.btnApprove}
+                onClick={onToggleActive}
+                disabled={service.approvalStatus !== 'APPROVED'}
+              >
+                {service.isActive ? '비활성화' : '활성화'}
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function InfoItem({ label, value }) {
+  return (
+    <div className={styles.infoItem}>
+      <span>{label}</span>
+      <strong>{value}</strong>
+    </div>
+  )
+}
+
+function RecentList({ title, items, render }) {
+  return (
+    <div className={styles.section}>
+      <div className={styles.sectionLabel}>{title}</div>
+      {items.length === 0 ? (
+        <p className={styles.sectionText}>내역이 없습니다.</p>
+      ) : (
+        <div className={styles.compactList}>
+          {items.map(item => (
+            <div key={item.id} className={styles.compactItem}>
+              <span>{render(item)}</span>
+              <small>{new Date(item.createdAt).toLocaleDateString('ko-KR')}</small>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   )
 }

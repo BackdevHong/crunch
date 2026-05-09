@@ -71,6 +71,12 @@ enum ApplicationStatus {
   REJECTED
 }
 
+enum ServiceApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 model FreelancerApplication {
   id             String            @id @default(uuid()) @db.Char(36)
   userId         String            @unique @map("user_id") @db.Char(36)
@@ -170,6 +176,8 @@ model Service {
   reviewCount  Int             @default(0) @map("review_count")
   thumbnailUrl String?         @map("thumbnail_url") @db.Text
   isActive     Boolean         @default(true) @map("is_active")
+  approvalStatus ServiceApprovalStatus @default(PENDING) @map("approval_status")
+  rejectedReason String?        @map("rejected_reason") @db.Text
   createdAt    DateTime        @default(now()) @map("created_at")
   updatedAt    DateTime        @updatedAt @map("updated_at")
 

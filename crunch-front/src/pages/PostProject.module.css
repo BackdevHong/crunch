@@ -20,6 +20,8 @@
 .hero h1 { font-size: 26px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 6px; }
 .hero h1 span { color: var(--color-accent); }
 .hero p { font-size: 14px; color: var(--color-text-secondary); }
+.serviceHero { background: var(--color-hero-blue); }
+.serviceHeroAccent { color: var(--color-info) !important; }
 
 /* STEPPER */
 .stepper {
@@ -174,7 +176,7 @@
 /* TIP */
 .tipCard {
   background: var(--color-accent-bg);
-  border: 0.5px solid #ffcfb8;
+  border: 0.5px solid var(--color-accent);
   border-radius: var(--radius-lg);
   padding: 16px 20px;
   display: flex; gap: 12px; align-items: flex-start;
@@ -210,11 +212,21 @@
 
 .btnSubmit {
   padding: 11px 28px; border-radius: var(--radius-md);
-  border: none; background: #1a1a18;
-  font-size: 14px; font-weight: 500; color: white;
+  border: none; background: var(--color-text-primary);
+  font-size: 14px; font-weight: 500; color: var(--color-bg-primary);
   cursor: pointer; transition: opacity 0.15s; font-family: inherit;
 }
 .btnSubmit:hover { opacity: 0.8; }
+
+.errorBox {
+  background: var(--color-danger-bg);
+  border: 0.5px solid var(--color-danger);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--color-danger);
+  margin-bottom: 12px;
+}
 
 @media (max-width: 600px) {
   .stepper { gap: 0; }

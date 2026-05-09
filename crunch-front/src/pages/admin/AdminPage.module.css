@@ -34,6 +34,9 @@
 
 .detailBtn { font-size: 12px; padding: 5px 12px; border-radius: 6px; border: 0.5px solid var(--color-border-hover); background: none; cursor: pointer; font-family: inherit; color: var(--color-text-primary); transition: all 0.12s; }
 .detailBtn:hover { background: var(--color-text-primary); color: var(--color-bg-primary); border-color: var(--color-text-primary); }
+.detailBtn:disabled { opacity: 0.45; cursor: not-allowed; }
+.detailBtn:disabled:hover { background: none; color: var(--color-text-primary); border-color: var(--color-border-hover); }
+.actionGroup { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
 
 .roleSelect { font-size: 12px; padding: 5px 8px; border-radius: 6px; border: 0.5px solid var(--color-border-hover); background: var(--color-bg-primary); color: var(--color-text-primary); cursor: pointer; font-family: inherit; outline: none; }
 
