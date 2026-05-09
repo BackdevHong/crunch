@@ -49,7 +49,7 @@ export default function Navbar({ activePage, onNavigate, onLogin, onSignup, them
         {currentUser?.role === 'admin' && (
           <button
             className={`${styles.navLink} ${activePage.startsWith('admin') ? styles.active : ''}`}
-            onClick={() => onNavigate('admin-applications')}>
+            onClick={() => onNavigate('admin-dashboard')}>
             어드민
           </button>
         )}

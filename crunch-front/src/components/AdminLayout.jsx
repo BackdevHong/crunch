@@ -2,6 +2,7 @@ import { useApp } from '../context/useApp'
 import styles from './AdminLayout.module.css'
 
 const NAV_ITEMS = [
+  { label: '대시보드', page: 'admin-dashboard', icon: '▦' },
   { label: '프리랜서 신청', page: 'admin-applications', icon: '📋' },
   { label: '유저 관리', page: 'admin-users', icon: '👥' },
   { label: '서비스 관리', page: 'admin-services', icon: '🛠' },
@@ -13,7 +14,7 @@ export default function AdminLayout({ children, activePage, onNavigate }) {
   return (
     <div className={styles.layout}>
       <aside className={styles.sidebar}>
-        <div className={styles.logo}>🔧 크런치 어드민</div>
+        <div className={styles.logo}>크런치 어드민</div>
         <nav className={styles.nav}>
           {NAV_ITEMS.map(item => (
             <button key={item.page}

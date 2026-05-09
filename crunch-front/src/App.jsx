@@ -14,6 +14,7 @@ import PostProject from './pages/PostProject'
 import ServiceDetail from './pages/ServiceDetail'
 import FreelancerDetail from './pages/FreelancerDetail'
 import ApplyFreelancer from './pages/ApplyFreelancer'
+import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminApplications from './pages/admin/AdminApplications'
 import AdminUsers from './pages/admin/AdminUsers'
 import AdminServices from './pages/admin/AdminServices'
@@ -141,6 +142,9 @@ function AppInner() {
           )}
           {activePage === 'apply' && (
             <ApplyFreelancer onNavigate={navigate} />
+          )}
+          {activePage === 'admin-dashboard' && (
+            <AdminDashboard activePage={activePage} onNavigate={navigate} />
           )}
           {activePage === 'admin-applications' && (
             <AdminApplications activePage={activePage} onNavigate={navigate} />
