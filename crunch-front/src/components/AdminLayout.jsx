@@ -6,6 +6,7 @@ const NAV_ITEMS = [
   { label: '프리랜서 신청', page: 'admin-applications', icon: '📋' },
   { label: '유저 관리', page: 'admin-users', icon: '👥' },
   { label: '서비스 관리', page: 'admin-services', icon: '🛠' },
+  { label: '운영 로그', page: 'admin-audit-logs', icon: '≡' },
 ]
 
 export default function AdminLayout({ children, activePage, onNavigate }) {

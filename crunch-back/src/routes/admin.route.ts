@@ -3,6 +3,7 @@ import { authenticate } from '../middlewares/authenticate'
 import { requireAdmin } from '../middlewares/requireAdmin'
 import {
   getSummary,
+  getAuditLogs,
   getUsers,
   getUserDetail,
   updateUserRole,
@@ -17,6 +18,7 @@ const router = Router()
 router.use(authenticate, requireAdmin)
 
 router.get('/summary', getSummary)
+router.get('/audit-logs', getAuditLogs)
 router.get('/users', getUsers)
 router.get('/users/:id', getUserDetail)
 router.patch('/users/:id/role', updateUserRole)

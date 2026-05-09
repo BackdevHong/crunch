@@ -18,6 +18,7 @@ import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminApplications from './pages/admin/AdminApplications'
 import AdminUsers from './pages/admin/AdminUsers'
 import AdminServices from './pages/admin/AdminServices'
+import AdminAuditLogs from './pages/admin/AdminAuditLogs'
 import MyPage from './pages/MyPage'
 import PostService from './pages/PostService'
 import BrowseProjects from './pages/BrowseProjects'
@@ -154,6 +155,9 @@ function AppInner() {
           )}
           {activePage === 'admin-services' && (
             <AdminServices activePage={activePage} onNavigate={navigate} />
+          )}
+          {activePage === 'admin-audit-logs' && (
+            <AdminAuditLogs activePage={activePage} onNavigate={navigate} />
           )}
           {activePage === 'browse-projects' && (
             <>

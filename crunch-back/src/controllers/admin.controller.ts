@@ -122,6 +122,77 @@ export async function getSummary(req: Request, res: Response): Promise<void> {
   }
 }
 
+// 운영 로그 목록
+export async function getAuditLogs(req: Request, res: Response): Promise<void> {
+  try {
+    const { action, targetType, q, page = '1', limit = '20' } = req.query
+    const pageNum = Math.max(1, Number(page))
+    const limitNum = Math.min(100, Math.max(1, Number(limit)))
+    const offset = (pageNum - 1) * limitNum
+
+    const actionFilter = action && action !== 'ALL' ? String(action) : null
+    const targetFilter = targetType && targetType !== 'ALL' ? String(targetType) : null
+    const query = q ? `%${String(q)}%` : null
+
+    const rows = await prisma.$queryRaw<Array<{
+      id: string
+      action: string
+      targetType: string
+      targetId: string
+      message: string
+      metadata: string | null
+      createdAt: Date
+      adminId: string
+      adminName: string | null
+    }>>`
+      SELECT
+        l.id,
+        l.action,
+        l.target_type AS targetType,
+        l.target_id AS targetId,
+        l.message,
+        l.metadata,
+        l.created_at AS createdAt,
+        l.admin_id AS adminId,
+        u.name AS adminName
+      FROM admin_audit_logs l
+      LEFT JOIN users u ON u.id = l.admin_id
+      WHERE (${actionFilter} IS NULL OR l.action = ${actionFilter})
+        AND (${targetFilter} IS NULL OR l.target_type = ${targetFilter})
+        AND (${query} IS NULL OR l.message LIKE ${query} OR u.name LIKE ${query})
+      ORDER BY l.created_at DESC
+      LIMIT ${limitNum} OFFSET ${offset}
+    `
+
+    const totalRows = await prisma.$queryRaw<Array<{ total: bigint }>>`
+      SELECT COUNT(*) AS total
+      FROM admin_audit_logs l
+      LEFT JOIN users u ON u.id = l.admin_id
+      WHERE (${actionFilter} IS NULL OR l.action = ${actionFilter})
+        AND (${targetFilter} IS NULL OR l.target_type = ${targetFilter})
+        AND (${query} IS NULL OR l.message LIKE ${query} OR u.name LIKE ${query})
+    `
+    const total = Number(totalRows[0]?.total ?? 0)
+
+    ok(res, {
+      logs: rows.map(log => ({
+        id: log.id,
+        action: log.action,
+        targetType: log.targetType,
+        targetId: log.targetId,
+        message: log.message,
+        metadata: log.metadata,
+        createdAt: log.createdAt,
+        admin: { id: log.adminId, name: log.adminName },
+      })),
+      pagination: { total, page: pageNum, limit: limitNum, totalPages: Math.ceil(total / limitNum) },
+    })
+  } catch (err) {
+    console.error('[admin/getAuditLogs]', err)
+    serverError(res)
+  }
+}
+
 // 유저 목록
 export async function getUsers(req: Request, res: Response): Promise<void> {
   try {

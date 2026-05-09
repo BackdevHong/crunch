@@ -112,7 +112,12 @@ export default function AdminDashboard({ activePage, onNavigate }) {
             </section>
 
             <section className={styles.activityGrid}>
-              <ActivityList title="최근 운영 로그" empty="최근 운영 로그가 없습니다.">
+              <ActivityList
+                title="최근 운영 로그"
+                empty="최근 운영 로그가 없습니다."
+                actionLabel="전체 보기"
+                onAction={() => onNavigate('admin-audit-logs')}
+              >
                 {summary.recent.auditLogs.map(log => (
                   <li key={log.id}>
                     <div>
@@ -179,12 +184,15 @@ function MetricCard({ label, value, meta }) {
   )
 }
 
-function ActivityList({ title, empty, children }) {
+function ActivityList({ title, empty, children, actionLabel, onAction }) {
   const hasChildren = Array.isArray(children) ? children.length > 0 : Boolean(children)
 
   return (
     <div className={styles.activityCard}>
-      <h2>{title}</h2>
+      <div className={styles.activityHeader}>
+        <h2>{title}</h2>
+        {actionLabel && <button onClick={onAction}>{actionLabel}</button>}
+      </div>
       {hasChildren ? <ul>{children}</ul> : <p className={styles.empty}>{empty}</p>}
     </div>
   )

@@ -170,12 +170,35 @@
   overflow: hidden;
 }
 
-.activityCard h2 {
+.activityHeader {
   padding: 16px 18px;
+  border-bottom: 0.5px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.activityHeader h2 {
   font-size: 15px;
   font-weight: 600;
   color: var(--color-text-primary);
-  border-bottom: 0.5px solid var(--color-border);
+}
+
+.activityHeader button {
+  border: 0.5px solid var(--color-border-hover);
+  background: var(--color-bg-primary);
+  color: var(--color-text-secondary);
+  border-radius: 6px;
+  padding: 5px 9px;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.activityHeader button:hover {
+  color: var(--color-text-primary);
+  background: var(--color-bg-secondary);
 }
 
 .activityCard ul {
