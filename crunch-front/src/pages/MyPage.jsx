@@ -33,8 +33,8 @@ const SERVICE_APPROVAL_BG = {
   REJECTED: 'var(--color-danger-bg)',
 }
 
-const TABS_CLIENT     = ['프로필', '주문 내역', '내 프로젝트']
-const TABS_FREELANCER = ['프로필', '프리랜서 프로필', '내 서비스', '주문 내역', '판매 내역', '내 프로젝트', '내 제안']
+const TABS_CLIENT     = ['프로필', '알림', '주문 내역', '내 프로젝트']
+const TABS_FREELANCER = ['프로필', '알림', '프리랜서 프로필', '내 서비스', '주문 내역', '판매 내역', '내 프로젝트', '내 제안']
 
 export default function MyPage({ onNavigate }) {
   const { currentUser, setEditingService } = useApp()
@@ -95,6 +95,7 @@ export default function MyPage({ onNavigate }) {
           {activeTab === '프로필' && (
             <ProfileTab profile={profile} onUpdate={(updated) => { setProfile(p => ({ ...p, ...updated })); showToast('✅ 저장되었습니다!') }} />
           )}
+          {activeTab === '알림' && <NotificationsTab onNavigate={onNavigate} />}
           {activeTab === '프리랜서 프로필' && isFreelancer && (
             <FreelancerProfileTab
               freelancer={profile?.freelancer}
@@ -119,6 +120,116 @@ export default function MyPage({ onNavigate }) {
       </div>
 
       {toast && <div className={styles.toast}>{toast}</div>}
+    </div>
+  )
+}
+
+// ── 알림 탭 ──────────────────────────────────────────────────
+function NotificationsTab({ onNavigate }) {
+  const [notifications, setNotifications] = useState([])
+  const [unreadOnly, setUnreadOnly] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
+
+  const unreadCount = notifications.filter(item => !item.readAt).length
+  const filteredNotifications = unreadOnly
+    ? notifications.filter(item => !item.readAt)
+    : notifications
+
+  const fetchNotifications = async () => {
+    setLoading(true)
+    setError('')
+    try {
+      const { data } = await api.get('/api/mypage/notifications')
+      setNotifications(data.data.notifications)
+    } catch (err) {
+      setError(err.response?.data?.message ?? '알림을 불러오지 못했습니다.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchNotifications()
+  }, [])
+
+  const markAllRead = async () => {
+    if (unreadCount === 0) return
+    setSaving(true)
+    setError('')
+    try {
+      await api.patch('/api/mypage/notifications/read')
+      setNotifications(prev => prev.map(item => ({
+        ...item,
+        readAt: item.readAt ?? new Date().toISOString(),
+      })))
+    } catch (err) {
+      setError(err.response?.data?.message ?? '알림 읽음 처리에 실패했습니다.')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  if (loading) return <div className={styles.loading}>불러오는 중...</div>
+
+  return (
+    <div className={styles.card}>
+      <div className={styles.notificationTop}>
+        <div>
+          <div className={styles.cardTitleInline}>내 알림</div>
+          <p className={styles.notificationMeta}>
+            읽지 않은 알림 {unreadCount}개 · 최근 {notifications.length}개 표시
+          </p>
+        </div>
+        <div className={styles.notificationActions}>
+          <label className={styles.checkControl}>
+            <input
+              type="checkbox"
+              checked={unreadOnly}
+              onChange={e => setUnreadOnly(e.target.checked)}
+            />
+            읽지 않은 알림만
+          </label>
+          <button
+            className={styles.proposalToggleBtn}
+            onClick={markAllRead}
+            disabled={saving || unreadCount === 0}
+          >
+            전체 읽음
+          </button>
+        </div>
+      </div>
+
+      {error && <div className={styles.errorBox}>{error}</div>}
+
+      {filteredNotifications.length === 0 ? (
+        <div className={styles.notificationEmpty}>
+          {unreadOnly ? '읽지 않은 알림이 없습니다.' : '아직 받은 알림이 없습니다.'}
+        </div>
+      ) : (
+        <div className={styles.notificationList}>
+          {filteredNotifications.map(item => (
+            <button
+              key={item.id}
+              className={`${styles.notificationItem} ${!item.readAt ? styles.notificationUnread : ''}`}
+              onClick={() => {
+                if (item.link) onNavigate(item.link)
+              }}
+            >
+              <div className={styles.notificationDot} />
+              <div className={styles.notificationBody}>
+                <div className={styles.notificationTitleRow}>
+                  <strong>{item.title}</strong>
+                  {!item.readAt && <span className={styles.unreadPill}>새 알림</span>}
+                </div>
+                <p>{item.message}</p>
+                <span>{new Date(item.createdAt).toLocaleString('ko-KR')}</span>
+              </div>
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
