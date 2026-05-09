@@ -112,6 +112,18 @@ export default function AdminDashboard({ activePage, onNavigate }) {
             </section>
 
             <section className={styles.activityGrid}>
+              <ActivityList title="최근 운영 로그" empty="최근 운영 로그가 없습니다.">
+                {summary.recent.auditLogs.map(log => (
+                  <li key={log.id}>
+                    <div>
+                      <strong>{log.message}</strong>
+                      <span>{log.admin?.name ?? '관리자'} · {formatDate(log.createdAt)}</span>
+                    </div>
+                    <Badge>{log.targetType}</Badge>
+                  </li>
+                ))}
+              </ActivityList>
+
               <ActivityList title="최근 가입 유저" empty="최근 가입 유저가 없습니다.">
                 {summary.recent.users.map(user => (
                   <li key={user.id}>

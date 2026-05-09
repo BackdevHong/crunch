@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import { prisma } from '../lib/prisma'
 import { ok, serverError } from '../lib/response'
+import { writeAdminAuditLog } from '../lib/adminAudit'
 import { Prisma } from '@prisma/client'
 
 // 어드민 대시보드 요약
@@ -24,6 +25,7 @@ export async function getSummary(req: Request, res: Response): Promise<void> {
       recentUsers,
       recentApplications,
       recentServices,
+      recentAuditLogs,
     ] = await Promise.all([
       prisma.user.count(),
       prisma.user.count({ where: { role: 'client' } }),
@@ -65,6 +67,30 @@ export async function getSummary(req: Request, res: Response): Promise<void> {
           seller: { select: { id: true, name: true } },
         },
       }),
+      prisma.$queryRaw<Array<{
+        id: string
+        action: string
+        targetType: string
+        targetId: string
+        message: string
+        createdAt: Date
+        adminId: string
+        adminName: string | null
+      }>>`
+        SELECT
+          l.id,
+          l.action,
+          l.target_type AS targetType,
+          l.target_id AS targetId,
+          l.message,
+          l.created_at AS createdAt,
+          l.admin_id AS adminId,
+          u.name AS adminName
+        FROM admin_audit_logs l
+        LEFT JOIN users u ON u.id = l.admin_id
+        ORDER BY l.created_at DESC
+        LIMIT 10
+      `,
     ])
 
     ok(res, {
@@ -79,6 +105,15 @@ export async function getSummary(req: Request, res: Response): Promise<void> {
         users: recentUsers,
         applications: recentApplications,
         services: recentServices,
+        auditLogs: recentAuditLogs.map(log => ({
+          id: log.id,
+          action: log.action,
+          targetType: log.targetType,
+          targetId: log.targetId,
+          message: log.message,
+          createdAt: log.createdAt,
+          admin: { id: log.adminId, name: log.adminName },
+        })),
       },
     })
   } catch (err) {
@@ -242,6 +277,15 @@ export async function updateUserRole(req: Request, res: Response): Promise<void>
       select: { id: true, name: true, email: true, role: true },
     })
 
+    await writeAdminAuditLog({
+      adminId: req.user!.userId,
+      action: 'USER_ROLE_UPDATED',
+      targetType: 'USER',
+      targetId: user.id,
+      message: `${user.name}님의 역할을 ${role}(으)로 변경했습니다.`,
+      metadata: { role },
+    })
+
     ok(res, user)
   } catch (err) {
     console.error('[admin/updateUserRole]', err)
@@ -387,6 +431,15 @@ export async function toggleServiceActive(req: Request, res: Response): Promise<
       select: { id: true, title: true, isActive: true, approvalStatus: true },
     })
 
+    await writeAdminAuditLog({
+      adminId: req.user!.userId,
+      action: isActive ? 'SERVICE_ACTIVATED' : 'SERVICE_DEACTIVATED',
+      targetType: 'SERVICE',
+      targetId: service.id,
+      message: `서비스 "${service.title}"을 ${isActive ? '활성화' : '비활성화'}했습니다.`,
+      metadata: { isActive, approvalStatus: service.approvalStatus },
+    })
+
     ok(res, service)
   } catch (err) {
     console.error('[admin/toggleService]', err)
@@ -413,6 +466,15 @@ export async function updateServiceApproval(req: Request, res: Response): Promis
         isActive: status === 'APPROVED',
       },
       select: { id: true, title: true, isActive: true, approvalStatus: true, rejectedReason: true },
+    })
+
+    await writeAdminAuditLog({
+      adminId: req.user!.userId,
+      action: `SERVICE_${status}`,
+      targetType: 'SERVICE',
+      targetId: service.id,
+      message: `서비스 "${service.title}"을 ${status === 'APPROVED' ? '승인' : status === 'REJECTED' ? '반려' : '심사중으로 변경'}했습니다.`,
+      metadata: { status, reason: reason ?? null },
     })
 
     ok(res, service)

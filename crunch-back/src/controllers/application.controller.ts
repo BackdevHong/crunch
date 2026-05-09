@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import { prisma } from '../lib/prisma'
 import { ok, created, fail, serverError } from '../lib/response'
+import { writeAdminAuditLog } from '../lib/adminAudit'
 import { CATEGORY_MAP } from '../lib/contains'
 
 // 프리랜서 신청
@@ -164,6 +165,15 @@ export async function approveApplication(req: Request, res: Response): Promise<v
       }),
     ])
 
+    await writeAdminAuditLog({
+      adminId: req.user!.userId,
+      action: 'FREELANCER_APPLICATION_APPROVED',
+      targetType: 'FREELANCER_APPLICATION',
+      targetId: application.id,
+      message: `${application.user.name}님의 프리랜서 신청을 승인했습니다.`,
+      metadata: { userId: application.userId },
+    })
+
     ok(res, { message: '승인이 완료되었습니다.' })
   } catch (err) {
     console.error('[approveApplication]', err)
@@ -190,6 +200,15 @@ export async function rejectApplication(req: Request, res: Response): Promise<vo
     await prisma.freelancerApplication.update({
       where: { id },
       data: { status: 'REJECTED', rejectedReason: reason ?? null },
+    })
+
+    await writeAdminAuditLog({
+      adminId: req.user!.userId,
+      action: 'FREELANCER_APPLICATION_REJECTED',
+      targetType: 'FREELANCER_APPLICATION',
+      targetId: application.id,
+      message: '프리랜서 신청을 거절했습니다.',
+      metadata: { userId: application.userId, reason: reason ?? null },
     })
 
     ok(res, { message: '거절 처리되었습니다.' })

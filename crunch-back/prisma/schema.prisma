@@ -127,8 +127,26 @@ model User {
   createdTodoLists    TodoList[]
   completedTodoItems  TodoItem[]        @relation("TodoItemCompleter")
   channelMessageReactions ChannelMessageReaction[]
+  adminAuditLogs      AdminAuditLog[]
 
   @@map("users")
+}
+
+model AdminAuditLog {
+  id         String   @id @default(uuid()) @db.Char(36)
+  adminId    String   @map("admin_id") @db.Char(36)
+  action     String   @db.VarChar(80)
+  targetType String   @map("target_type") @db.VarChar(40)
+  targetId   String   @map("target_id") @db.Char(36)
+  message    String   @db.VarChar(255)
+  metadata   Json?
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  admin User @relation(fields: [adminId], references: [id])
+
+  @@index([adminId])
+  @@index([targetType, targetId])
+  @@map("admin_audit_logs")
 }
 
 model Freelancer {
