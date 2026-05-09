@@ -36,9 +36,9 @@ const SERVICE_APPROVAL_BG = {
 const TABS_CLIENT     = ['프로필', '알림', '주문 내역', '내 프로젝트']
 const TABS_FREELANCER = ['프로필', '알림', '프리랜서 프로필', '내 서비스', '주문 내역', '판매 내역', '내 프로젝트', '내 제안']
 
-export default function MyPage({ onNavigate }) {
+export default function MyPage({ initialTab = '프로필', onNavigate }) {
   const { currentUser, setEditingService } = useApp()
-  const [activeTab, setActiveTab] = useState('프로필')
+  const [activeTab, setActiveTab] = useState(initialTab)
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
   const [toast, setToast] = useState('')
@@ -47,6 +47,10 @@ export default function MyPage({ onNavigate }) {
   const TABS = isFreelancer ? TABS_FREELANCER : TABS_CLIENT
 
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(''), 3000) }
+
+  useEffect(() => {
+    if (TABS.includes(initialTab)) setActiveTab(initialTab)
+  }, [initialTab, TABS])
 
   useEffect(() => {
     api.get('/api/mypage/profile')
@@ -214,7 +218,7 @@ function NotificationsTab({ onNavigate }) {
               key={item.id}
               className={`${styles.notificationItem} ${!item.readAt ? styles.notificationUnread : ''}`}
               onClick={() => {
-                if (item.link) onNavigate(item.link)
+                onNavigate(item.link || 'mypage-notifications')
               }}
             >
               <div className={styles.notificationDot} />

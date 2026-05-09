@@ -362,7 +362,7 @@ export async function updateUserRole(req: Request, res: Response): Promise<void>
       type: 'USER_ROLE_UPDATED',
       title: '역할이 변경되었습니다',
       message: `계정 역할이 ${role}(으)로 변경되었습니다.`,
-      link: 'mypage',
+      link: 'mypage-profile',
     })
 
     ok(res, user)
@@ -523,7 +523,7 @@ export async function toggleServiceActive(req: Request, res: Response): Promise<
       type: isActive ? 'SERVICE_ACTIVATED' : 'SERVICE_DEACTIVATED',
       title: `서비스가 ${isActive ? '활성화' : '비활성화'}되었습니다`,
       message: `"${target.title}" 서비스의 노출 상태가 변경되었습니다.`,
-      link: 'mypage',
+      link: 'mypage-services',
     })
 
     ok(res, service)
@@ -569,7 +569,7 @@ export async function updateServiceApproval(req: Request, res: Response): Promis
       message: status === 'REJECTED'
         ? `"${service.title}" 서비스가 반려되었습니다. 사유를 확인하고 재심사를 요청해주세요.`
         : `"${service.title}" 서비스 심사 상태가 변경되었습니다.`,
-      link: 'mypage',
+      link: 'mypage-services',
     })
 
     ok(res, service)

@@ -52,7 +52,7 @@ export async function createOrder(req: Request, res: Response): Promise<void> {
       type: 'ORDER_CREATED',
       title: '새 주문이 들어왔습니다',
       message: `"${service.title}" 서비스에 새 주문이 접수되었습니다.`,
-      link: 'mypage',
+      link: 'mypage-sales',
     })
 
     created(res, order)
@@ -174,7 +174,7 @@ export async function updateOrderStatus(req: Request, res: Response): Promise<vo
       type: `ORDER_${status}`,
       title: `주문 상태가 ${ORDER_STATUS_LABEL[status] ?? status}(으)로 변경되었습니다`,
       message: `"${order.service.title}" 주문 상태를 확인해주세요.`,
-      link: 'mypage',
+      link: isSeller ? 'mypage-orders' : 'mypage-sales',
     })
 
     ok(res, updated)

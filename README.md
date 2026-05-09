@@ -2,7 +2,7 @@
 [![CI](https://github.com/BackdevHong/crunch/actions/workflows/ci.yml/badge.svg)](https://github.com/BackdevHong/crunch/actions/workflows/ci.yml)
 [![CI - Frontend](https://github.com/BackdevHong/crunch/actions/workflows/ci-frontend.yml/badge.svg)](https://github.com/BackdevHong/crunch/actions/workflows/ci-frontend.yml)
 
-프리랜서와 클라이언트를 연결하는 서비스 중개 플랫폼입니다. 클라이언트는 프로젝트를 의뢰하거나 판매 중인 서비스를 구매할 수 있고, 프리랜서는 자신을 홍보하고 제안서를 보내거나 주문을 처리할 수 있습니다. 어드민 영역에서는 프리랜서 신청 승인·거절, 사용자 관리, 서비스 활성화 관리를 수행할 수 있습니다.
+프리랜서와 클라이언트를 연결하는 서비스 중개 플랫폼입니다. 클라이언트는 프로젝트를 의뢰하거나 승인된 서비스를 구매할 수 있고, 프리랜서는 자신을 홍보하고 제안서를 보내거나 주문을 처리할 수 있습니다. 어드민 영역에서는 프리랜서 신청 승인·거절, 서비스 심사, 사용자 관리, 운영 로그 확인을 수행할 수 있습니다.
 
 > 레포지토리: https://github.com/BackdevHong/crunch
 
@@ -47,12 +47,16 @@ crunch/
 - **회원가입 / 로그인 / 로그아웃**: Access Token + HttpOnly Refresh Token 조합, 토큰 회전(Rotation) 방식
 - **역할(Role)**: `client`, `freelancer`, `admin` 세 가지 권한 구분
 - **서비스 탐색 및 상세 조회**: 카테고리별 (개발·IT, 디자인, 마케팅, 글쓰기·번역, 영상·사진, 음악·오디오) 서비스 목록/상세
+- **서비스 승인제**: 프리랜서가 등록한 서비스는 어드민 승인 후 검색/주문 가능
 - **프리랜서 탐색 및 상세 조회**: 배지(Top/Pro/New), 평점, 시간당 단가, 스킬 태그 기반 필터링
 - **프로젝트 의뢰(Post Project)**: 클라이언트가 예산·기한·카테고리를 지정해 프로젝트 게시
+- **프로젝트 제안**: 프리랜서가 프로젝트에 제안 제출, 의뢰인이 수락/거절
 - **프리랜서 전환 신청**: 일반 사용자가 프리랜서 신청서 제출 → 어드민 승인 시 `freelancer` 권한 부여
 - **주문(Order)**: 서비스 결제 → 진행중 → 검수중 → 완료 등 상태 관리
-- **마이페이지**: 내 프로필, 구매 내역, 판매 내역, 의뢰한 프로젝트 확인
-- **관리자 페이지**: 프리랜서 신청 관리, 사용자 역할 변경, 서비스 활성화 토글
+- **채팅/협업**: 프로젝트 채널, 메시지, 파일 업로드, 회의 제안, 할 일 관리
+- **알림 센터**: 승인/반려, 제안, 주문, 채팅 이벤트를 네비게이션과 마이페이지에서 확인
+- **마이페이지**: 내 프로필, 알림, 서비스 심사 상태, 구매/판매 내역, 프로젝트/제안 확인
+- **관리자 페이지**: 프리랜서 신청 관리, 사용자 역할 변경, 서비스 심사/활성화, 운영 로그
 
 ---
 
@@ -63,13 +67,13 @@ crunch/
 ```
 crunch-back/
 ├── prisma/
-│   └── schema.prisma        # User, Freelancer, Service, Project, Order, Review, Message ...
+│   └── schema.prisma        # User, Freelancer, Service, Project, Order, Channel, Notification ...
 ├── src/
 │   ├── index.ts             # Express 엔트리 (라우트 등록, CORS, 에러 핸들러)
 │   ├── controllers/         # auth, service, freelancer, order, project, application, admin, mypage
 │   ├── routes/              # 각 도메인별 라우터
 │   ├── middlewares/         # authenticate, requireAdmin
-│   └── lib/                 # jwt, prisma, response, api, contains
+│   └── lib/                 # jwt, prisma, response, notification, adminAudit, contains
 ├── package.json
 └── tsconfig.json
 ```
@@ -143,10 +147,11 @@ BCRYPT_ROUNDS=12
 # 2-3) Prisma 클라이언트 생성
 npm run db:generate
 
-# 2-4) 스키마를 DB에 반영 (개발용)
-npm run db:push
-# 또는 마이그레이션 히스토리를 남기려면:
-# npm run db:migrate
+# 2-4) 마이그레이션 적용
+npx prisma migrate dev
+
+# 빠른 로컬 동기화만 필요하면 개발용으로 db:push를 사용할 수 있습니다.
+# npm run db:push
 
 # 2-5) 개발 서버 실행 (기본 http://localhost:4000)
 npm run dev
@@ -243,6 +248,16 @@ npm run preview   # dist/ 프리뷰 서버 실행
 | GET  | `/:id` | ✗ | 프로젝트 상세 |
 | POST | `/` | Bearer | 프로젝트 의뢰 생성 |
 
+### 제안 (`/api/proposals`)
+
+모든 엔드포인트 Bearer 인증 필요.
+
+| 메서드 | 경로 | 설명 |
+|--------|------|------|
+| POST  | `/` | 프로젝트 제안 제출 |
+| GET   | `/project/:projectId` | 프로젝트별 제안 목록 |
+| PATCH | `/:id/status` | 제안 수락/거절 |
+
 ### 주문 (`/api/orders`)
 
 모든 엔드포인트 Bearer 인증 필요.
@@ -273,9 +288,30 @@ npm run preview   # dist/ 프리뷰 서버 실행
 | GET   | `/profile` | 내 프로필 조회 |
 | PATCH | `/profile` | 내 프로필 수정 |
 | PATCH | `/profile/freelancer` | 프리랜서 프로필 수정 |
+| GET   | `/notifications` | 내 알림 목록과 읽지 않은 개수 조회 |
+| PATCH | `/notifications/read` | 내 알림 전체 읽음 처리 |
 | GET   | `/orders` | 내가 구매한 주문 |
 | GET   | `/sales` | 내가 판매한 주문 |
+| GET   | `/services` | 내가 등록한 서비스와 심사 상태 조회 |
 | GET   | `/projects` | 내가 의뢰한 프로젝트 |
+| GET   | `/proposals` | 내가 제출한 제안 |
+
+### 채널 (`/api/channels`)
+
+모든 엔드포인트 Bearer 인증 필요.
+
+| 메서드 | 경로 | 설명 |
+|--------|------|------|
+| GET   | `/` | 내 채널 목록 |
+| GET   | `/:channelId/messages` | 채널 메시지 조회 |
+| GET   | `/:channelId/members` | 채널 멤버 조회 |
+| POST  | `/:channelId/upload` | 채널 파일 메시지 업로드 |
+| PATCH | `/:channelId/messages/:messageId` | 채널 메시지 수정 |
+| DELETE | `/:channelId/messages/:messageId` | 채널 메시지 삭제 |
+| POST  | `/:channelId/messages/:messageId/reactions` | 메시지 반응 토글 |
+| POST  | `/:channelId/meetings` | 회의 제안 생성 |
+| GET   | `/:channelId/todos` | 채널 할 일 목록 조회 |
+| POST  | `/:channelId/todos` | 채널 할 일 목록 생성 |
 
 ### 관리자 (`/api/admin`)
 
@@ -284,9 +320,14 @@ npm run preview   # dist/ 프리뷰 서버 실행
 | 메서드 | 경로 | 설명 |
 |--------|------|------|
 | GET   | `/users` | 사용자 목록 |
+| GET   | `/users/:id` | 사용자 상세 |
 | PATCH | `/users/:id/role` | 사용자 역할 변경 |
+| GET   | `/summary` | 관리자 대시보드 요약 |
+| GET   | `/audit-logs` | 운영 로그 목록 |
 | GET   | `/services` | 관리자용 서비스 목록 |
+| GET   | `/services/:id` | 관리자용 서비스 상세 |
 | PATCH | `/services/:id/active` | 서비스 활성화 토글 |
+| PATCH | `/services/:id/approval` | 서비스 승인/반려/심사중 변경 |
 
 ### 헬스 체크
 
@@ -323,11 +364,32 @@ Prisma 스키마에 정의된 주요 엔티티:
 - **Freelancer**: 사용자 1:1, 배지(Top/Pro/New), 평점, 완료 건수, 시간당 단가, 카테고리
 - **FreelancerApplication**: 프리랜서 전환 신청 (상태: PENDING/APPROVED/REJECTED)
 - **Service**: 판매자가 등록하는 상품, 카테고리/가격/배송일/평점
+- **UserNotification**: 사용자별 알림, 읽음 시각, 연결 페이지
+- **AdminAuditLog**: 어드민 주요 작업 이력
 - **Project**: 클라이언트가 올리는 의뢰 (상태: 모집중/진행중/완료/취소)
 - **Proposal**: 프리랜서가 프로젝트에 제출하는 제안서
 - **Order**: 서비스 결제·주문 (상태: 결제대기/진행중/검수중/완료/취소/환불)
 - **Review**: 주문 완료 후 작성하는 리뷰 (1~5점)
 - **Message**: 사용자 간 메시징 (주문과 연동 가능)
+- **Channel / ChannelMessage**: 프로젝트 기반 채팅, 파일, 회의, 할 일 협업
+
+---
+
+## 운영 흐름
+
+### 서비스 승인제
+
+프리랜서가 서비스를 등록하면 기본 상태는 `PENDING` 입니다. 어드민이 승인하면 `APPROVED` 로 바뀌며, 승인된 서비스만 목록/상세/주문 대상에 포함됩니다. 반려된 서비스는 마이페이지의 `내 서비스` 탭에서 반려 사유를 확인하고 수정 후 재심사를 요청할 수 있습니다.
+
+### 알림
+
+알림은 네비게이션 드롭다운과 마이페이지 `알림` 탭에서 확인할 수 있습니다. 알림 클릭 시 가능한 경우 관련 탭으로 바로 이동합니다.
+
+- 서비스 승인/반려/활성화 변경 → 마이페이지 `내 서비스`
+- 프로젝트 제안 도착 → 마이페이지 `내 프로젝트`
+- 프로젝트 제안 수락/거절 → 마이페이지 `내 제안`
+- 주문 생성/상태 변경 → 마이페이지 `판매 내역` 또는 `주문 내역`
+- 채팅 메시지/파일 도착 → 채팅 페이지
 
 ---
 

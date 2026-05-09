@@ -26,6 +26,16 @@ import socket, { reconnectSocket } from './lib/socket'
 
 const THEME_STORAGE_KEY = 'crunch-theme'
 
+const MYPAGE_TAB_ROUTES = {
+  'mypage-profile': '프로필',
+  'mypage-notifications': '알림',
+  'mypage-services': '내 서비스',
+  'mypage-orders': '주문 내역',
+  'mypage-sales': '판매 내역',
+  'mypage-projects': '내 프로젝트',
+  'mypage-proposals': '내 제안',
+}
+
 function getInitialTheme() {
   if (typeof window === 'undefined') return 'light'
 
@@ -46,6 +56,7 @@ export default function App() {
 function AppInner() {
   const { selectedService, selectedFreelancer, setSelectedService, setSelectedFreelancer, authLoading, currentUser } = useApp()
   const [activePage, setActivePage] = useState('home')
+  const [myPageInitialTab, setMyPageInitialTab] = useState('프로필')
   const [authModal, setAuthModal] = useState(null)
   const [callInfo, setCallInfo] = useState(null) // { channelId, channelName }
   const [theme, setTheme] = useState(getInitialTheme)
@@ -79,15 +90,20 @@ function AppInner() {
 
   // 페이지 이동 시에만 상세 상태 초기화
   const navigate = (page) => {
-    if ((page === 'post' || page === 'apply' || page === 'mypage' || page === 'post-service' || page === 'browse-projects' || page === 'chat') && !currentUser) {
+    const targetPage = MYPAGE_TAB_ROUTES[page] ? 'mypage' : page
+    const targetTab = MYPAGE_TAB_ROUTES[page]
+
+    if ((targetPage === 'post' || targetPage === 'apply' || targetPage === 'mypage' || targetPage === 'post-service' || targetPage === 'browse-projects' || targetPage === 'chat') && !currentUser) {
       openLogin()
       return
     }
-    if ((page === 'post-service' || page === 'browse-projects') && currentUser?.role !== 'freelancer') return
-    if (page.startsWith('admin') && currentUser?.role !== 'admin') return
+    if ((targetPage === 'post-service' || targetPage === 'browse-projects') && currentUser?.role !== 'freelancer') return
+    if (targetPage.startsWith('admin') && currentUser?.role !== 'admin') return
     setSelectedService(null)
     setSelectedFreelancer(null)
-    setActivePage(page)
+    if (targetTab) setMyPageInitialTab(targetTab)
+    if (targetPage !== 'mypage') setMyPageInitialTab('프로필')
+    setActivePage(targetPage)
   }
 
 
@@ -170,7 +186,7 @@ function AppInner() {
           )}
           {activePage === 'mypage' && (
             <>
-              <MyPage onNavigate={navigate} />
+              <MyPage initialTab={myPageInitialTab} onNavigate={navigate} />
               <Footer />
             </>
           )}

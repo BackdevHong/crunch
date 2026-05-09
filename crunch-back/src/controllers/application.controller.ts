@@ -179,7 +179,7 @@ export async function approveApplication(req: Request, res: Response): Promise<v
       type: 'FREELANCER_APPLICATION_APPROVED',
       title: '프리랜서 신청이 승인되었습니다',
       message: '이제 프리랜서 기능을 사용할 수 있습니다.',
-      link: 'mypage',
+      link: 'mypage-profile',
     })
 
     ok(res, { message: '승인이 완료되었습니다.' })
@@ -223,7 +223,7 @@ export async function rejectApplication(req: Request, res: Response): Promise<vo
       type: 'FREELANCER_APPLICATION_REJECTED',
       title: '프리랜서 신청이 거절되었습니다',
       message: '마이페이지에서 거절 사유를 확인해주세요.',
-      link: 'mypage',
+      link: 'mypage-profile',
     })
 
     ok(res, { message: '거절 처리되었습니다.' })

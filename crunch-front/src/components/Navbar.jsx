@@ -124,7 +124,7 @@ export default function Navbar({ activePage, onNavigate, onLogin, onSignup, them
                       className={styles.noticeItem}
                       onClick={() => {
                         setNoticeOpen(false)
-                        if (item.link) onNavigate(item.link)
+                        onNavigate(item.link || 'mypage-notifications')
                       }}
                     >
                       <strong>{item.title}</strong>
