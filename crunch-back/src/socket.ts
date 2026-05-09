@@ -2,6 +2,7 @@ import { Server, Socket } from 'socket.io'
 import { Server as HttpServer } from 'http'
 import { verifyAccessToken } from './lib/jwt'
 import { prisma } from './lib/prisma'
+import { createUserNotifications } from './lib/notification'
 
 type RTCSessionDescriptionInit = { type: string; sdp?: string }
 type RTCIceCandidateInit = { candidate?: string; sdpMid?: string | null; sdpMLineIndex?: number | null }
@@ -43,6 +44,10 @@ const MESSAGE_INCLUDE = {
   },
 }
 
+function previewText(content: string, limit = 80): string {
+  return content.length > limit ? `${content.slice(0, limit)}...` : content
+}
+
 function getCallSettings(channelId: string): CallSettings {
   if (!callSettings.has(channelId)) {
     callSettings.set(channelId, {
@@ -81,6 +86,19 @@ function emitToCallParticipant(channelId: string, userId: string, event: string,
   }
 
   io.to(`user:${userId}`).emit(event, payload)
+}
+
+export function getActiveChannelUserIds(channelId: string): string[] {
+  if (!io) return []
+
+  const room = io.sockets.adapter.rooms.get(`channel:${channelId}`)
+  if (!room) return []
+
+  const userIds = [...room]
+    .map(socketId => io.sockets.sockets.get(socketId)?.data.userId as string | undefined)
+    .filter((id): id is string => Boolean(id))
+
+  return [...new Set(userIds)]
 }
 
 function leaveCall(userId: string, channelId: string) {
@@ -188,6 +206,23 @@ export function initSocket(httpServer: HttpServer): Server {
         })
 
         io.to(`channel:${channelId}`).emit('new-message', message)
+
+        const activeUserIds = getActiveChannelUserIds(channelId)
+        const recipients = await prisma.channelMember.findMany({
+          where: {
+            channelId,
+            userId: { notIn: [...new Set([userId, ...activeUserIds])] },
+          },
+          select: { userId: true },
+        })
+
+        await createUserNotifications({
+          userIds: recipients.map(recipient => recipient.userId),
+          type: 'CHANNEL_MESSAGE_CREATED',
+          title: '새 채팅 메시지가 도착했습니다',
+          message: `${message.sender.name}: ${previewText(message.content ?? '')}`,
+          link: 'chat',
+        })
       } catch (err) {
         console.error('[send-message]', err)
       }

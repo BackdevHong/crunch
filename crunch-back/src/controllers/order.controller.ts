@@ -1,6 +1,16 @@
 import { Request, Response } from 'express'
 import { prisma } from '../lib/prisma'
 import { ok, created, fail, serverError } from '../lib/response'
+import { createUserNotification } from '../lib/notification'
+
+const ORDER_STATUS_LABEL: Record<string, string> = {
+  PENDING: '결제대기',
+  IN_PROGRESS: '진행중',
+  REVIEW: '검수중',
+  DONE: '완료',
+  CANCELLED: '취소',
+  REFUNDED: '환불',
+}
 
 // 주문 생성
 export async function createOrder(req: Request, res: Response): Promise<void> {
@@ -10,7 +20,7 @@ export async function createOrder(req: Request, res: Response): Promise<void> {
 
     const service = await prisma.service.findUnique({
       where: { id: serviceId, isActive: true, approvalStatus: 'APPROVED' },
-      select: { id: true, sellerId: true, price: true },
+      select: { id: true, sellerId: true, price: true, title: true },
     })
 
     if (!service) {
@@ -35,6 +45,14 @@ export async function createOrder(req: Request, res: Response): Promise<void> {
         service: { select: { id: true, title: true, price: true } },
         seller: { select: { id: true, name: true } },
       },
+    })
+
+    await createUserNotification({
+      userId: service.sellerId,
+      type: 'ORDER_CREATED',
+      title: '새 주문이 들어왔습니다',
+      message: `"${service.title}" 서비스에 새 주문이 접수되었습니다.`,
+      link: 'mypage',
     })
 
     created(res, order)
@@ -112,7 +130,10 @@ export async function updateOrderStatus(req: Request, res: Response): Promise<vo
     const { status } = req.body
     const userId = req.user!.userId
 
-    const order = await prisma.order.findUnique({ where: { id } })
+    const order = await prisma.order.findUnique({
+      where: { id },
+      include: { service: { select: { title: true } } },
+    })
 
     if (!order) {
       res.status(404).json({ success: false, message: '주문을 찾을 수 없습니다.' })
@@ -145,6 +166,15 @@ export async function updateOrderStatus(req: Request, res: Response): Promise<vo
         status,
         ...(status === 'DONE' ? { completedAt: new Date() } : {}),
       },
+    })
+
+    const targetUserId = isSeller ? order.buyerId : order.sellerId
+    await createUserNotification({
+      userId: targetUserId,
+      type: `ORDER_${status}`,
+      title: `주문 상태가 ${ORDER_STATUS_LABEL[status] ?? status}(으)로 변경되었습니다`,
+      message: `"${order.service.title}" 주문 상태를 확인해주세요.`,
+      link: 'mypage',
     })
 
     ok(res, updated)

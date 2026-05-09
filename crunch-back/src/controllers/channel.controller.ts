@@ -1,7 +1,8 @@
 import { Request, Response } from 'express'
 import { prisma } from '../lib/prisma'
 import { ok, serverError, forbidden } from '../lib/response'
-import { io } from '../socket'
+import { getActiveChannelUserIds, io } from '../socket'
+import { createUserNotifications } from '../lib/notification'
 import path from 'path'
 
 const MEETING_INCLUDE = {
@@ -30,6 +31,10 @@ const MESSAGE_INCLUDE = {
     },
   },
   meeting: { include: MEETING_INCLUDE },
+}
+
+function previewText(content: string, limit = 80): string {
+  return content.length > limit ? `${content.slice(0, limit)}...` : content
 }
 
 // 내 채널 목록
@@ -177,6 +182,24 @@ export async function uploadChannelFile(req: Request, res: Response): Promise<vo
     })
 
     io.to(`channel:${channelId}`).emit('new-message', message)
+
+    const activeUserIds = getActiveChannelUserIds(channelId)
+    const recipients = await prisma.channelMember.findMany({
+      where: {
+        channelId,
+        userId: { notIn: [...new Set([userId, ...activeUserIds])] },
+      },
+      select: { userId: true },
+    })
+
+    await createUserNotifications({
+      userIds: recipients.map(recipient => recipient.userId),
+      type: 'CHANNEL_FILE_CREATED',
+      title: '새 채팅 파일이 도착했습니다',
+      message: `${message.sender.name}: ${previewText(fileName)} 파일을 보냈습니다.`,
+      link: 'chat',
+    })
+
     ok(res, message)
   } catch (err) {
     console.error('[uploadChannelFile]', err)

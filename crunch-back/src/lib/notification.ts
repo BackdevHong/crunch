@@ -8,6 +8,10 @@ type NotificationInput = {
   link?: string
 }
 
+type BroadcastNotificationInput = Omit<NotificationInput, 'userId'> & {
+  userIds: string[]
+}
+
 export async function createUserNotification(input: NotificationInput): Promise<void> {
   await prisma.$executeRaw`
     INSERT INTO user_notifications
@@ -15,4 +19,17 @@ export async function createUserNotification(input: NotificationInput): Promise<
     VALUES
       (UUID(), ${input.userId}, ${input.type}, ${input.title}, ${input.message}, ${input.link ?? null})
   `
+}
+
+export async function createUserNotifications(input: BroadcastNotificationInput): Promise<void> {
+  const userIds = [...new Set(input.userIds)].filter(Boolean)
+  if (userIds.length === 0) return
+
+  await Promise.all(userIds.map(userId => createUserNotification({
+    userId,
+    type: input.type,
+    title: input.title,
+    message: input.message,
+    link: input.link,
+  })))
 }

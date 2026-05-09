@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import { prisma } from '../lib/prisma'
 import { ok, created, fail, forbidden, notFound, serverError } from '../lib/response'
 import { ProjectStatus, ProposalStatus } from '@prisma/client'
+import { createUserNotification } from '../lib/notification'
 
 // 제안 등록 (프리랜서)
 export async function createProposal(req: Request, res: Response): Promise<void> {
@@ -51,6 +52,14 @@ export async function createProposal(req: Request, res: Response): Promise<void>
           include: { user: { select: { id: true, name: true } } },
         },
       },
+    })
+
+    await createUserNotification({
+      userId: project.authorId,
+      type: 'PROJECT_PROPOSAL_CREATED',
+      title: '새 프로젝트 제안이 도착했습니다',
+      message: `"${project.title}" 프로젝트에 ${proposal.freelancer.user.name}님이 제안을 보냈습니다.`,
+      link: 'mypage',
     })
 
     created(res, proposal)
@@ -179,6 +188,14 @@ export async function updateProposalStatus(req: Request, res: Response): Promise
         data: { status: ProposalStatus.REJECTED },
       })
     }
+
+    await createUserNotification({
+      userId: proposal.freelancer.userId,
+      type: status === 'ACCEPTED' ? 'PROJECT_PROPOSAL_ACCEPTED' : 'PROJECT_PROPOSAL_REJECTED',
+      title: `프로젝트 제안이 ${status === 'ACCEPTED' ? '수락' : '거절'}되었습니다`,
+      message: `"${proposal.project.title}" 프로젝트 제안 결과를 확인해주세요.`,
+      link: 'mypage',
+    })
 
     ok(res, { message: status === 'ACCEPTED' ? '제안을 수락했습니다.' : '제안을 거절했습니다.' })
   } catch (err) {
