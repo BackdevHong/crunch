@@ -7,6 +7,7 @@ const isFreelancer = (user) => user?.role === 'freelancer'
 
 export default function Navbar({ activePage, onNavigate, onLogin, onSignup, theme, onToggleTheme }) {
   const { currentUser, logout } = useApp()
+  const currentUserId = currentUser?.id
   const freelancer = isFreelancer(currentUser)
   const isDark = theme === 'dark'
   const [notifications, setNotifications] = useState([])
@@ -14,12 +15,7 @@ export default function Navbar({ activePage, onNavigate, onLogin, onSignup, them
   const [noticeOpen, setNoticeOpen] = useState(false)
 
   useEffect(() => {
-    if (!currentUser) {
-      setNotifications([])
-      setUnreadCount(0)
-      setNoticeOpen(false)
-      return
-    }
+    if (!currentUserId) return
 
     api.get('/api/mypage/notifications')
       .then(({ data }) => {
@@ -27,7 +23,7 @@ export default function Navbar({ activePage, onNavigate, onLogin, onSignup, them
         setUnreadCount(data.data.unreadCount)
       })
       .catch(console.error)
-  }, [currentUser?.id])
+  }, [currentUserId])
 
   const toggleNotifications = async () => {
     const nextOpen = !noticeOpen

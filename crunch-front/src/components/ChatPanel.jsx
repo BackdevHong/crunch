@@ -264,6 +264,7 @@ export default function ChatPanel({ onStartCall, activeCallChannelId }) {
     () => (activeChannel?.members ?? []).map(getMemberUser).filter(Boolean),
     [activeChannel?.members]
   )
+  const activeChannelId = activeChannel?.id
 
   const imageMessages = useMemo(
     () => messages.filter(msg => !msg.deletedAt && msg.fileUrl && msg.fileType?.startsWith('image/')),
@@ -277,21 +278,21 @@ export default function ChatPanel({ onStartCall, activeCallChannelId }) {
     api.get('/api/channels')
       .then(({ data }) => {
         setChannels(data.data)
-        if (data.data.length > 0 && !activeChannel) {
+        if (data.data.length > 0 && !activeChannelId) {
           setActiveChannel(data.data[0])
         }
       })
       .catch(console.error)
-  }, [])
+  }, [activeChannelId])
 
   useEffect(() => {
-    if (!activeChannel) return
+    if (!activeChannelId) return
 
     if (prevChannelRef.current) {
       socket.emit('leave-channel', prevChannelRef.current.id)
     }
     prevChannelRef.current = activeChannel
-    socket.emit('join-channel', activeChannel.id)
+    socket.emit('join-channel', activeChannelId)
 
     setLoadingMsg(true)
     setTodoLists([])
@@ -299,25 +300,25 @@ export default function ChatPanel({ onStartCall, activeCallChannelId }) {
     setEditingMessage(null)
     setEditInput('')
     Promise.all([
-      api.get(`/api/channels/${activeChannel.id}/messages`),
-      api.get(`/api/channels/${activeChannel.id}/todos`),
+      api.get(`/api/channels/${activeChannelId}/messages`),
+      api.get(`/api/channels/${activeChannelId}/todos`),
     ])
       .then(([msgRes, todoRes]) => {
         const messagePayload = msgRes.data.data
         setMessages(Array.isArray(messagePayload) ? messagePayload : messagePayload.messages)
         setReadStates(Array.isArray(messagePayload) ? [] : messagePayload.readStates ?? [])
         setChannels(prev => prev.map(ch =>
-          ch.id === activeChannel.id ? { ...ch, unreadCount: 0, mentionUnreadCount: 0 } : ch
+          ch.id === activeChannelId ? { ...ch, unreadCount: 0, mentionUnreadCount: 0 } : ch
         ))
         setTodoLists(todoRes.data.data)
       })
       .catch(console.error)
       .finally(() => setLoadingMsg(false))
-  }, [activeChannel?.id])
+  }, [activeChannel, activeChannelId])
 
   useEffect(() => {
     const handler = (msg) => {
-      if (msg.channelId === activeChannel?.id) {
+      if (msg.channelId === activeChannelId) {
         setMessages(prev => [...prev, msg])
         socket.emit('channel-read', { channelId: msg.channelId })
       } else {
@@ -337,11 +338,11 @@ export default function ChatPanel({ onStartCall, activeCallChannelId }) {
     }
     socket.on('new-message', handler)
     return () => socket.off('new-message', handler)
-  }, [activeChannel?.id, currentUser?.name])
+  }, [activeChannelId, currentUser?.name])
 
   useEffect(() => {
     const handler = ({ channelId, message }) => {
-      if (channelId === activeChannel?.id) {
+      if (channelId === activeChannelId) {
         setMessages(prev => prev.map(msg => msg.id === message.id ? message : msg))
       }
       setChannels(prev => prev.map(ch =>
@@ -352,11 +353,11 @@ export default function ChatPanel({ onStartCall, activeCallChannelId }) {
     }
     socket.on('message-pin-updated', handler)
     return () => socket.off('message-pin-updated', handler)
-  }, [activeChannel?.id])
+  }, [activeChannelId])
 
   useEffect(() => {
     const handler = ({ channelId, message }) => {
-      if (channelId === activeChannel?.id) {
+      if (channelId === activeChannelId) {
         setMessages(prev => prev.map(msg => msg.id === message.id ? message : msg))
       }
       setChannels(prev => prev.map(ch =>
@@ -373,11 +374,11 @@ export default function ChatPanel({ onStartCall, activeCallChannelId }) {
       socket.off('message-deleted', handler)
       socket.off('message-reaction-updated', handler)
     }
-  }, [activeChannel?.id])
+  }, [activeChannelId])
 
   useEffect(() => {
     const handler = ({ channelId, userId, lastReadAt }) => {
-      if (channelId === activeChannel?.id) {
+      if (channelId === activeChannelId) {
         setReadStates(prev => {
           const exists = prev.some(item => item.userId === userId)
           if (exists) {
@@ -395,7 +396,7 @@ export default function ChatPanel({ onStartCall, activeCallChannelId }) {
     }
     socket.on('channel-read-updated', handler)
     return () => socket.off('channel-read-updated', handler)
-  }, [activeChannel?.id, currentUser?.id])
+  }, [activeChannelId, currentUser?.id])
 
   useEffect(() => {
     const onCallStatus = ({ channelId, participants }) => {
@@ -442,9 +443,9 @@ export default function ChatPanel({ onStartCall, activeCallChannelId }) {
   }, [messages, messageFilter, searchQuery])
 
   useEffect(() => {
-    if (!activeChannel || messages.length === 0) return
-    socket.emit('channel-read', { channelId: activeChannel.id })
-  }, [activeChannel?.id, messages.length])
+    if (!activeChannelId || messages.length === 0) return
+    socket.emit('channel-read', { channelId: activeChannelId })
+  }, [activeChannelId, messages.length])
 
   const filteredMessages = useMemo(() => {
     const query = searchQuery.trim().toLowerCase()
@@ -656,31 +657,6 @@ export default function ChatPanel({ onStartCall, activeCallChannelId }) {
       sendMessage()
     }
   }
-
-  const uploadFile = useCallback(async (file) => {
-    if (!activeChannel || !file) return
-    setUploading(true)
-    try {
-      const formData = new FormData()
-      formData.append('file', file)
-      if (input.trim()) {
-        formData.append('content', input.trim())
-        setInput('')
-      }
-      if (replyTarget?.id) {
-        formData.append('replyToId', replyTarget.id)
-      }
-      await api.post(`/api/channels/${activeChannel.id}/upload`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      })
-      setReplyTarget(null)
-    } catch (err) {
-      console.error('[uploadFile]', err)
-      alert('파일 업로드에 실패했습니다.')
-    } finally {
-      setUploading(false)
-    }
-  }, [activeChannel, input, replyTarget])
 
   const uploadFiles = useCallback(async (files) => {
     const fileList = Array.from(files ?? [])

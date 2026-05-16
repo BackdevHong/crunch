@@ -424,6 +424,7 @@ export default function CallModal({ callInfo, onClose }) {
 
   useEffect(() => {
     let active = true
+    const peerMap = peersRef.current
 
     const join = async () => {
       await getLocalMedia()
@@ -450,8 +451,8 @@ export default function CallModal({ callInfo, onClose }) {
       }
       localStreamRef.current?.getTracks().forEach(track => track.stop())
       screenStreamRef.current?.getTracks().forEach(track => track.stop())
-      peersRef.current.forEach(({ pc }) => pc.close())
-      peersRef.current.clear()
+      peerMap.forEach(({ pc }) => pc.close())
+      peerMap.clear()
     }
   }, [channelAuthorId, channelId, getLocalMedia])
 
@@ -797,7 +798,7 @@ export default function CallModal({ callInfo, onClose }) {
     setIsRecording(true)
     setPendingRecording(null)
     setRecordingStatus('녹화 중')
-  }, [getRecordingStream, isCallHost, recordingPermission])
+  }, [getRecordingStream, isCallHost, peers, recordingPermission])
 
   const toggleRecording = useCallback(() => {
     if (isRecording) stopRecording()

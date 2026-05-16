@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import api from '../lib/api'
 import styles from './TodoPanel.module.css'
 
 function formatDate(dateStr) {

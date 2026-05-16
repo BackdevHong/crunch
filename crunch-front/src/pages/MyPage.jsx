@@ -49,10 +49,6 @@ export default function MyPage({ initialTab = '프로필', onNavigate }) {
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(''), 3000) }
 
   useEffect(() => {
-    if (TABS.includes(initialTab)) setActiveTab(initialTab)
-  }, [initialTab, TABS])
-
-  useEffect(() => {
     api.get('/api/mypage/profile')
       .then(({ data }) => setProfile(data.data))
       .catch(console.error)

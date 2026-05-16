@@ -55,6 +55,7 @@ export default function App() {
 
 function AppInner() {
   const { selectedService, selectedFreelancer, setSelectedService, setSelectedFreelancer, authLoading, currentUser } = useApp()
+  const currentUserId = currentUser?.id
   const [activePage, setActivePage] = useState('home')
   const [myPageInitialTab, setMyPageInitialTab] = useState('프로필')
   const [authModal, setAuthModal] = useState(null)
@@ -69,12 +70,12 @@ function AppInner() {
 
   // 로그인 시 소켓 연결, 로그아웃 시 해제
   useEffect(() => {
-    if (currentUser) {
+    if (currentUserId) {
       reconnectSocket()
     } else {
       socket.disconnect()
     }
-  }, [currentUser?.id])
+  }, [currentUserId])
 
   if (authLoading) {
     return (
@@ -186,7 +187,7 @@ function AppInner() {
           )}
           {activePage === 'mypage' && (
             <>
-              <MyPage initialTab={myPageInitialTab} onNavigate={navigate} />
+              <MyPage key={myPageInitialTab} initialTab={myPageInitialTab} onNavigate={navigate} />
               <Footer />
             </>
           )}
