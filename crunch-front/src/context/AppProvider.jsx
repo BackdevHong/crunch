@@ -3,6 +3,28 @@ import { AppContext } from './AppContext'
 import api from '../lib/api'
 import { MOCK_SERVICES, MOCK_FREELANCERS } from '../data/mockData'
 
+const OAUTH_PROVIDER_LABEL = {
+  google: 'Google',
+  naver: '네이버',
+  kakao: '카카오',
+}
+
+const OAUTH_ERROR_MESSAGE = {
+  invalid_state: '로그인 요청이 만료되었습니다. 다시 시도해주세요.',
+  email_not_verified: 'Google 계정의 이메일 인증이 필요합니다.',
+  email_not_provided: '이메일 제공 동의가 필요합니다. 소셜 계정 동의 항목을 확인해주세요.',
+  callback_failed: '소셜 계정 인증을 완료하지 못했습니다. 잠시 후 다시 시도해주세요.',
+  provider_in_use: '이미 다른 계정에 연결된 소셜 계정입니다.',
+  account_not_found: '연결할 계정을 찾을 수 없습니다. 다시 로그인해주세요.',
+  access_denied: '소셜 로그인 동의가 취소되었습니다.',
+}
+
+function getOAuthErrorMessage(provider, error, linkMode = false) {
+  const providerLabel = OAUTH_PROVIDER_LABEL[provider] ?? '소셜'
+  const detail = OAUTH_ERROR_MESSAGE[error] ?? '로그인 처리 중 오류가 발생했습니다.'
+  return `${providerLabel} ${linkMode ? '계정 연결' : '로그인'} 실패: ${detail}`
+}
+
 export function AppProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null)
   const [authError, setAuthError] = useState('')
@@ -15,18 +37,24 @@ export function AppProvider({ children }) {
   const [selectedService, setSelectedService] = useState(null)
   const [selectedFreelancer, setSelectedFreelancer] = useState(null)
   const [editingService, setEditingService] = useState(null)
+  const [editingProject, setEditingProject] = useState(null)
 
   // ── 앱 시작 시 로그인 상태 복원 ──────────────────────────────
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     const oauthToken = params.get('accessToken')
+    const oauthProvider = params.get('oauth')
     const oauthError = params.get('error')
+    const oauthLinked = params.get('linked')
+    const oauthLinkMode = params.get('link') === '1'
 
     if (oauthToken) {
       localStorage.setItem('accessToken', oauthToken)
       window.history.replaceState({}, document.title, window.location.pathname)
-    } else if (params.get('oauth') && oauthError) {
-      setAuthError('소셜 로그인 중 오류가 발생했습니다.')
+    } else if (oauthProvider && oauthError) {
+      setAuthError(getOAuthErrorMessage(oauthProvider, oauthError, oauthLinkMode))
+      window.history.replaceState({}, document.title, window.location.pathname)
+    } else if (oauthProvider && oauthLinked) {
       window.history.replaceState({}, document.title, window.location.pathname)
     }
 
@@ -105,6 +133,7 @@ export function AppProvider({ children }) {
       selectedService, setSelectedService,
       selectedFreelancer, setSelectedFreelancer,
       editingService, setEditingService,
+      editingProject, setEditingProject,
     }}>
       {children}
     </AppContext.Provider>

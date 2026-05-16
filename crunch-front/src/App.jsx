@@ -28,6 +28,7 @@ const THEME_STORAGE_KEY = 'crunch-theme'
 
 const MYPAGE_TAB_ROUTES = {
   'mypage-profile': '프로필',
+  'mypage-account': '계정 설정',
   'mypage-notifications': '알림',
   'mypage-services': '내 서비스',
   'mypage-orders': '주문 내역',
@@ -45,6 +46,27 @@ function getInitialTheme() {
   return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
 }
 
+function getInitialAuthModal() {
+  if (typeof window === 'undefined') return null
+
+  const params = new URLSearchParams(window.location.search)
+  return params.get('oauth') && params.get('error') && params.get('link') !== '1' ? 'login' : null
+}
+
+function getInitialPage() {
+  if (typeof window === 'undefined') return 'home'
+
+  const page = new URLSearchParams(window.location.search).get('page')
+  return MYPAGE_TAB_ROUTES[page] ? 'mypage' : 'home'
+}
+
+function getInitialMyPageTab() {
+  if (typeof window === 'undefined') return '프로필'
+
+  const page = new URLSearchParams(window.location.search).get('page')
+  return MYPAGE_TAB_ROUTES[page] ?? '프로필'
+}
+
 export default function App() {
   return (
     <AppProvider>
@@ -54,11 +76,11 @@ export default function App() {
 }
 
 function AppInner() {
-  const { selectedService, selectedFreelancer, setSelectedService, setSelectedFreelancer, authLoading, currentUser } = useApp()
+  const { selectedService, selectedFreelancer, setSelectedService, setSelectedFreelancer, authLoading, currentUser, editingProject, setEditingProject } = useApp()
   const currentUserId = currentUser?.id
-  const [activePage, setActivePage] = useState('home')
-  const [myPageInitialTab, setMyPageInitialTab] = useState('프로필')
-  const [authModal, setAuthModal] = useState(null)
+  const [activePage, setActivePage] = useState(getInitialPage)
+  const [myPageInitialTab, setMyPageInitialTab] = useState(getInitialMyPageTab)
+  const [authModal, setAuthModal] = useState(getInitialAuthModal)
   const [callInfo, setCallInfo] = useState(null) // { channelId, channelName }
   const [theme, setTheme] = useState(getInitialTheme)
 
@@ -102,6 +124,7 @@ function AppInner() {
     if (targetPage.startsWith('admin') && currentUser?.role !== 'admin') return
     setSelectedService(null)
     setSelectedFreelancer(null)
+    if (targetPage !== 'post') setEditingProject(null)
     if (targetTab) setMyPageInitialTab(targetTab)
     if (targetPage !== 'mypage') setMyPageInitialTab('프로필')
     setActivePage(targetPage)
@@ -150,7 +173,7 @@ function AppInner() {
           )}
           {activePage === 'post' && (
             currentUser
-              ? <PostProject onNavigate={navigate} onSignup={openSignup} />
+              ? <PostProject onNavigate={navigate} onSignup={openSignup} editingProject={editingProject} />
               : (() => {
                   // 로그인 안 된 상태로 접근 시 로그인 모달 띄우고 홈으로
                   openLogin()

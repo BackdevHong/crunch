@@ -31,10 +31,25 @@ enum FreelancerBadge {
 }
 
 enum ProjectStatus {
+  PAYMENT_PENDING @map("결제대기")
   OPEN        @map("모집중")
   IN_PROGRESS @map("진행중")
   DONE        @map("완료")
   CANCELLED   @map("취소")
+}
+
+enum PaymentPurpose {
+  SERVICE_ORDER
+  PROJECT_DEPOSIT
+}
+
+enum PaymentStatus {
+  READY
+  REQUESTED
+  PAID
+  FAILED
+  CANCELED
+  REFUNDED
 }
 
 enum MessageType {
@@ -118,6 +133,7 @@ model User {
   application  FreelancerApplication?
   services     Service[]
   projects     Project[]
+  payments     Payment[] @relation("PaymentBuyer")
   buyerOrders  Order[]    @relation("BuyerOrders")
   sellerOrders Order[]    @relation("SellerOrders")
   sentReviews  Review[]   @relation("ReviewerRelation")
@@ -244,6 +260,7 @@ model Project {
   budgetPreset String?         @map("budget_preset") @db.VarChar(30)
   budgetMin    Int?            @map("budget_min")
   budgetMax    Int?            @map("budget_max")
+  budget       Int?
   deadline     String?         @db.VarChar(30)
   description  String?         @db.Text
   collabTags   Json?           @map("collab_tags")
@@ -253,11 +270,25 @@ model Project {
 
   author    User            @relation(fields: [authorId], references: [id], onDelete: Cascade)
   skills    ProjectSkill[]
+  roles     ProjectRole[]
   proposals Proposal[]
   members   ProjectMember[]
   channel   Channel?
 
   @@map("projects")
+}
+
+model ProjectRole {
+  id            String  @id @default(uuid()) @db.Char(36)
+  projectId     String  @map("project_id") @db.Char(36)
+  role          String  @db.VarChar(80)
+  headcount     Int     @default(1)
+  budgetPercent Int     @map("budget_percent")
+  budgetAmount  Int     @map("budget_amount")
+  project       Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@map("project_roles")
 }
 
 model ProjectSkill {
@@ -304,8 +335,58 @@ model Order {
   seller   User      @relation("SellerOrders", fields: [sellerId], references: [id])
   reviews  Review[]
   messages Message[]
+  payments Payment[]
 
   @@map("orders")
+}
+
+model Payment {
+  id           String         @id @default(uuid()) @db.Char(36)
+  purpose      PaymentPurpose
+  status       PaymentStatus  @default(READY)
+  provider     String         @default("nicepay") @db.VarChar(30)
+  moid         String         @unique @db.VarChar(64)
+  tid          String?        @db.VarChar(40)
+  orderId      String?        @map("order_id") @db.Char(36)
+  projectId    String?        @map("project_id") @db.Char(36)
+  buyerId      String         @map("buyer_id") @db.Char(36)
+  sellerId     String?        @map("seller_id") @db.Char(36)
+  amount       Int
+  feeRate      Decimal?       @map("fee_rate") @db.Decimal(5, 4)
+  feeAmount    Int?           @map("fee_amount")
+  sellerAmount Int?           @map("seller_amount")
+  depositRate  Decimal?       @map("deposit_rate") @db.Decimal(5, 4)
+  goodsName    String         @map("goods_name") @db.VarChar(120)
+  payMethod    String?        @map("pay_method") @db.VarChar(20)
+  requestedAt  DateTime?      @map("requested_at")
+  approvedAt   DateTime?      @map("approved_at")
+  failedAt     DateTime?      @map("failed_at")
+  canceledAt   DateTime?      @map("canceled_at")
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @updatedAt @map("updated_at")
+
+  buyer  User           @relation("PaymentBuyer", fields: [buyerId], references: [id])
+  order  Order?         @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  events PaymentEvent[]
+
+  @@index([buyerId, createdAt])
+  @@index([orderId])
+  @@index([projectId])
+  @@map("payments")
+}
+
+model PaymentEvent {
+  id        String   @id @default(uuid()) @db.Char(36)
+  paymentId String?  @map("payment_id") @db.Char(36)
+  provider  String   @default("nicepay") @db.VarChar(30)
+  eventType String   @map("event_type") @db.VarChar(60)
+  payload   Json
+  createdAt DateTime @default(now()) @map("created_at")
+
+  payment Payment? @relation(fields: [paymentId], references: [id], onDelete: SetNull)
+
+  @@index([paymentId])
+  @@map("payment_events")
 }
 
 model Review {

@@ -32,6 +32,70 @@ export async function getMyProfile(req: Request, res: Response): Promise<void> {
   }
 }
 
+// 내 계정 설정 조회
+export async function getMyAccountSettings(req: Request, res: Response): Promise<void> {
+  try {
+    const rows = await prisma.$queryRaw<Array<{
+      id: string
+      name: string
+      email: string
+      role: string
+      avatarUrl: string | null
+      authProvider: string
+      googleId: string | null
+      naverId: string | null
+      kakaoId: string | null
+      createdAt: Date
+    }>>`
+      SELECT
+        id,
+        name,
+        email,
+        role,
+        avatar_url AS avatarUrl,
+        auth_provider AS authProvider,
+        google_id AS googleId,
+        naver_id AS naverId,
+        kakao_id AS kakaoId,
+        created_at AS createdAt
+      FROM users
+      WHERE id = ${req.user!.userId}
+      LIMIT 1
+    `
+
+    const user = rows[0]
+    if (!user) {
+      res.status(404).json({ success: false, message: '사용자를 찾을 수 없습니다.' })
+      return
+    }
+
+    const hasSocialProvider = Boolean(user.googleId || user.naverId || user.kakaoId)
+
+    ok(res, {
+      profile: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        avatarUrl: user.avatarUrl,
+        createdAt: user.createdAt,
+      },
+      auth: {
+        primaryProvider: user.authProvider,
+        providers: {
+          local: user.authProvider === 'local' || !hasSocialProvider,
+          google: Boolean(user.googleId),
+          naver: Boolean(user.naverId),
+          kakao: Boolean(user.kakaoId),
+        },
+      },
+    })
+  } catch (err) {
+    console.error('[getMyAccountSettings]', err)
+    serverError(res)
+  }
+}
+
 // 내 알림 목록
 export async function getMyNotifications(req: Request, res: Response): Promise<void> {
   try {

@@ -7,10 +7,13 @@ import {
   logout,
   me,
   googleLogin,
+  googleLink,
   googleCallback,
   naverLogin,
+  naverLink,
   naverCallback,
   kakaoLogin,
+  kakaoLink,
   kakaoCallback,
 } from '../controllers/auth.controller'
 import { authenticate } from '../middlewares/authenticate'
@@ -67,17 +70,26 @@ router.post('/logout', logout)
 // GET /api/auth/google — Google OAuth 시작
 router.get('/google', googleLogin)
 
+// GET /api/auth/link/google — Google 계정 연결 시작
+router.get('/link/google', authenticate, googleLink)
+
 // GET /api/auth/google/callback — Google OAuth 콜백
 router.get('/google/callback', googleCallback)
 
 // GET /api/auth/naver — Naver OAuth 시작
 router.get('/naver', naverLogin)
 
+// GET /api/auth/link/naver — Naver 계정 연결 시작
+router.get('/link/naver', authenticate, naverLink)
+
 // GET /api/auth/naver/callback — Naver OAuth 콜백
 router.get('/naver/callback', naverCallback)
 
 // GET /api/auth/kakao — Kakao OAuth 시작
 router.get('/kakao', kakaoLogin)
+
+// GET /api/auth/link/kakao — Kakao 계정 연결 시작
+router.get('/link/kakao', authenticate, kakaoLink)
 
 // GET /api/auth/kakao/callback — Kakao OAuth 콜백
 router.get('/kakao/callback', kakaoCallback)

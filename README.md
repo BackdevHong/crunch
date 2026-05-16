@@ -158,6 +158,15 @@ KAKAO_REST_API_KEY="Kakao REST API Key"
 # Client Secret을 활성화한 경우에만 입력
 KAKAO_CLIENT_SECRET="Kakao Client Secret"
 KAKAO_REDIRECT_URI=http://localhost:4000/api/auth/kakao/callback
+
+# NICEPAY
+NICEPAY_CLIENT_KEY="Nicepay Client Key"
+NICEPAY_SECRET_KEY="Nicepay Secret Key"
+NICEPAY_API_URL=https://sandbox-api.nicepay.co.kr/v1
+NICEPAY_SCRIPT_URL=https://pay.nicepay.co.kr/v1/js/
+NICEPAY_RETURN_URL=http://localhost:4000/api/payments/nicepay/return
+PLATFORM_FEE_RATE=0.07
+PROJECT_DEPOSIT_RATE=0.2
 ```
 
 ```bash
@@ -239,10 +248,13 @@ npm run preview   # dist/ 프리뷰 서버 실행
 | POST | `/signup` | ✗ | 회원가입 (`role`: `client` 또는 `freelancer`) |
 | POST | `/login` | ✗ | 로그인, Access Token 반환 + Refresh 쿠키 발급 |
 | GET  | `/google` | ✗ | Google OAuth 로그인 시작 |
+| GET  | `/link/google` | Bearer | Google 계정 연결 시작 URL 발급 |
 | GET  | `/google/callback` | ✗ | Google OAuth 콜백 처리 |
 | GET  | `/naver` | ✗ | Naver OAuth 로그인 시작 |
+| GET  | `/link/naver` | Bearer | Naver 계정 연결 시작 URL 발급 |
 | GET  | `/naver/callback` | ✗ | Naver OAuth 콜백 처리 |
 | GET  | `/kakao` | ✗ | Kakao OAuth 로그인 시작 |
+| GET  | `/link/kakao` | Bearer | Kakao 계정 연결 시작 URL 발급 |
 | GET  | `/kakao/callback` | ✗ | Kakao OAuth 콜백 처리 |
 | POST | `/refresh` | 쿠키 | Access Token 재발급 + Refresh 토큰 회전 |
 | POST | `/logout` | 쿠키 | Refresh 토큰 폐기 및 쿠키 제거 |
@@ -269,7 +281,7 @@ npm run preview   # dist/ 프리뷰 서버 실행
 | GET  | `/` | ✗ | 프로젝트 목록 |
 | GET  | `/me` | Bearer | 내가 등록한 프로젝트 |
 | GET  | `/:id` | ✗ | 프로젝트 상세 |
-| POST | `/` | Bearer | 프로젝트 의뢰 생성 |
+| POST | `/` | Bearer | 프로젝트 의뢰 생성 (`budget`, `roles[]` 포함) |
 
 ### 제안 (`/api/proposals`)
 
@@ -292,6 +304,14 @@ npm run preview   # dist/ 프리뷰 서버 실행
 | GET   | `/:id` | 주문 상세 |
 | PATCH | `/:id/status` | 상태 변경 (`IN_PROGRESS`, `REVIEW`, `DONE`, `CANCELLED`) |
 
+### 결제 (`/api/payments`)
+
+| 메서드 | 경로 | 인증 | 설명 |
+|--------|------|------|------|
+| GET  | `/policy` | ✗ | 결제 정책 조회 |
+| POST | `/project-deposit` | Bearer | 프로젝트 예치금 결제창 파라미터 생성 |
+| POST | `/nicepay/return` | ✗ | NICEPAY 인증 결과 수신 및 승인 처리 |
+
 ### 프리랜서 신청 (`/api/applications`)
 
 | 메서드 | 경로 | 인증 | 설명 |
@@ -309,6 +329,7 @@ npm run preview   # dist/ 프리뷰 서버 실행
 | 메서드 | 경로 | 설명 |
 |--------|------|------|
 | GET   | `/profile` | 내 프로필 조회 |
+| GET   | `/account` | 내 계정 설정과 소셜 로그인 연결 상태 조회 |
 | PATCH | `/profile` | 내 프로필 수정 |
 | PATCH | `/profile/freelancer` | 프리랜서 프로필 수정 |
 | GET   | `/notifications` | 내 알림 목록과 읽지 않은 개수 조회 |

@@ -5,6 +5,7 @@ import {
   getProjects,
   getProjectById,
   getMyProjects,
+  updateProject,
 } from '../controllers/project.controller'
 import { authenticate } from '../middlewares/authenticate'
 
@@ -18,5 +19,10 @@ router.post('/', authenticate, [
     .isLength({ max: 200 }).withMessage('제목은 200자 이하여야 합니다.'),
   body('category').notEmpty().withMessage('카테고리를 선택해주세요.'),
 ], createProject)
+router.patch('/:id', authenticate, [
+  body('title').trim().notEmpty().withMessage('제목을 입력해주세요.')
+    .isLength({ max: 200 }).withMessage('제목은 200자 이하여야 합니다.'),
+  body('category').notEmpty().withMessage('카테고리를 선택해주세요.'),
+], updateProject)
 
 export default router

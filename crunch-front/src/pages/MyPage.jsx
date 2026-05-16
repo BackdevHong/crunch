@@ -33,11 +33,24 @@ const SERVICE_APPROVAL_BG = {
   REJECTED: 'var(--color-danger-bg)',
 }
 
-const TABS_CLIENT     = ['프로필', '알림', '주문 내역', '내 프로젝트']
-const TABS_FREELANCER = ['프로필', '알림', '프리랜서 프로필', '내 서비스', '주문 내역', '판매 내역', '내 프로젝트', '내 제안']
+const TABS_CLIENT     = ['프로필', '계정 설정', '알림', '주문 내역', '내 프로젝트']
+const TABS_FREELANCER = ['프로필', '계정 설정', '알림', '프리랜서 프로필', '내 서비스', '주문 내역', '판매 내역', '내 프로젝트', '내 제안']
+
+const ROLE_LABEL = {
+  client: '의뢰인',
+  freelancer: '프리랜서',
+  admin: '어드민',
+}
+
+const AUTH_PROVIDER_META = {
+  local: { label: '이메일', className: 'providerLocal' },
+  google: { label: 'Google', className: 'providerGoogle' },
+  naver: { label: 'Naver', className: 'providerNaver' },
+  kakao: { label: 'Kakao', className: 'providerKakao' },
+}
 
 export default function MyPage({ initialTab = '프로필', onNavigate }) {
-  const { currentUser, setEditingService } = useApp()
+  const { currentUser, setEditingService, setEditingProject } = useApp()
   const [activeTab, setActiveTab] = useState(initialTab)
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -99,6 +112,7 @@ export default function MyPage({ initialTab = '프로필', onNavigate }) {
           {activeTab === '프로필' && (
             <ProfileTab profile={profile} onUpdate={(updated) => { setProfile(p => ({ ...p, ...updated })); showToast('✅ 저장되었습니다!') }} />
           )}
+          {activeTab === '계정 설정' && <AccountSettingsTab />}
           {activeTab === '알림' && <NotificationsTab onNavigate={onNavigate} />}
           {activeTab === '프리랜서 프로필' && isFreelancer && (
             <FreelancerProfileTab
@@ -118,7 +132,15 @@ export default function MyPage({ initialTab = '프로필', onNavigate }) {
             />
           )}
           {activeTab === '판매 내역' && isFreelancer && <SalesTab />}
-          {activeTab === '내 프로젝트' && <ProjectsTab />}
+          {activeTab === '내 프로젝트' && (
+            <ProjectsTab
+              onNavigate={onNavigate}
+              onEdit={(project) => {
+                setEditingProject(project)
+                onNavigate('post')
+              }}
+            />
+          )}
           {activeTab === '내 제안' && isFreelancer && <MyProposalsTab />}
         </div>
       </div>
@@ -234,6 +256,138 @@ function NotificationsTab({ onNavigate }) {
           ))}
         </div>
       )}
+    </div>
+  )
+}
+
+// ── 계정 설정 탭 ─────────────────────────────────────────────
+function AccountSettingsTab() {
+  const { authError, setAuthError } = useApp()
+  const [account, setAccount] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [connectingProvider, setConnectingProvider] = useState('')
+
+  useEffect(() => {
+    let mounted = true
+
+    api.get('/api/mypage/account')
+      .then(({ data }) => {
+        if (mounted) setAccount(data.data)
+      })
+      .catch((err) => {
+        if (mounted) setError(err.response?.data?.message ?? '계정 정보를 불러오지 못했습니다.')
+      })
+      .finally(() => {
+        if (mounted) setLoading(false)
+      })
+
+    return () => { mounted = false }
+  }, [])
+
+  const connectProvider = async (provider) => {
+    setConnectingProvider(provider)
+    setError('')
+    setAuthError('')
+    try {
+      const { data } = await api.get(`/api/auth/link/${provider}`)
+      window.location.assign(data.data.url)
+    } catch (err) {
+      setError(err.response?.data?.message ?? '계정 연결을 시작하지 못했습니다.')
+      setConnectingProvider('')
+    }
+  }
+
+  if (loading) return <div className={styles.loading}>불러오는 중...</div>
+
+  const displayError = error || authError
+
+  if (displayError && !account) {
+    return (
+      <div className={styles.card}>
+        <div className={styles.errorBox}>{displayError}</div>
+      </div>
+    )
+  }
+
+  const profile = account?.profile
+  const providers = account?.auth?.providers ?? {}
+  const primaryProvider = account?.auth?.primaryProvider ?? 'local'
+  const primaryLabel = AUTH_PROVIDER_META[primaryProvider]?.label ?? primaryProvider
+
+  return (
+    <div className={styles.accountStack}>
+      <div className={styles.card}>
+        <div className={styles.accountHeader}>
+          <div className={styles.accountAvatar}>
+            {profile?.avatarUrl ? (
+              <img src={profile.avatarUrl} alt="" className={styles.accountAvatarImg} referrerPolicy="no-referrer" />
+            ) : (
+              profile?.name?.[0] ?? '?'
+            )}
+          </div>
+          <div className={styles.accountInfo}>
+            <div className={styles.cardTitleInline}>계정 설정</div>
+            <p>{profile?.email}</p>
+            <div className={styles.accountBadges}>
+              <span>{ROLE_LABEL[profile?.role] ?? profile?.role}</span>
+              <span>{primaryLabel} 로그인</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className={styles.card}>
+        <div className={styles.cardTitle}>로그인 방식</div>
+        {displayError && <div className={styles.errorBox}>{displayError}</div>}
+        <div className={styles.providerGrid}>
+          {Object.entries(AUTH_PROVIDER_META).map(([key, meta]) => {
+            const connected = Boolean(providers[key])
+            const canConnect = key !== 'local' && !connected
+            return (
+              <div key={key} className={styles.providerItem}>
+                <div className={`${styles.providerIcon} ${styles[meta.className]}`}>
+                  {meta.label[0]}
+                </div>
+                <div className={styles.providerMeta}>
+                  <strong>{meta.label}</strong>
+                  <span className={connected ? styles.providerConnected : styles.providerDisconnected}>
+                    {connected ? '연결됨' : '미연결'}
+                  </span>
+                </div>
+                {canConnect && (
+                  <button
+                    type="button"
+                    className={styles.providerAction}
+                    onClick={() => connectProvider(key)}
+                    disabled={Boolean(connectingProvider)}
+                  >
+                    {connectingProvider === key ? '연결 중' : '연결'}
+                  </button>
+                )}
+              </div>
+            )
+          })}
+        </div>
+      </div>
+
+      <div className={styles.card}>
+        <div className={styles.cardTitle}>계정 정보</div>
+        <div className={styles.accountRows}>
+          <div className={styles.accountRow}>
+            <span>이름</span>
+            <strong>{profile?.name}</strong>
+          </div>
+          <div className={styles.accountRow}>
+            <span>이메일</span>
+            <strong>{profile?.email}</strong>
+          </div>
+          <div className={styles.accountRow}>
+            <span>가입일</span>
+            <strong>{profile?.createdAt ? new Date(profile.createdAt).toLocaleDateString('ko-KR') : '-'}</strong>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
@@ -560,24 +714,52 @@ function SalesTab() {
 }
 
 // ── 내 프로젝트 탭 ───────────────────────────────────────────
-function ProjectsTab() {
+function ProjectsTab({ onEdit }) {
   const [projects, setProjects] = useState([])
   const [loading, setLoading] = useState(true)
   const [expandedId, setExpandedId] = useState(null)
   const [proposals, setProposals] = useState({})   // { [projectId]: proposal[] }
   const [propLoading, setPropLoading] = useState({})
   const [actionLoading, setActionLoading] = useState(null)
+  const [paymentLoading, setPaymentLoading] = useState(null)
   const [toast, setToast] = useState('')
 
-  const PROJECT_STATUS_LABEL = { OPEN: '모집중', IN_PROGRESS: '진행중', DONE: '완료', CANCELLED: '취소' }
-  const PROJECT_STATUS_COLOR = { OPEN: '#185FA5', IN_PROGRESS: '#854F0B', DONE: '#3B6D11', CANCELLED: '#6b6b67' }
-  const PROJECT_STATUS_BG    = { OPEN: '#E6F1FB', IN_PROGRESS: '#FAEEDA', DONE: '#EAF3DE', CANCELLED: '#f1efe8' }
+  const PROJECT_STATUS_LABEL = { PAYMENT_PENDING: '결제대기', OPEN: '모집중', IN_PROGRESS: '진행중', DONE: '완료', CANCELLED: '취소' }
+  const PROJECT_STATUS_COLOR = { PAYMENT_PENDING: 'var(--color-warning)', OPEN: '#185FA5', IN_PROGRESS: '#854F0B', DONE: '#3B6D11', CANCELLED: '#6b6b67' }
+  const PROJECT_STATUS_BG    = { PAYMENT_PENDING: 'var(--color-warning-bg)', OPEN: '#E6F1FB', IN_PROGRESS: '#FAEEDA', DONE: '#EAF3DE', CANCELLED: '#f1efe8' }
 
   const PROPOSAL_STATUS_LABEL = { PENDING: '대기중', ACCEPTED: '수락', REJECTED: '거절', CANCELLED: '취소' }
   const PROPOSAL_STATUS_COLOR = { PENDING: '#854F0B', ACCEPTED: '#3B6D11', REJECTED: '#6b6b67', CANCELLED: '#6b6b67' }
   const PROPOSAL_STATUS_BG    = { PENDING: '#FAEEDA', ACCEPTED: '#EAF3DE', REJECTED: '#f1efe8', CANCELLED: '#f1efe8' }
 
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(''), 3000) }
+  const normalizeStatus = (status) => status === '결제대기' ? 'PAYMENT_PENDING' : status
+
+  const startDepositPayment = async (projectId) => {
+    setPaymentLoading(projectId)
+    try {
+      const { data } = await api.post('/api/payments/project-deposit', { projectId })
+      const { scriptUrl, request } = data.data.nicepay
+      const launch = () => window.AUTHNICE?.requestPay({
+        ...request,
+        fnError: (result) => showToast(result?.errorMsg ?? '결제창을 열지 못했습니다.'),
+      })
+
+      if (window.AUTHNICE) {
+        setTimeout(launch, 0)
+      } else {
+        const script = document.createElement('script')
+        script.src = scriptUrl
+        script.async = true
+        script.onload = launch
+        document.body.appendChild(script)
+      }
+    } catch (err) {
+      showToast(err.response?.data?.message ?? '예치금 결제를 준비하지 못했습니다.')
+    } finally {
+      setPaymentLoading(null)
+    }
+  }
 
   useEffect(() => {
     api.get('/api/mypage/projects')
@@ -651,9 +833,26 @@ function ProjectsTab() {
               </div>
             </div>
             <div className={styles.listRight}>
+              {normalizeStatus(proj.status) === 'PAYMENT_PENDING' && (
+                <div className={styles.proposalActions}>
+                  <button
+                    className={styles.proposalToggleBtn}
+                    onClick={() => startDepositPayment(proj.id)}
+                    disabled={paymentLoading === proj.id}
+                  >
+                    {paymentLoading === proj.id ? '준비 중' : '결제하기'}
+                  </button>
+                  <button
+                    className={styles.proposalToggleBtn}
+                    onClick={() => onEdit(proj)}
+                  >
+                    수정하기
+                  </button>
+                </div>
+              )}
               <span className={styles.statusBadge}
-                style={{ background: PROJECT_STATUS_BG[proj.status], color: PROJECT_STATUS_COLOR[proj.status] }}>
-                {PROJECT_STATUS_LABEL[proj.status]}
+                style={{ background: PROJECT_STATUS_BG[normalizeStatus(proj.status)], color: PROJECT_STATUS_COLOR[normalizeStatus(proj.status)] }}>
+                {PROJECT_STATUS_LABEL[normalizeStatus(proj.status)]}
               </span>
               <button
                 className={styles.proposalToggleBtn}

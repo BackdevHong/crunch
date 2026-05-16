@@ -63,6 +63,14 @@ type AuthUser = {
   avatarUrl: string | null
 }
 
+type OAuthProvider = 'google' | 'naver' | 'kakao'
+
+class OAuthLinkError extends Error {
+  constructor(public code: string) {
+    super(code)
+  }
+}
+
 // ── 회원가입 ─────────────────────────────────────────────────
 export async function signup(req: Request, res: Response): Promise<void> {
   // 입력값 검증 결과 확인
@@ -192,21 +200,45 @@ export function googleLogin(_req: Request, res: Response): void {
   res.redirect(`${GOOGLE_AUTH_URL}?${params.toString()}`)
 }
 
+// ── Google 계정 연결 시작 ───────────────────────────────────
+export function googleLink(req: Request, res: Response): void {
+  const clientId = process.env.GOOGLE_CLIENT_ID
+  if (!clientId) {
+    res.status(500).json({ success: false, message: 'Google OAuth 설정이 필요합니다.' })
+    return
+  }
+
+  const state = setOAuthStateCookies(res, 'google', req.user!.userId)
+  const params = new URLSearchParams({
+    client_id: clientId,
+    redirect_uri: getGoogleRedirectUri(),
+    response_type: 'code',
+    scope: 'openid email profile',
+    state,
+    prompt: 'select_account',
+  })
+
+  ok(res, { url: `${GOOGLE_AUTH_URL}?${params.toString()}` })
+}
+
 // ── Google 로그인 콜백 ───────────────────────────────────────
 export async function googleCallback(req: Request, res: Response): Promise<void> {
   const { code, state, error } = req.query
   const clientUrl = process.env.CLIENT_URL ?? 'http://localhost:5173'
+  const requestedLink = Boolean(req.cookies?.googleOAuthLinkUserId)
 
   if (error) {
-    res.redirect(`${clientUrl}?oauth=google&error=${encodeURIComponent(String(error))}`)
+    res.redirect(getOAuthClientRedirectUrl(clientUrl, 'google', String(error), requestedLink))
     return
   }
   if (!code || !state || state !== req.cookies?.googleOAuthState) {
-    res.redirect(`${clientUrl}?oauth=google&error=invalid_state`)
+    clearOAuthStateCookies(res, 'google')
+    res.redirect(getOAuthClientRedirectUrl(clientUrl, 'google', 'invalid_state', requestedLink))
     return
   }
 
-  res.clearCookie('googleOAuthState', { httpOnly: true, sameSite: 'lax' })
+  const linkUserId = req.cookies?.googleOAuthLinkUserId as string | undefined
+  clearOAuthStateCookies(res, 'google')
 
   try {
     const clientId = process.env.GOOGLE_CLIENT_ID
@@ -233,7 +265,13 @@ export async function googleCallback(req: Request, res: Response): Promise<void>
     })
 
     if (!googleUser.email || googleUser.email_verified === false) {
-      res.redirect(`${clientUrl}?oauth=google&error=email_not_verified`)
+      res.redirect(getOAuthClientRedirectUrl(clientUrl, 'google', 'email_not_verified', Boolean(linkUserId)))
+      return
+    }
+
+    if (linkUserId) {
+      await linkGoogleUser(linkUserId, googleUser)
+      res.redirect(`${clientUrl}?oauth=google&linked=1&page=mypage-account`)
       return
     }
 
@@ -247,7 +285,8 @@ export async function googleCallback(req: Request, res: Response): Promise<void>
     res.redirect(`${clientUrl}?${params.toString()}`)
   } catch (err) {
     console.error('[googleCallback]', err)
-    res.redirect(`${clientUrl}?oauth=google&error=callback_failed`)
+    const errorCode = err instanceof OAuthLinkError ? err.code : 'callback_failed'
+    res.redirect(getOAuthClientRedirectUrl(clientUrl, 'google', errorCode, Boolean(linkUserId)))
   }
 }
 
@@ -277,21 +316,43 @@ export function naverLogin(_req: Request, res: Response): void {
   res.redirect(`${NAVER_AUTH_URL}?${params.toString()}`)
 }
 
+// ── Naver 계정 연결 시작 ────────────────────────────────────
+export function naverLink(req: Request, res: Response): void {
+  const clientId = process.env.NAVER_CLIENT_ID
+  if (!clientId) {
+    res.status(500).json({ success: false, message: 'Naver OAuth 설정이 필요합니다.' })
+    return
+  }
+
+  const state = setOAuthStateCookies(res, 'naver', req.user!.userId)
+  const params = new URLSearchParams({
+    response_type: 'code',
+    client_id: clientId,
+    redirect_uri: getNaverRedirectUri(),
+    state,
+  })
+
+  ok(res, { url: `${NAVER_AUTH_URL}?${params.toString()}` })
+}
+
 // ── Naver 로그인 콜백 ────────────────────────────────────────
 export async function naverCallback(req: Request, res: Response): Promise<void> {
   const { code, state, error } = req.query
   const clientUrl = process.env.CLIENT_URL ?? 'http://localhost:5173'
+  const requestedLink = Boolean(req.cookies?.naverOAuthLinkUserId)
 
   if (error) {
-    res.redirect(`${clientUrl}?oauth=naver&error=${encodeURIComponent(String(error))}`)
+    res.redirect(getOAuthClientRedirectUrl(clientUrl, 'naver', String(error), requestedLink))
     return
   }
   if (!code || !state || state !== req.cookies?.naverOAuthState) {
-    res.redirect(`${clientUrl}?oauth=naver&error=invalid_state`)
+    clearOAuthStateCookies(res, 'naver')
+    res.redirect(getOAuthClientRedirectUrl(clientUrl, 'naver', 'invalid_state', requestedLink))
     return
   }
 
-  res.clearCookie('naverOAuthState', { httpOnly: true, sameSite: 'lax' })
+  const linkUserId = req.cookies?.naverOAuthLinkUserId as string | undefined
+  clearOAuthStateCookies(res, 'naver')
 
   try {
     const clientId = process.env.NAVER_CLIENT_ID
@@ -318,7 +379,13 @@ export async function naverCallback(req: Request, res: Response): Promise<void> 
     })
 
     if (naverUser.resultcode !== '00' || !naverUser.response.email) {
-      res.redirect(`${clientUrl}?oauth=naver&error=email_not_provided`)
+      res.redirect(getOAuthClientRedirectUrl(clientUrl, 'naver', 'email_not_provided', Boolean(linkUserId)))
+      return
+    }
+
+    if (linkUserId) {
+      await linkNaverUser(linkUserId, naverUser)
+      res.redirect(`${clientUrl}?oauth=naver&linked=1&page=mypage-account`)
       return
     }
 
@@ -332,7 +399,8 @@ export async function naverCallback(req: Request, res: Response): Promise<void> 
     res.redirect(`${clientUrl}?${params.toString()}`)
   } catch (err) {
     console.error('[naverCallback]', err)
-    res.redirect(`${clientUrl}?oauth=naver&error=callback_failed`)
+    const errorCode = err instanceof OAuthLinkError ? err.code : 'callback_failed'
+    res.redirect(getOAuthClientRedirectUrl(clientUrl, 'naver', errorCode, Boolean(linkUserId)))
   }
 }
 
@@ -362,21 +430,43 @@ export function kakaoLogin(_req: Request, res: Response): void {
   res.redirect(`${KAKAO_AUTH_URL}?${params.toString()}`)
 }
 
+// ── Kakao 계정 연결 시작 ────────────────────────────────────
+export function kakaoLink(req: Request, res: Response): void {
+  const clientId = process.env.KAKAO_REST_API_KEY
+  if (!clientId) {
+    res.status(500).json({ success: false, message: 'Kakao OAuth 설정이 필요합니다.' })
+    return
+  }
+
+  const state = setOAuthStateCookies(res, 'kakao', req.user!.userId)
+  const params = new URLSearchParams({
+    response_type: 'code',
+    client_id: clientId,
+    redirect_uri: getKakaoRedirectUri(),
+    state,
+  })
+
+  ok(res, { url: `${KAKAO_AUTH_URL}?${params.toString()}` })
+}
+
 // ── Kakao 로그인 콜백 ────────────────────────────────────────
 export async function kakaoCallback(req: Request, res: Response): Promise<void> {
   const { code, state, error } = req.query
   const clientUrl = process.env.CLIENT_URL ?? 'http://localhost:5173'
+  const requestedLink = Boolean(req.cookies?.kakaoOAuthLinkUserId)
 
   if (error) {
-    res.redirect(`${clientUrl}?oauth=kakao&error=${encodeURIComponent(String(error))}`)
+    res.redirect(getOAuthClientRedirectUrl(clientUrl, 'kakao', String(error), requestedLink))
     return
   }
   if (!code || !state || state !== req.cookies?.kakaoOAuthState) {
-    res.redirect(`${clientUrl}?oauth=kakao&error=invalid_state`)
+    clearOAuthStateCookies(res, 'kakao')
+    res.redirect(getOAuthClientRedirectUrl(clientUrl, 'kakao', 'invalid_state', requestedLink))
     return
   }
 
-  res.clearCookie('kakaoOAuthState', { httpOnly: true, sameSite: 'lax' })
+  const linkUserId = req.cookies?.kakaoOAuthLinkUserId as string | undefined
+  clearOAuthStateCookies(res, 'kakao')
 
   try {
     const clientId = process.env.KAKAO_REST_API_KEY
@@ -405,7 +495,13 @@ export async function kakaoCallback(req: Request, res: Response): Promise<void> 
     })
 
     if (!kakaoUser.kakao_account?.email) {
-      res.redirect(`${clientUrl}?oauth=kakao&error=email_not_provided`)
+      res.redirect(getOAuthClientRedirectUrl(clientUrl, 'kakao', 'email_not_provided', Boolean(linkUserId)))
+      return
+    }
+
+    if (linkUserId) {
+      await linkKakaoUser(linkUserId, kakaoUser)
+      res.redirect(`${clientUrl}?oauth=kakao&linked=1&page=mypage-account`)
       return
     }
 
@@ -419,7 +515,8 @@ export async function kakaoCallback(req: Request, res: Response): Promise<void> 
     res.redirect(`${clientUrl}?${params.toString()}`)
   } catch (err) {
     console.error('[kakaoCallback]', err)
-    res.redirect(`${clientUrl}?oauth=kakao&error=callback_failed`)
+    const errorCode = err instanceof OAuthLinkError ? err.code : 'callback_failed'
+    res.redirect(getOAuthClientRedirectUrl(clientUrl, 'kakao', errorCode, Boolean(linkUserId)))
   }
 }
 
@@ -528,6 +625,49 @@ function setRefreshCookie(res: Response, token: string): void {
   })
 }
 
+function getOAuthCookieOptions() {
+  return {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax' as const,
+  }
+}
+
+function setOAuthStateCookies(res: Response, provider: OAuthProvider, userId?: string): string {
+  const state = crypto.randomBytes(24).toString('hex')
+  const options = { ...getOAuthCookieOptions(), maxAge: 10 * 60 * 1000 }
+
+  res.cookie(`${provider}OAuthState`, state, options)
+  if (userId) res.cookie(`${provider}OAuthLinkUserId`, userId, options)
+
+  return state
+}
+
+function clearOAuthStateCookies(res: Response, provider: OAuthProvider): void {
+  const options = getOAuthCookieOptions()
+  res.clearCookie(`${provider}OAuthState`, options)
+  res.clearCookie(`${provider}OAuthLinkUserId`, options)
+}
+
+function getOAuthClientRedirectUrl(
+  clientUrl: string,
+  provider: OAuthProvider,
+  error: string,
+  linkMode: boolean,
+): string {
+  const params = new URLSearchParams({
+    oauth: provider,
+    error,
+  })
+
+  if (linkMode) {
+    params.set('link', '1')
+    params.set('page', 'mypage-account')
+  }
+
+  return `${clientUrl}?${params.toString()}`
+}
+
 function getGoogleRedirectUri(): string {
   return process.env.GOOGLE_REDIRECT_URI ?? `${process.env.API_URL ?? 'http://localhost:4000'}/api/auth/google/callback`
 }
@@ -555,6 +695,78 @@ async function issueAuthTokens(
 
   setRefreshCookie(res, refreshToken)
   return accessToken
+}
+
+async function assertProviderAvailable(provider: OAuthProvider, providerId: string, userId: string): Promise<void> {
+  const column = provider === 'google'
+    ? 'google_id'
+    : provider === 'naver'
+      ? 'naver_id'
+      : 'kakao_id'
+
+  const rows = await prisma.$queryRaw<Array<{ id: string }>>`
+    SELECT id
+    FROM users
+    WHERE
+      (${column} = 'google_id' AND google_id = ${providerId}) OR
+      (${column} = 'naver_id' AND naver_id = ${providerId}) OR
+      (${column} = 'kakao_id' AND kakao_id = ${providerId})
+    LIMIT 1
+  `
+
+  if (rows[0] && rows[0].id !== userId) {
+    throw new OAuthLinkError('provider_in_use')
+  }
+}
+
+async function ensureLinkTargetUser(userId: string): Promise<void> {
+  const user = await prisma.user.findUnique({ where: { id: userId }, select: { id: true } })
+  if (!user) throw new OAuthLinkError('account_not_found')
+}
+
+async function linkGoogleUser(userId: string, googleUser: GoogleUserInfo): Promise<void> {
+  await ensureLinkTargetUser(userId)
+  await assertProviderAvailable('google', googleUser.sub, userId)
+
+  await prisma.$executeRaw`
+    UPDATE users
+    SET
+      google_id = ${googleUser.sub},
+      avatar_url = CASE WHEN avatar_url IS NULL THEN ${googleUser.picture ?? null} ELSE avatar_url END,
+      updated_at = NOW(3)
+    WHERE id = ${userId}
+  `
+}
+
+async function linkNaverUser(userId: string, naverUser: NaverUserInfo): Promise<void> {
+  const profile = naverUser.response
+  await ensureLinkTargetUser(userId)
+  await assertProviderAvailable('naver', profile.id, userId)
+
+  await prisma.$executeRaw`
+    UPDATE users
+    SET
+      naver_id = ${profile.id},
+      avatar_url = CASE WHEN avatar_url IS NULL THEN ${profile.profile_image ?? null} ELSE avatar_url END,
+      updated_at = NOW(3)
+    WHERE id = ${userId}
+  `
+}
+
+async function linkKakaoUser(userId: string, kakaoUser: KakaoUserInfo): Promise<void> {
+  const kakaoId = String(kakaoUser.id)
+  const avatarUrl = kakaoUser.kakao_account?.profile?.profile_image_url || kakaoUser.properties?.profile_image
+  await ensureLinkTargetUser(userId)
+  await assertProviderAvailable('kakao', kakaoId, userId)
+
+  await prisma.$executeRaw`
+    UPDATE users
+    SET
+      kakao_id = ${kakaoId},
+      avatar_url = CASE WHEN avatar_url IS NULL THEN ${avatarUrl ?? null} ELSE avatar_url END,
+      updated_at = NOW(3)
+    WHERE id = ${userId}
+  `
 }
 
 async function upsertGoogleUser(googleUser: GoogleUserInfo): Promise<AuthUser> {

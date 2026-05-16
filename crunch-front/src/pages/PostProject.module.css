@@ -109,6 +109,7 @@
 .field textarea { resize: vertical; min-height: 120px; line-height: 1.6; }
 
 .fieldRow { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.fieldFull { grid-column: 1 / -1; }
 
 .hint { font-size: 11px; color: var(--color-text-secondary); margin-top: 5px; }
 .optional { font-weight: 400; color: var(--color-text-secondary); }
@@ -140,6 +141,134 @@
 }
 .budgetOn { background: var(--color-accent-bg); border-color: var(--color-accent); color: var(--color-accent-text); }
 .budgetOn strong { color: var(--color-accent-text); }
+.budgetSummary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.budgetSummary div {
+  border: 0.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-secondary);
+  padding: 14px;
+}
+.budgetSummary span {
+  display: block;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+.budgetSummary strong {
+  color: var(--color-text-primary);
+  font-size: 16px;
+  font-weight: 600;
+}
+.roleHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.roleHeader label {
+  margin-bottom: 0;
+}
+.btnMini {
+  padding: 6px 12px;
+  border-radius: var(--radius-md);
+  border: 0.5px solid var(--color-border-hover);
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-size: 12px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.btnMini:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent-text);
+}
+.percentNotice {
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+.percentOver {
+  color: var(--color-danger);
+  font-weight: 600;
+}
+.roleList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.roleItem {
+  border: 0.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-secondary);
+  padding: 12px;
+}
+.roleGrid {
+  display: grid;
+  grid-template-columns: minmax(160px, 1.4fr) 72px 82px minmax(110px, 0.8fr) 32px;
+  gap: 10px;
+  align-items: end;
+}
+.fieldCompact label {
+  display: block;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin-bottom: 5px;
+}
+.fieldCompact input {
+  width: 100%;
+  padding: 9px 10px;
+  border: 0.5px solid var(--color-border-hover);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-size: 13px;
+  font-family: inherit;
+}
+.roleAmount {
+  min-height: 38px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+}
+.roleAmount span {
+  color: var(--color-text-secondary);
+  font-size: 11px;
+}
+.roleAmount strong {
+  color: var(--color-text-primary);
+  font-size: 13px;
+  font-weight: 600;
+}
+.roleAmount small {
+  color: var(--color-text-tertiary);
+  font-size: 11px;
+}
+.roleRemove {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  border: 0.5px solid var(--color-border-hover);
+  background: var(--color-bg-primary);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+}
+.roleRemove:hover {
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+.roleRemove:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
 
 /* DROPZONE */
 .dropzone {
@@ -171,6 +300,42 @@
 .reviewTag {
   font-size: 11px; padding: 2px 8px; border-radius: 99px;
   background: var(--color-accent-bg); color: var(--color-accent-text);
+}
+.reviewBlock {
+  padding: 11px 0;
+  border-bottom: 0.5px solid var(--color-border);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  font-size: 13px;
+}
+.reviewRoleList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.reviewRole {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border: 0.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-secondary);
+  padding: 9px 11px;
+}
+.reviewRole strong {
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+.reviewRole span {
+  color: var(--color-text-secondary);
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.reviewRole small {
+  color: var(--color-text-tertiary);
 }
 
 /* TIP */
@@ -232,5 +397,11 @@
   .stepper { gap: 0; }
   .stepLabel { display: none; }
   .budgetRow { grid-template-columns: 1fr; }
+  .budgetSummary { grid-template-columns: 1fr; }
   .fieldRow { grid-template-columns: 1fr; }
+  .roleGrid { grid-template-columns: 1fr; }
+  .roleRemove { width: 100%; }
+  .reviewBlock { grid-template-columns: 1fr; }
+  .reviewRole { flex-direction: column; gap: 4px; }
+  .reviewRole span { text-align: left; }
 }
