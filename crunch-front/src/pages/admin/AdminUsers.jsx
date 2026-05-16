@@ -6,6 +6,8 @@ import styles from './AdminPage.module.css'
 const ROLE_LABEL = { client: '의뢰인', freelancer: '프리랜서', admin: '어드민' }
 const ROLE_COLOR = { client: 'var(--color-info)', freelancer: 'var(--color-success)', admin: 'var(--color-warning)' }
 const ROLE_BG    = { client: 'var(--color-hero-blue)', freelancer: 'var(--color-success-bg)', admin: 'var(--color-warning-bg)' }
+const AUTH_LABEL = { local: '이메일', google: 'Google', naver: 'Naver', kakao: 'Kakao' }
+const AUTH_BADGE_CLASS = { local: styles.authLocal, google: styles.authGoogle, naver: styles.authNaver, kakao: styles.authKakao }
 const STATUS_LABEL = {
   PENDING: '대기중',
   APPROVED: '승인',
@@ -19,6 +21,27 @@ const STATUS_LABEL = {
 const CATEGORY_LABEL = {
   DEV: '개발·IT', DESIGN: '디자인', MARKETING: '마케팅',
   WRITING: '글쓰기·번역', VIDEO: '영상·사진', MUSIC: '음악·오디오',
+}
+
+function getLinkedProviders(auth) {
+  if (!auth) return ['local']
+  const providers = []
+  if (auth.googleId) providers.push('google')
+  if (auth.naverId) providers.push('naver')
+  if (auth.kakaoId) providers.push('kakao')
+  return providers.length > 0 ? providers : [auth.authProvider ?? 'local']
+}
+
+function AuthBadges({ auth }) {
+  return (
+    <div className={styles.authBadges}>
+      {getLinkedProviders(auth).map(provider => (
+        <span key={provider} className={`${styles.authBadge} ${AUTH_BADGE_CLASS[provider] ?? styles.authLocal}`}>
+          {AUTH_LABEL[provider] ?? provider}
+        </span>
+      ))}
+    </div>
+  )
 }
 
 export default function AdminUsers({ activePage, onNavigate }) {
@@ -107,11 +130,11 @@ export default function AdminUsers({ activePage, onNavigate }) {
         : users.length === 0 ? <div className={styles.empty}>유저가 없습니다.</div>
         : (
           <div className={styles.table}>
-            <div className={styles.thead} style={{ gridTemplateColumns: '1.6fr 2fr 1fr 1fr 1fr 0.7fr' }}>
-              <span>이름</span><span>이메일</span><span>역할</span><span>가입일</span><span>역할 변경</span><span></span>
+            <div className={styles.thead} style={{ gridTemplateColumns: '1.4fr 2fr 1fr 1.2fr 1fr 1fr 0.7fr' }}>
+              <span>이름</span><span>이메일</span><span>역할</span><span>로그인</span><span>가입일</span><span>역할 변경</span><span></span>
             </div>
             {users.map(user => (
-              <div key={user.id} className={styles.trow} style={{ gridTemplateColumns: '1.6fr 2fr 1fr 1fr 1fr 0.7fr' }}>
+              <div key={user.id} className={styles.trow} style={{ gridTemplateColumns: '1.4fr 2fr 1fr 1.2fr 1fr 1fr 0.7fr' }}>
                 <span className={styles.name}>{user.name}</span>
                 <span className={styles.sub}>{user.email}</span>
                 <span>
@@ -120,6 +143,7 @@ export default function AdminUsers({ activePage, onNavigate }) {
                     {ROLE_LABEL[user.role]}
                   </span>
                 </span>
+                <span><AuthBadges auth={user.auth} /></span>
                 <span className={styles.sub}>{new Date(user.createdAt).toLocaleDateString('ko-KR')}</span>
                 <span>
                   <select className={styles.roleSelect}
@@ -184,6 +208,11 @@ function UserDetailModal({ detail, onClose }) {
           <div className={styles.infoGrid}>
             <InfoItem label="이메일" value={user.email} />
             <InfoItem label="역할" value={ROLE_LABEL[user.role] ?? user.role} />
+            <div className={styles.infoItem}>
+              <span>로그인 방식</span>
+              <AuthBadges auth={user.auth} />
+            </div>
+            <InfoItem label="기본 제공자" value={AUTH_LABEL[user.auth?.authProvider] ?? user.auth?.authProvider ?? '이메일'} />
             <InfoItem label="가입일" value={new Date(user.createdAt).toLocaleDateString('ko-KR')} />
             <InfoItem label="채널 참여" value={`${counts.channelMemberships}개`} />
           </div>

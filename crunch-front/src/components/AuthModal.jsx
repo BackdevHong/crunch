@@ -29,16 +29,26 @@ function Logo() {
 }
 
 function SocialButtons() {
+  const startGoogleLogin = () => {
+    window.location.href = `${import.meta.env.VITE_API_URL ?? 'http://localhost:4000'}/api/auth/google`
+  }
+  const startNaverLogin = () => {
+    window.location.href = `${import.meta.env.VITE_API_URL ?? 'http://localhost:4000'}/api/auth/naver`
+  }
+  const startKakaoLogin = () => {
+    window.location.href = `${import.meta.env.VITE_API_URL ?? 'http://localhost:4000'}/api/auth/kakao`
+  }
+
   const socials = [
-    { bg: '#FEE500', color: '#3C1E1E', letter: 'K', label: '카카오로 계속하기' },
-    { bg: '#03C75A', color: 'white', letter: 'N', label: '네이버로 계속하기' },
-    { bg: '#f1f1f1', color: '#555', letter: 'G', label: 'Google로 계속하기' },
+    { bg: '#FEE500', color: '#3C1E1E', letter: 'K', label: '카카오로 계속하기', onClick: startKakaoLogin },
+    { bg: '#03C75A', color: 'white', letter: 'N', label: '네이버로 계속하기', onClick: startNaverLogin },
+    { bg: '#f1f1f1', color: '#555', letter: 'G', label: 'Google로 계속하기', onClick: startGoogleLogin },
   ]
   return (
     <>
       <div className={styles.divider}><span>또는</span></div>
-      {socials.map(({ bg, color, letter, label }) => (
-        <button key={label} className={styles.btnSocial}>
+      {socials.map(({ bg, color, letter, label, onClick }) => (
+        <button key={label} className={styles.btnSocial} onClick={onClick}>
           <div className={styles.socialIcon} style={{ background: bg, color }}>{letter}</div>
           {label}
         </button>

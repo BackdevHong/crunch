@@ -9,6 +9,7 @@ export default function ServiceCard({ card, onClick }) {
   } = card
 
   const displayName = seller?.name ?? sellerName ?? '?'
+  const avatarUrl = seller?.avatarUrl
 
   return (
     <div className={styles.card} onClick={onClick}>
@@ -18,8 +19,18 @@ export default function ServiceCard({ card, onClick }) {
       </div>
       <div className={styles.body}>
         <div className={styles.seller}>
-          <div className={styles.avatar} style={{ background: avatarBg ?? '#FFF0E8', color: avatarColor ?? '#C04A1A' }}>
-            {displayName[0]}
+          <div
+            className={styles.avatar}
+            style={{
+              background: avatarUrl ? undefined : avatarBg ?? '#FFF0E8',
+              color: avatarColor ?? '#C04A1A',
+            }}
+          >
+            {avatarUrl ? (
+              <img src={avatarUrl} alt="" className={styles.avatarImg} referrerPolicy="no-referrer" />
+            ) : (
+              displayName[0]
+            )}
           </div>
           <span className={styles.sellerName}>{displayName}</span>
         </div>

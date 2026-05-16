@@ -5,6 +5,13 @@ import { writeAdminAuditLog } from '../lib/adminAudit'
 import { createUserNotification } from '../lib/notification'
 import { Prisma } from '@prisma/client'
 
+type UserAuthInfo = {
+  authProvider: string
+  googleId: string | null
+  naverId: string | null
+  kakaoId: string | null
+}
+
 // 어드민 대시보드 요약
 export async function getSummary(req: Request, res: Response): Promise<void> {
   try {
@@ -224,9 +231,13 @@ export async function getUsers(req: Request, res: Response): Promise<void> {
       }),
       prisma.user.count({ where }),
     ])
+    const authInfoByUserId = await getUserAuthInfoMap(users.map(user => user.id))
 
     ok(res, {
-      users,
+      users: users.map(user => ({
+        ...user,
+        auth: authInfoByUserId[user.id] ?? emptyAuthInfo(),
+      })),
       pagination: { total, page: pageNum, limit: limitNum, totalPages: Math.ceil(total / limitNum) },
     })
   } catch (err) {
@@ -291,7 +302,8 @@ export async function getUserDetail(req: Request, res: Response): Promise<void> 
       return
     }
 
-    const [recentServices, recentProjects, recentOrders] = await Promise.all([
+    const [authInfo, recentServices, recentProjects, recentOrders] = await Promise.all([
+      getUserAuthInfo(id),
       prisma.service.findMany({
         where: { sellerId: id },
         orderBy: { createdAt: 'desc' },
@@ -319,7 +331,10 @@ export async function getUserDetail(req: Request, res: Response): Promise<void> 
     ])
 
     ok(res, {
-      user,
+      user: {
+        ...user,
+        auth: authInfo,
+      },
       recent: {
         services: recentServices,
         projects: recentProjects,
@@ -329,6 +344,35 @@ export async function getUserDetail(req: Request, res: Response): Promise<void> 
   } catch (err) {
     console.error('[admin/getUserDetail]', err)
     serverError(res)
+  }
+}
+
+async function getUserAuthInfo(userId: string): Promise<UserAuthInfo> {
+  const rows = await prisma.$queryRaw<UserAuthInfo[]>`
+    SELECT
+      auth_provider AS authProvider,
+      google_id AS googleId,
+      naver_id AS naverId,
+      kakao_id AS kakaoId
+    FROM users
+    WHERE id = ${userId}
+    LIMIT 1
+  `
+
+  return rows[0] ?? emptyAuthInfo()
+}
+
+async function getUserAuthInfoMap(userIds: string[]): Promise<Record<string, UserAuthInfo>> {
+  const entries = await Promise.all(userIds.map(async userId => [userId, await getUserAuthInfo(userId)] as const))
+  return Object.fromEntries(entries)
+}
+
+function emptyAuthInfo(): UserAuthInfo {
+  return {
+    authProvider: 'local',
+    googleId: null,
+    naverId: null,
+    kakaoId: null,
   }
 }
 

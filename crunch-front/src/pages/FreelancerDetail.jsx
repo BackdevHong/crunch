@@ -12,6 +12,7 @@ export default function FreelancerDetail() {
 
   // API 응답은 user.name, mock 데이터는 name 직접
   const name = f.user?.name ?? f.name ?? '?'
+  const avatarUrl = f.user?.avatarUrl ?? f.avatarUrl
   const avatarBg = f.avatarBg ?? '#FFF0E8'
   const avatarColor = f.avatarColor ?? '#C04A1A'
 
@@ -25,8 +26,12 @@ export default function FreelancerDetail() {
           <div className={styles.main}>
             <div className={styles.profileCard}>
               <div className={styles.avatarWrap}>
-                <div className={styles.avatar} style={{ background: avatarBg, color: avatarColor }}>
-                  {name[0]}
+                <div className={styles.avatar} style={{ background: avatarUrl ? undefined : avatarBg, color: avatarColor }}>
+                  {avatarUrl ? (
+                    <img src={avatarUrl} alt="" className={styles.avatarImg} referrerPolicy="no-referrer" />
+                  ) : (
+                    name[0]
+                  )}
                 </div>
                 {f.online && <span className={styles.onlineDot} />}
               </div>

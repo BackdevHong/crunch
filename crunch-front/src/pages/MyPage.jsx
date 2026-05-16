@@ -68,7 +68,11 @@ export default function MyPage({ initialTab = '프로필', onNavigate }) {
         <div className={styles.heroInner}>
           <div className={styles.avatarWrap}>
             <div className={styles.avatar}>
-              {currentUser?.name?.[0] ?? '?'}
+              {currentUser?.avatarUrl ? (
+                <img src={currentUser.avatarUrl} alt="" className={styles.avatarImg} referrerPolicy="no-referrer" />
+              ) : (
+                currentUser?.name?.[0] ?? '?'
+              )}
             </div>
           </div>
           <div className={styles.heroInfo}>

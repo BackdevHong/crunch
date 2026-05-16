@@ -137,11 +137,19 @@ export default function Navbar({ activePage, onNavigate, onLogin, onSignup, them
             </div>
             <div
               className={styles.userAvatar}
-              style={{ background: currentUser.avatarBg, color: currentUser.avatarColor, cursor: 'pointer' }}
+              style={{
+                background: currentUser.avatarUrl ? undefined : currentUser.avatarBg,
+                color: currentUser.avatarColor,
+                cursor: 'pointer',
+              }}
               onClick={() => onNavigate('mypage')}
               title="마이 페이지"
             >
-              {currentUser.avatar ?? currentUser.name?.[0]}
+              {currentUser.avatarUrl ? (
+                <img src={currentUser.avatarUrl} alt="" className={styles.userAvatarImg} referrerPolicy="no-referrer" />
+              ) : (
+                currentUser.avatar ?? currentUser.name?.[0]
+              )}
             </div>
             <span
               className={styles.userName}

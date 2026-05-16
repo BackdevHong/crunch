@@ -1,6 +1,18 @@
 import { Router } from 'express'
 import { body } from 'express-validator'
-import { signup, login, refresh, logout, me } from '../controllers/auth.controller'
+import {
+  signup,
+  login,
+  refresh,
+  logout,
+  me,
+  googleLogin,
+  googleCallback,
+  naverLogin,
+  naverCallback,
+  kakaoLogin,
+  kakaoCallback,
+} from '../controllers/auth.controller'
 import { authenticate } from '../middlewares/authenticate'
 
 const router = Router()
@@ -51,6 +63,24 @@ router.post('/refresh', refresh)
 
 // POST /api/auth/logout
 router.post('/logout', logout)
+
+// GET /api/auth/google — Google OAuth 시작
+router.get('/google', googleLogin)
+
+// GET /api/auth/google/callback — Google OAuth 콜백
+router.get('/google/callback', googleCallback)
+
+// GET /api/auth/naver — Naver OAuth 시작
+router.get('/naver', naverLogin)
+
+// GET /api/auth/naver/callback — Naver OAuth 콜백
+router.get('/naver/callback', naverCallback)
+
+// GET /api/auth/kakao — Kakao OAuth 시작
+router.get('/kakao', kakaoLogin)
+
+// GET /api/auth/kakao/callback — Kakao OAuth 콜백
+router.get('/kakao/callback', kakaoCallback)
 
 // GET  /api/auth/me  — 인증 필요
 router.get('/me', authenticate, me)

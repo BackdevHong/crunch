@@ -102,6 +102,10 @@ model User {
   name         String    @db.VarChar(50)
   email        String    @unique @db.VarChar(255)
   passwordHash String    @map("password_hash") @db.VarChar(255)
+  authProvider String    @default("local") @map("auth_provider") @db.VarChar(30)
+  googleId     String?   @unique @map("google_id") @db.VarChar(100)
+  naverId      String?   @unique @map("naver_id") @db.VarChar(100)
+  kakaoId      String?   @unique @map("kakao_id") @db.VarChar(100)
   avatarUrl    String?   @map("avatar_url") @db.Text
   role         UserRole  @default(client)
   createdAt    DateTime  @default(now()) @map("created_at")

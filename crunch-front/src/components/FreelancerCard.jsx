@@ -3,12 +3,18 @@ import styles from './FreelancerCard.module.css'
 const BADGE_STYLE = { Top: styles.badgeTop, Pro: styles.badgePro, New: styles.badgeNew }
 
 export default function FreelancerCard({ freelancer, onClick }) {
-  const { name, role, avatarBg, avatarColor, badge, rating, completedJobs, skills, hourlyRate, online } = freelancer
+  const { name, role, avatarUrl, avatarBg, avatarColor, badge, rating, completedJobs, skills, hourlyRate, online } = freelancer
   return (
     <div className={styles.card} onClick={onClick}>
       <div className={styles.top}>
         <div className={styles.avatarWrap}>
-          <div className={styles.avatar} style={{ background: avatarBg, color: avatarColor }}>{name[0]}</div>
+          <div className={styles.avatar} style={{ background: avatarUrl ? undefined : avatarBg, color: avatarColor }}>
+            {avatarUrl ? (
+              <img src={avatarUrl} alt="" className={styles.avatarImg} referrerPolicy="no-referrer" />
+            ) : (
+              name[0]
+            )}
+          </div>
           {online && <span className={styles.onlineDot} />}
         </div>
         <div className={styles.info}>

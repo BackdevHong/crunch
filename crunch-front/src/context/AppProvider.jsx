@@ -18,7 +18,19 @@ export function AppProvider({ children }) {
 
   // ── 앱 시작 시 로그인 상태 복원 ──────────────────────────────
   useEffect(() => {
-    const token = localStorage.getItem('accessToken')
+    const params = new URLSearchParams(window.location.search)
+    const oauthToken = params.get('accessToken')
+    const oauthError = params.get('error')
+
+    if (oauthToken) {
+      localStorage.setItem('accessToken', oauthToken)
+      window.history.replaceState({}, document.title, window.location.pathname)
+    } else if (params.get('oauth') && oauthError) {
+      setAuthError('소셜 로그인 중 오류가 발생했습니다.')
+      window.history.replaceState({}, document.title, window.location.pathname)
+    }
+
+    const token = oauthToken || localStorage.getItem('accessToken')
     if (!token) {
       setAuthLoading(false)
       return

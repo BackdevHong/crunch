@@ -140,7 +140,24 @@ JWT_ACCESS_EXPIRES_IN=15m
 JWT_REFRESH_EXPIRES_IN=7d
 
 CLIENT_URL=http://localhost:5173
+API_URL=http://localhost:4000
 BCRYPT_ROUNDS=12
+
+# Google OAuth
+GOOGLE_CLIENT_ID="Google OAuth Client ID"
+GOOGLE_CLIENT_SECRET="Google OAuth Client Secret"
+GOOGLE_REDIRECT_URI=http://localhost:4000/api/auth/google/callback
+
+# Naver OAuth
+NAVER_CLIENT_ID="Naver Client ID"
+NAVER_CLIENT_SECRET="Naver Client Secret"
+NAVER_REDIRECT_URI=http://localhost:4000/api/auth/naver/callback
+
+# Kakao OAuth
+KAKAO_REST_API_KEY="Kakao REST API Key"
+# Client Secret을 활성화한 경우에만 입력
+KAKAO_CLIENT_SECRET="Kakao Client Secret"
+KAKAO_REDIRECT_URI=http://localhost:4000/api/auth/kakao/callback
 ```
 
 ```bash
@@ -221,6 +238,12 @@ npm run preview   # dist/ 프리뷰 서버 실행
 |--------|------|------|------|
 | POST | `/signup` | ✗ | 회원가입 (`role`: `client` 또는 `freelancer`) |
 | POST | `/login` | ✗ | 로그인, Access Token 반환 + Refresh 쿠키 발급 |
+| GET  | `/google` | ✗ | Google OAuth 로그인 시작 |
+| GET  | `/google/callback` | ✗ | Google OAuth 콜백 처리 |
+| GET  | `/naver` | ✗ | Naver OAuth 로그인 시작 |
+| GET  | `/naver/callback` | ✗ | Naver OAuth 콜백 처리 |
+| GET  | `/kakao` | ✗ | Kakao OAuth 로그인 시작 |
+| GET  | `/kakao/callback` | ✗ | Kakao OAuth 콜백 처리 |
 | POST | `/refresh` | 쿠키 | Access Token 재발급 + Refresh 토큰 회전 |
 | POST | `/logout` | 쿠키 | Refresh 토큰 폐기 및 쿠키 제거 |
 | GET  | `/me` | Bearer | 내 정보 조회 |
@@ -361,6 +384,7 @@ npm run preview   # dist/ 프리뷰 서버 실행
 Prisma 스키마에 정의된 주요 엔티티:
 
 - **User**: 이름, 이메일, 해시 비밀번호, 역할(`client`/`freelancer`/`admin`), 리프레시 토큰
+- **User.authProvider/googleId/naverId/kakaoId**: 로컬/Google/Naver/Kakao 로그인 식별 정보
 - **Freelancer**: 사용자 1:1, 배지(Top/Pro/New), 평점, 완료 건수, 시간당 단가, 카테고리
 - **FreelancerApplication**: 프리랜서 전환 신청 (상태: PENDING/APPROVED/REJECTED)
 - **Service**: 판매자가 등록하는 상품, 카테고리/가격/배송일/평점
