@@ -2,8 +2,9 @@ import styles from './FreelancerCard.module.css'
 
 const BADGE_STYLE = { Top: styles.badgeTop, Pro: styles.badgePro, New: styles.badgeNew }
 
-export default function FreelancerCard({ freelancer, onClick }) {
-  const { name, role, avatarUrl, avatarBg, avatarColor, badge, rating, completedJobs, skills, hourlyRate, online } = freelancer
+export default function FreelancerCard({ freelancer, onClick, onInvite, canInvite = false }) {
+  const { name, role, avatarUrl, avatarBg, avatarColor, badge, rating, completedJobs, skills, online } = freelancer
+
   return (
     <div className={styles.card} onClick={onClick}>
       <div className={styles.top}>
@@ -24,6 +25,7 @@ export default function FreelancerCard({ freelancer, onClick }) {
         </div>
         <span className={`${styles.badge} ${BADGE_STYLE[badge]}`}>{badge}</span>
       </div>
+
       <div className={styles.tags}>
         {(skills ?? []).map(sk => (
           <span key={sk.skill ?? sk} className={styles.tag}>
@@ -31,14 +33,16 @@ export default function FreelancerCard({ freelancer, onClick }) {
           </span>
         ))}
       </div>
+
       <div className={styles.footer}>
-        <div>
-          <div className={styles.rateLabel}>시간당</div>
-          <div className={styles.rate}>{hourlyRate.toLocaleString()}원</div>
-        </div>
-        <button className={styles.btn} onClick={e => { e.stopPropagation(); onClick && onClick() }}>
+        <button className={styles.btn} onClick={e => { e.stopPropagation(); onClick?.() }}>
           프로필 보기
         </button>
+        {canInvite && (
+          <button className={styles.primaryBtn} onClick={e => { e.stopPropagation(); onInvite?.() }}>
+            프로젝트 제안
+          </button>
+        )}
       </div>
     </div>
   )

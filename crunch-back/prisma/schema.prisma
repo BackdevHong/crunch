@@ -41,6 +41,7 @@ enum ProjectStatus {
 enum PaymentPurpose {
   SERVICE_ORDER
   PROJECT_DEPOSIT
+  PROJECT_BALANCE
 }
 
 enum PaymentStatus {
@@ -50,6 +51,15 @@ enum PaymentStatus {
   FAILED
   CANCELED
   REFUNDED
+}
+
+enum SettlementStatus {
+  READY
+  AVAILABLE
+  REQUESTED
+  PAID
+  FAILED
+  CANCELED
 }
 
 enum MessageType {
@@ -90,6 +100,13 @@ enum ServiceApprovalStatus {
   PENDING
   APPROVED
   REJECTED
+}
+
+enum ProjectInvitationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  CANCELED
 }
 
 model FreelancerApplication {
@@ -149,6 +166,7 @@ model User {
   channelMessageReactions ChannelMessageReaction[]
   adminAuditLogs      AdminAuditLog[]
   notifications       UserNotification[]
+  settlements         Settlement[]
 
   @@map("users")
 }
@@ -205,6 +223,8 @@ model Freelancer {
   skills             FreelancerSkill[]
   proposals          Proposal[]
   projectMemberships ProjectMember[]
+  settlements        Settlement[]
+  projectInvitations ProjectInvitation[]
 
   @@map("freelancers")
 }
@@ -274,6 +294,8 @@ model Project {
   proposals Proposal[]
   members   ProjectMember[]
   channel   Channel?
+  settlements Settlement[]
+  invitations ProjectInvitation[]
 
   @@map("projects")
 }
@@ -286,6 +308,7 @@ model ProjectRole {
   budgetPercent Int     @map("budget_percent")
   budgetAmount  Int     @map("budget_amount")
   project       Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  proposals     Proposal[]
 
   @@index([projectId])
   @@map("project_roles")
@@ -300,9 +323,27 @@ model ProjectSkill {
   @@map("project_skills")
 }
 
+model ProjectInvitation {
+  id           String                  @id @default(uuid()) @db.Char(36)
+  projectId    String                  @map("project_id") @db.Char(36)
+  freelancerId String                  @map("freelancer_id") @db.Char(36)
+  message      String?                 @db.Text
+  status       ProjectInvitationStatus @default(PENDING)
+  createdAt    DateTime                @default(now()) @map("created_at")
+  updatedAt    DateTime                @updatedAt @map("updated_at")
+
+  project    Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  freelancer Freelancer @relation(fields: [freelancerId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, freelancerId])
+  @@index([freelancerId])
+  @@map("project_invitations")
+}
+
 model Proposal {
   id           String         @id @default(uuid()) @db.Char(36)
   projectId    String         @map("project_id") @db.Char(36)
+  projectRoleId String?       @map("project_role_id") @db.Char(36)
   freelancerId String         @map("freelancer_id") @db.Char(36)
   message      String         @db.Text
   price        Int
@@ -312,9 +353,12 @@ model Proposal {
   updatedAt    DateTime       @updatedAt @map("updated_at")
 
   project    Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectRole ProjectRole? @relation(fields: [projectRoleId], references: [id], onDelete: SetNull)
   freelancer Freelancer @relation(fields: [freelancerId], references: [id], onDelete: Cascade)
+  settlement Settlement?
 
   @@unique([projectId, freelancerId])
+  @@index([projectRoleId])
   @@map("proposals")
 }
 
@@ -368,11 +412,42 @@ model Payment {
   buyer  User           @relation("PaymentBuyer", fields: [buyerId], references: [id])
   order  Order?         @relation(fields: [orderId], references: [id], onDelete: SetNull)
   events PaymentEvent[]
+  settlements Settlement[]
 
   @@index([buyerId, createdAt])
   @@index([orderId])
   @@index([projectId])
   @@map("payments")
+}
+
+model Settlement {
+  id                String           @id @default(uuid()) @db.Char(36)
+  projectId         String           @map("project_id") @db.Char(36)
+  proposalId        String           @unique @map("proposal_id") @db.Char(36)
+  freelancerId      String           @map("freelancer_id") @db.Char(36)
+  userId            String           @map("user_id") @db.Char(36)
+  paymentId         String?          @map("payment_id") @db.Char(36)
+  amount            Int
+  platformFeeRate   Decimal          @map("platform_fee_rate") @db.Decimal(5, 4)
+  platformFeeAmount Int              @map("platform_fee_amount")
+  payoutAmount      Int              @map("payout_amount")
+  status            SettlementStatus @default(READY)
+  requestedAt       DateTime?        @map("requested_at")
+  paidAt            DateTime?        @map("paid_at")
+  createdAt         DateTime         @default(now()) @map("created_at")
+  updatedAt         DateTime         @updatedAt @map("updated_at")
+
+  project    Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  proposal   Proposal   @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  freelancer Freelancer @relation(fields: [freelancerId], references: [id], onDelete: Cascade)
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  payment    Payment?   @relation(fields: [paymentId], references: [id], onDelete: SetNull)
+
+  @@index([projectId])
+  @@index([freelancerId])
+  @@index([userId])
+  @@index([paymentId])
+  @@map("settlements")
 }
 
 model PaymentEvent {

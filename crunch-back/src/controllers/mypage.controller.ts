@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import { prisma } from '../lib/prisma'
 import { ok, serverError, fail } from '../lib/response'
 import { CATEGORY_MAP } from '../lib/contains'
+import { Prisma } from '@prisma/client'
 
 // 내 프로필 조회
 export async function getMyProfile(req: Request, res: Response): Promise<void> {
@@ -311,11 +312,42 @@ export async function getMyProposals(req: Request, res: Response): Promise<void>
       },
     })
 
-    ok(res, proposals)
+    ok(res, await attachProjectRolesToMyProposals(proposals))
   } catch (err) {
     console.error('[getMyProposals]', err)
     serverError(res)
   }
+}
+
+async function attachProjectRolesToMyProposals(proposals: any[]) {
+  const roleIds = proposals
+    .map(proposal => proposal.projectRoleId)
+    .filter(Boolean)
+
+  if (roleIds.length === 0) return proposals
+
+  const roles = await prisma.$queryRaw<Array<{
+    id: string
+    role: string
+    headcount: number
+    budgetPercent: number
+    budgetAmount: number
+  }>>`
+    SELECT
+      id,
+      role,
+      headcount,
+      budget_percent AS budgetPercent,
+      budget_amount AS budgetAmount
+    FROM project_roles
+    WHERE id IN (${Prisma.join(roleIds)})
+  `
+  const roleMap = new Map(roles.map(role => [role.id, role]))
+
+  return proposals.map(proposal => ({
+    ...proposal,
+    projectRole: proposal.projectRoleId ? roleMap.get(proposal.projectRoleId) ?? null : null,
+  }))
 }
 
 // 내 프로젝트 목록

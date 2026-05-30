@@ -18,6 +18,7 @@ import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminApplications from './pages/admin/AdminApplications'
 import AdminUsers from './pages/admin/AdminUsers'
 import AdminServices from './pages/admin/AdminServices'
+import AdminProjects from './pages/admin/AdminProjects'
 import AdminAuditLogs from './pages/admin/AdminAuditLogs'
 import MyPage from './pages/MyPage'
 import PostService from './pages/PostService'
@@ -148,7 +149,7 @@ function AppInner() {
 
       {/* 상세 페이지: selectedService/Freelancer가 있을 때만 표시, 뒤 페이지는 유지 */}
       {selectedService && <ServiceDetail />}
-      {selectedFreelancer && <FreelancerDetail />}
+      {selectedFreelancer && <FreelancerDetail onNavigate={navigate} />}
 
       {/* 상세 페이지가 열려있을 때는 뒤 콘텐츠를 숨김 (display:none 대신 조건부 렌더) */}
       {!selectedService && !selectedFreelancer && (
@@ -195,6 +196,9 @@ function AppInner() {
           )}
           {activePage === 'admin-services' && (
             <AdminServices activePage={activePage} onNavigate={navigate} />
+          )}
+          {activePage === 'admin-projects' && (
+            <AdminProjects activePage={activePage} onNavigate={navigate} />
           )}
           {activePage === 'admin-audit-logs' && (
             <AdminAuditLogs activePage={activePage} onNavigate={navigate} />

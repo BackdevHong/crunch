@@ -3,6 +3,7 @@ import { prisma } from '../lib/prisma'
 import { ok, created, fail, serverError } from '../lib/response'
 import { Prisma } from '@prisma/client'
 import { CATEGORY_MAP } from '../lib/contains'
+import { createUserNotification } from '../lib/notification'
 
 export async function createProject(req: Request, res: Response): Promise<void> {
   try {
@@ -75,10 +76,22 @@ export async function getProjects(req: Request, res: Response): Promise<void> {
     const pageNum = Math.max(1, Number(page))
     const limitNum = Math.min(20, Number(limit))
     const skip = (pageNum - 1) * limitNum
+    const currentUserId = req.user?.userId
+    const currentFreelancer = currentUserId
+      ? await prisma.freelancer.findUnique({
+          where: { userId: currentUserId },
+          select: { id: true },
+        })
+      : null
 
     const where: Prisma.ProjectWhereInput = {
       ...(status && { status: status as any }),
       ...(category && { category: category as any }),
+      ...(currentFreelancer && {
+        proposals: {
+          none: { freelancerId: currentFreelancer.id },
+        },
+      }),
       ...(q && {
         OR: [
           { title: { contains: String(q) } },
@@ -102,8 +115,13 @@ export async function getProjects(req: Request, res: Response): Promise<void> {
       prisma.project.count({ where }),
     ])
 
+    const rolesByProject = await getProjectRoles(projects.map(project => project.id))
+
     ok(res, {
-      projects,
+      projects: projects.map(project => ({
+        ...project,
+        roles: rolesByProject[project.id] ?? [],
+      })),
       pagination: {
         total,
         page: pageNum,
@@ -136,7 +154,11 @@ export async function getProjectById(req: Request, res: Response): Promise<void>
       return
     }
 
-    ok(res, project)
+    const rolesByProject = await getProjectRoles([project.id])
+    ok(res, {
+      ...project,
+      roles: rolesByProject[project.id] ?? [],
+    })
   } catch (err) {
     console.error('[getProjectById]', err)
     serverError(res)
@@ -365,6 +387,88 @@ function normalizeProjectPayload(body: any) {
   }
 }
 
+export async function inviteFreelancerToProject(req: Request, res: Response): Promise<void> {
+  try {
+    const authorId = req.user!.userId
+    const { id } = req.params
+    const { freelancerId, message } = req.body
+
+    if (!freelancerId) {
+      fail(res, '프리랜서를 선택해주세요.')
+      return
+    }
+
+    const project = await prisma.project.findUnique({
+      where: { id },
+      select: { id: true, title: true, authorId: true, status: true },
+    })
+    if (!project) {
+      res.status(404).json({ success: false, message: '프로젝트를 찾을 수 없습니다.' })
+      return
+    }
+    if (project.authorId !== authorId) {
+      res.status(403).json({ success: false, message: '내 프로젝트만 제안할 수 있습니다.' })
+      return
+    }
+
+    const freelancer = await prisma.freelancer.findUnique({
+      where: { id: String(freelancerId) },
+      select: { id: true, userId: true },
+    })
+    if (!freelancer) {
+      res.status(404).json({ success: false, message: '프리랜서를 찾을 수 없습니다.' })
+      return
+    }
+
+    await prisma.$executeRaw`
+      INSERT INTO project_invitations
+        (id, project_id, freelancer_id, message, status, created_at, updated_at)
+      VALUES
+        (UUID(), ${project.id}, ${freelancer.id}, ${message?.trim() || null}, 'PENDING', NOW(3), NOW(3))
+      ON DUPLICATE KEY UPDATE
+        message = VALUES(message),
+        status = 'PENDING',
+        updated_at = NOW(3)
+    `
+
+    const invitationRows = await prisma.$queryRaw<Array<{
+      id: string
+      projectId: string
+      freelancerId: string
+      message: string | null
+      status: string
+      createdAt: Date
+      updatedAt: Date
+    }>>`
+      SELECT
+        id,
+        project_id AS projectId,
+        freelancer_id AS freelancerId,
+        message,
+        status,
+        created_at AS createdAt,
+        updated_at AS updatedAt
+      FROM project_invitations
+      WHERE project_id = ${project.id}
+        AND freelancer_id = ${freelancer.id}
+      LIMIT 1
+    `
+
+    await createUserNotification({
+      userId: freelancer.userId,
+      type: 'PROJECT_INVITATION',
+      title: '새 프로젝트 제안이 도착했습니다',
+      message: `"${project.title}" 프로젝트 제안이 도착했습니다.`,
+      link: 'browse-projects',
+    })
+
+    ok(res, invitationRows[0])
+  } catch (err) {
+    console.error('[inviteFreelancerToProject]', err)
+    serverError(res)
+  }
+}
+
 async function getProjectSnapshot(id: string) {
   const rows = await prisma.$queryRaw<Array<{
     id: string
@@ -430,4 +534,34 @@ async function getProjectSnapshot(id: string) {
     skills,
     roles,
   }
+}
+
+async function getProjectRoles(projectIds: string[]) {
+  if (projectIds.length === 0) return {}
+
+  const roles = await prisma.$queryRaw<Array<{
+    id: string
+    projectId: string
+    role: string
+    headcount: number
+    budgetPercent: number
+    budgetAmount: number
+  }>>`
+    SELECT
+      id,
+      project_id AS projectId,
+      role,
+      headcount,
+      budget_percent AS budgetPercent,
+      budget_amount AS budgetAmount
+    FROM project_roles
+    WHERE project_id IN (${Prisma.join(projectIds)})
+    ORDER BY role ASC
+  `
+
+  return roles.reduce<Record<string, typeof roles>>((acc, role) => {
+    acc[role.projectId] = acc[role.projectId] ?? []
+    acc[role.projectId].push(role)
+    return acc
+  }, {})
 }

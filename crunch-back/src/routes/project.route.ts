@@ -6,12 +6,13 @@ import {
   getProjectById,
   getMyProjects,
   updateProject,
+  inviteFreelancerToProject,
 } from '../controllers/project.controller'
-import { authenticate } from '../middlewares/authenticate'
+import { authenticate, optionalAuthenticate } from '../middlewares/authenticate'
 
 const router = Router()
 
-router.get('/', getProjects)
+router.get('/', optionalAuthenticate, getProjects)
 router.get('/me', authenticate, getMyProjects)
 router.get('/:id', getProjectById)
 router.post('/', authenticate, [
@@ -24,5 +25,6 @@ router.patch('/:id', authenticate, [
     .isLength({ max: 200 }).withMessage('제목은 200자 이하여야 합니다.'),
   body('category').notEmpty().withMessage('카테고리를 선택해주세요.'),
 ], updateProject)
+router.post('/:id/invitations', authenticate, inviteFreelancerToProject)
 
 export default router

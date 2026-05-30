@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { AppContext } from './AppContext'
 import api from '../lib/api'
-import { MOCK_SERVICES, MOCK_FREELANCERS } from '../data/mockData'
 
 const OAUTH_PROVIDER_LABEL = {
   google: 'Google',

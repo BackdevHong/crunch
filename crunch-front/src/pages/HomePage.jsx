@@ -1,26 +1,12 @@
+import { useEffect, useState } from 'react'
 import { useApp } from '../context/useApp'
+import api from '../lib/api'
 import styles from './HomePage.module.css'
-
-const STATS = [
-  { num: '28,400+', label: '등록된 전문가' },
-  { num: '142,000+', label: '완료된 프로젝트' },
-  { num: '4.9 / 5', label: '평균 만족도' },
-  { num: '97%', label: '기한 내 완료율' },
-]
 
 const HOW_STEPS = [
   { title: '프로젝트 등록', desc: '원하는 작업과 예산을 간단히 입력하세요. 5분이면 충분합니다.' },
   { title: '전문가 제안 수신', desc: '48시간 내 평균 5.2개의 맞춤 제안이 도착합니다. 포트폴리오를 비교해보세요.' },
   { title: '안전하게 완료', desc: '에스크로 결제로 작업 완료 후 대금이 지급됩니다. 검수까지 완벽하게.' },
-]
-
-const CATEGORIES = [
-  { icon: '💻', label: '개발 · IT', count: '8,204', bg: '#FFF0E8' },
-  { icon: '🎨', label: '디자인', count: '6,812', bg: '#EAF3DE' },
-  { icon: '📱', label: '마케팅', count: '3,401', bg: '#E6F1FB' },
-  { icon: '✍️', label: '글쓰기 · 번역', count: '2,970', bg: '#FAEEDA' },
-  { icon: '🎬', label: '영상 · 사진', count: '2,115', bg: '#FBEAF0' },
-  { icon: '🎵', label: '음악 · 오디오', count: '987', bg: '#E1F5EE' },
 ]
 
 const WHY_ITEMS = [
@@ -32,22 +18,59 @@ const WHY_ITEMS = [
   { icon: '📊', title: '투명한 이력 관리', desc: '모든 거래 이력과 리뷰가 기록되어 신뢰할 수 있는 평판을 만들어 드립니다.' },
 ]
 
-const REVIEWS = [
-  { stars: 5, text: '"기획부터 개발까지 완벽하게 맞춰주셨어요. 일정도 딱 맞게 지켜주시고 소통도 너무 원활했습니다."', name: '오성준', role: '스타트업 대표', avatarBg: '#FFF0E8', avatarColor: '#C04A1A' },
-  { stars: 5, text: '"로고 디자인을 맡겼는데 기대 이상의 결과물이 나왔습니다. 수정 요청도 빠르게 반영해 주셨어요."', name: '이지현', role: '온라인 쇼핑몰 운영', avatarBg: '#E6F1FB', avatarColor: '#185FA5' },
-  { stars: 5, text: '"에스크로 결제 덕분에 안심하고 진행할 수 있었어요. 결과물 확인 후 정산되니 믿음이 갔습니다."', name: '박현우', role: '마케팅 담당자', avatarBg: '#EAF3DE', avatarColor: '#3B6D11' },
+const DEFAULT_CATEGORIES = [
+  { icon: '💻', label: '개발·IT', count: 0, bg: '#FFF0E8' },
+  { icon: '🎨', label: '디자인', count: 0, bg: '#EAF3DE' },
+  { icon: '📱', label: '마케팅', count: 0, bg: '#E6F1FB' },
+  { icon: '✍️', label: '글쓰기·번역', count: 0, bg: '#FAEEDA' },
+  { icon: '🎬', label: '영상·사진', count: 0, bg: '#FBEAF0' },
+  { icon: '🎵', label: '음악·오디오', count: 0, bg: '#E1F5EE' },
 ]
 
-const TRUST_AVATARS = [
-  { bg: '#FFF0E8', color: '#C04A1A', label: '김' },
-  { bg: '#E6F1FB', color: '#185FA5', label: '이' },
-  { bg: '#EAF3DE', color: '#3B6D11', label: '박' },
-  { bg: '#FAEEDA', color: '#854F0B', label: '최' },
-]
+const formatCount = (value) => Number(value || 0).toLocaleString('ko-KR')
+const formatRating = (value) => Number(value || 0).toFixed(1)
+const getInitial = (name) => name?.[0] ?? '?'
+const getAvatarTone = (index) => [
+  { bg: '#FFF0E8', color: '#C04A1A' },
+  { bg: '#E6F1FB', color: '#185FA5' },
+  { bg: '#EAF3DE', color: '#3B6D11' },
+  { bg: '#FAEEDA', color: '#854F0B' },
+][index % 4]
 
 export default function HomePage({ onNavigate, onSignup }) {
-  const { freelancers, setSelectedFreelancer } = useApp()
-  const topFreelancers = freelancers.filter(f => f.badge === 'Top' || f.badge === 'Pro').slice(0, 4)
+  const { setSelectedFreelancer } = useApp()
+  const [homeData, setHomeData] = useState({
+    stats: {
+      freelancers: 0,
+      activeFreelancers: 0,
+      completedProjects: 0,
+      averageRating: 0,
+      onTimeRate: 0,
+    },
+    categories: DEFAULT_CATEGORIES,
+    topFreelancers: [],
+    reviews: [],
+  })
+
+  useEffect(() => {
+    let mounted = true
+
+    api.get('/api/home')
+      .then(({ data }) => {
+        if (mounted) setHomeData(prev => ({ ...prev, ...data.data }))
+      })
+      .catch(console.error)
+
+    return () => { mounted = false }
+  }, [])
+
+  const stats = [
+    { num: `${formatCount(homeData.stats.freelancers)}명`, label: '등록된 전문가' },
+    { num: `${formatCount(homeData.stats.completedProjects)}건`, label: '완료된 프로젝트' },
+    { num: `${formatRating(homeData.stats.averageRating)} / 5`, label: '평균 만족도' },
+    { num: `${formatCount(homeData.stats.activeFreelancers)}명`, label: '실시간 활동 중' },
+  ]
+  const trustFreelancers = homeData.topFreelancers.slice(0, 4)
 
   return (
     <div className={styles.page}>
@@ -56,7 +79,7 @@ export default function HomePage({ onNavigate, onSignup }) {
       <section className={styles.hero}>
         <div className={styles.heroEyebrow}>
           <span className={styles.eyebrowDot} />
-          실시간 · 28,400명 활동 중
+          실시간 · {formatCount(homeData.stats.activeFreelancers)}명 활동 중
         </div>
         <h1>당신의 아이디어를<br /><em>현실로</em> 만들어 드립니다</h1>
         <p>국내 최고의 프리랜서들이 당신의 프로젝트를 기다립니다.<br />지금 바로 시작해보세요.</p>
@@ -66,17 +89,29 @@ export default function HomePage({ onNavigate, onSignup }) {
         </div>
         <div className={styles.heroTrust}>
           <div className={styles.trustAvatars}>
-            {TRUST_AVATARS.map(a => (
-              <div key={a.label} className={styles.trustAv} style={{ background: a.bg, color: a.color }}>{a.label}</div>
-            ))}
+            {trustFreelancers.map((freelancer, index) => {
+              const tone = getAvatarTone(index)
+              return (
+                <div key={freelancer.id} className={styles.trustAv} style={{ background: tone.bg, color: tone.color }}>
+                  {freelancer.avatarUrl ? (
+                    <img src={freelancer.avatarUrl} alt="" className={styles.avatarImg} referrerPolicy="no-referrer" />
+                  ) : (
+                    getInitial(freelancer.name)
+                  )}
+                </div>
+              )
+            })}
+            {trustFreelancers.length === 0 && (
+              <div className={styles.trustAv} style={{ background: '#FFF0E8', color: '#C04A1A' }}>?</div>
+            )}
           </div>
-          <span>이미 <strong>142,000+</strong>개의 프로젝트가 완료되었습니다</span>
+          <span>이미 <strong>{formatCount(homeData.stats.completedProjects)}건</strong>의 프로젝트가 완료되었습니다</span>
         </div>
       </section>
 
       {/* ── STATS ── */}
       <section className={styles.statsBar}>
-        {STATS.map(s => (
+        {stats.map(s => (
           <div key={s.label} className={styles.stat}>
             <div className={styles.statNum}>{s.num}</div>
             <div className={styles.statLabel}>{s.label}</div>
@@ -108,14 +143,14 @@ export default function HomePage({ onNavigate, onSignup }) {
         <div className={styles.inner}>
           <div className={styles.sectionLabel}>카테고리</div>
           <h2>어떤 도움이 필요하신가요?</h2>
-          <p className={styles.sectionSub}>6개 분야, 8,200명 이상의 전문가</p>
+          <p className={styles.sectionSub}>실제 등록된 서비스 기준으로 집계됩니다</p>
           <div className={styles.catsGrid}>
-            {CATEGORIES.map(cat => (
+            {homeData.categories.map(cat => (
               <div key={cat.label} className={styles.catCard} onClick={() => onNavigate('services')}>
                 <div className={styles.catIcon} style={{ background: cat.bg }}>{cat.icon}</div>
                 <div>
                   <div className={styles.catName}>{cat.label}</div>
-                  <div className={styles.catCount}>{cat.count}개 서비스</div>
+                  <div className={styles.catCount}>{formatCount(cat.count)}개 서비스</div>
                 </div>
               </div>
             ))}
@@ -130,10 +165,18 @@ export default function HomePage({ onNavigate, onSignup }) {
           <h2>지금 활동 중인 Top 프리랜서</h2>
           <p className={styles.sectionSub}>검증된 실력, 빠른 응답</p>
           <div className={styles.flGrid}>
-            {topFreelancers.map(fl => (
+            {homeData.topFreelancers.map((fl, index) => {
+              const tone = getAvatarTone(index)
+              return (
               <div key={fl.id} className={styles.flCard} onClick={() => setSelectedFreelancer(fl)}>
                 <div className={styles.flAvWrap}>
-                  <div className={styles.flAv} style={{ background: fl.avatarBg, color: fl.avatarColor }}>{fl.name[0]}</div>
+                  <div className={styles.flAv} style={{ background: tone.bg, color: tone.color }}>
+                    {fl.avatarUrl ? (
+                      <img src={fl.avatarUrl} alt="" className={styles.avatarImg} referrerPolicy="no-referrer" />
+                    ) : (
+                      getInitial(fl.name)
+                    )}
+                  </div>
                   {fl.online && <span className={styles.flDot} />}
                 </div>
                 <div className={styles.flName}>{fl.name}</div>
@@ -141,7 +184,11 @@ export default function HomePage({ onNavigate, onSignup }) {
                 <div className={styles.flRating}>⭐ {fl.rating} · {fl.completedJobs}건</div>
                 <div className={styles.flRate}>₩{fl.hourlyRate.toLocaleString()} / 시간</div>
               </div>
-            ))}
+              )
+            })}
+            {homeData.topFreelancers.length === 0 && (
+              <div className={styles.emptyInline}>아직 등록된 프리랜서가 없습니다.</div>
+            )}
           </div>
         </div>
       </section>
@@ -169,21 +216,33 @@ export default function HomePage({ onNavigate, onSignup }) {
         <div className={styles.inner}>
           <div className={styles.sectionLabel}>고객 후기</div>
           <h2>실제 이용자들의 이야기</h2>
-          <p className={styles.sectionSub}>142,000개의 성공 사례 중 일부</p>
+          <p className={styles.sectionSub}>최근 작성된 실제 후기입니다</p>
           <div className={styles.reviewsGrid}>
-            {REVIEWS.map(r => (
+            {homeData.reviews.map((r, index) => {
+              const tone = getAvatarTone(index)
+              return (
               <div key={r.name} className={styles.reviewCard}>
                 <div className={styles.reviewStars}>{'★'.repeat(r.stars)}</div>
-                <p className={styles.reviewText}>{r.text}</p>
+                <p className={styles.reviewText}>"{r.text}"</p>
                 <div className={styles.reviewAuthor}>
-                  <div className={styles.reviewAv} style={{ background: r.avatarBg, color: r.avatarColor }}>{r.name[0]}</div>
+                  <div className={styles.reviewAv} style={{ background: tone.bg, color: tone.color }}>
+                    {r.avatarUrl ? (
+                      <img src={r.avatarUrl} alt="" className={styles.avatarImg} referrerPolicy="no-referrer" />
+                    ) : (
+                      getInitial(r.name)
+                    )}
+                  </div>
                   <div>
                     <div className={styles.reviewName}>{r.name}</div>
                     <div className={styles.reviewRole}>{r.role}</div>
                   </div>
                 </div>
               </div>
-            ))}
+              )
+            })}
+            {homeData.reviews.length === 0 && (
+              <div className={styles.emptyInline}>아직 작성된 후기가 없습니다.</div>
+            )}
           </div>
         </div>
       </section>

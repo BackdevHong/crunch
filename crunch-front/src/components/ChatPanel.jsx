@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
+﻿import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { useApp } from '../context/useApp'
 import api from '../lib/api'
 import socket from '../lib/socket'
@@ -50,6 +50,10 @@ function formatBytes(bytes) {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }
 
+function formatMoney(value) {
+  return `${Number(value ?? 0).toLocaleString('ko-KR')}원`
+}
+
 function getMessageSearchText(msg) {
   return [
     msg.deletedAt ? null : msg.content,
@@ -78,6 +82,17 @@ function getMessageFilterType(msg) {
 
 function getMemberUser(member) {
   return member?.user ?? member
+}
+
+function getChannelTitle(channel, currentUserId) {
+  if (!channel) return ''
+  if (channel.project?.title) return channel.project.title
+
+  const otherMember = (channel.members ?? [])
+    .map(getMemberUser)
+    .find(user => user?.id !== currentUserId)
+
+  return otherMember?.name ?? channel.name
 }
 
 function mentionsUser(content, userName) {
@@ -253,6 +268,10 @@ export default function ChatPanel({ onStartCall, activeCallChannelId }) {
   const [meetingModalOpen, setMeetingModalOpen] = useState(false)
   const [todoModalOpen, setTodoModalOpen] = useState(false)
   const [todoLists, setTodoLists] = useState([])
+  const [settlementSummary, setSettlementSummary] = useState(null)
+  const [settlementLoading, setSettlementLoading] = useState(false)
+  const [settlementPreparing, setSettlementPreparing] = useState(false)
+  const [settlementError, setSettlementError] = useState('')
   const messagesEndRef = useRef(null)
   const prevChannelRef = useRef(null)
   const fileInputRef = useRef(null)
@@ -265,6 +284,11 @@ export default function ChatPanel({ onStartCall, activeCallChannelId }) {
     [activeChannel?.members]
   )
   const activeChannelId = activeChannel?.id
+  const activeProjectId = activeChannel?.project?.id
+  const isActiveProjectAuthor = Boolean(activeProjectId && activeChannel?.project?.authorId === currentUser?.id)
+  const hasSettlementTargets = (settlementSummary?.settlements?.length ?? 0) > 0
+  const hasSettlementBalance = Number(settlementSummary?.balanceAmount ?? 0) > 0
+  const canStartSettlement = isActiveProjectAuthor && hasSettlementTargets && hasSettlementBalance && !settlementLoading
 
   const imageMessages = useMemo(
     () => messages.filter(msg => !msg.deletedAt && msg.fileUrl && msg.fileType?.startsWith('image/')),
@@ -277,9 +301,18 @@ export default function ChatPanel({ onStartCall, activeCallChannelId }) {
   useEffect(() => {
     api.get('/api/channels')
       .then(({ data }) => {
-        setChannels(data.data)
-        if (data.data.length > 0 && !activeChannelId) {
-          setActiveChannel(data.data[0])
+        const nextChannels = data.data
+        const pendingChannelId = window.sessionStorage.getItem('crunch-open-channel-id')
+        const pendingChannel = pendingChannelId
+          ? nextChannels.find(channel => channel.id === pendingChannelId)
+          : null
+
+        setChannels(nextChannels)
+        if (pendingChannel) {
+          setActiveChannel(pendingChannel)
+          window.sessionStorage.removeItem('crunch-open-channel-id')
+        } else if (nextChannels.length > 0 && !activeChannelId) {
+          setActiveChannel(nextChannels[0])
         }
       })
       .catch(console.error)
@@ -315,6 +348,35 @@ export default function ChatPanel({ onStartCall, activeCallChannelId }) {
       .catch(console.error)
       .finally(() => setLoadingMsg(false))
   }, [activeChannel, activeChannelId])
+
+  useEffect(() => {
+    if (!activeProjectId) {
+      setSettlementSummary(null)
+      setSettlementError('')
+      return
+    }
+
+    let alive = true
+    setSettlementLoading(true)
+    setSettlementError('')
+
+    api.get(`/api/payments/projects/${activeProjectId}/settlement`)
+      .then(({ data }) => {
+        if (alive) setSettlementSummary(data.data)
+      })
+      .catch((err) => {
+        if (!alive) return
+        setSettlementSummary(null)
+        setSettlementError(err.response?.data?.message ?? '정산 정보를 불러오지 못했습니다.')
+      })
+      .finally(() => {
+        if (alive) setSettlementLoading(false)
+      })
+
+    return () => {
+      alive = false
+    }
+  }, [activeProjectId])
 
   useEffect(() => {
     const handler = (msg) => {
@@ -692,6 +754,34 @@ export default function ChatPanel({ onStartCall, activeCallChannelId }) {
     await api.post(`/api/channels/${activeChannel.id}/todos`, { title, items })
   }, [activeChannel])
 
+  const startSettlementPayment = useCallback(async () => {
+    if (!activeProjectId || settlementPreparing) return
+
+    setSettlementPreparing(true)
+    try {
+      const { data } = await api.post('/api/payments/project-balance', { projectId: activeProjectId })
+      const { scriptUrl, request } = data.data.nicepay
+      const launch = () => window.AUTHNICE?.requestPay({
+        ...request,
+        fnError: (result) => alert(result?.errorMsg ?? '결제창을 열지 못했습니다.'),
+      })
+
+      if (window.AUTHNICE) {
+        setTimeout(launch, 0)
+      } else {
+        const script = document.createElement('script')
+        script.src = scriptUrl
+        script.async = true
+        script.onload = launch
+        document.body.appendChild(script)
+      }
+    } catch (err) {
+      alert(err.response?.data?.message ?? '정산 결제를 준비하지 못했습니다.')
+    } finally {
+      setSettlementPreparing(false)
+    }
+  }, [activeProjectId, settlementPreparing])
+
   const deleteTodo = useCallback(async (todoListId) => {
     if (!window.confirm('투두 리스트를 삭제할까요?')) return
     try {
@@ -842,7 +932,7 @@ export default function ChatPanel({ onStartCall, activeCallChannelId }) {
       <div className={styles.sidebar}>
         <div className={styles.sidebarHeader}>채널</div>
         {channels.length === 0 ? (
-          <div className={styles.noChannels}>수락된 프로젝트가<br />없습니다</div>
+          <div className={styles.noChannels}>채팅 채널이<br />없습니다</div>
         ) : (
           channels.map(ch => (
             <div
@@ -851,7 +941,7 @@ export default function ChatPanel({ onStartCall, activeCallChannelId }) {
               onClick={() => setActiveChannel(ch)}
             >
               <div className={styles.channelTopLine}>
-                <div className={styles.channelName}>{ch.project?.title ?? ch.name}</div>
+                <div className={styles.channelName}>{getChannelTitle(ch, currentUser.id)}</div>
                 {(ch.mentionUnreadCount ?? 0) > 0 && (
                   <span className={styles.mentionBadge}>@</span>
                 )}
@@ -891,10 +981,10 @@ export default function ChatPanel({ onStartCall, activeCallChannelId }) {
         ) : (
           <>
             <div className={styles.chatHeader}>
-              <div className={styles.chatTitle}>{activeChannel.project?.title ?? activeChannel.name}</div>
+              <div className={styles.chatTitle}>{getChannelTitle(activeChannel, currentUser.id)}</div>
               <div className={styles.chatActions}>
                 {(() => {
-                  const channelName = activeChannel.project?.title ?? activeChannel.name
+                  const channelName = getChannelTitle(activeChannel, currentUser.id)
                   const channelAuthorId = activeChannel.project?.authorId
                   const participants = callStatuses[activeChannel.id] ?? []
                   const isCallActive = participants.length > 0
@@ -923,6 +1013,58 @@ export default function ChatPanel({ onStartCall, activeCallChannelId }) {
                 })()}
               </div>
             </div>
+
+            {activeProjectId && (
+              <div className={styles.settlementPanel}>
+                <div className={styles.settlementHeader}>
+                  <div>
+                    <strong>정산</strong>
+                    <span>
+                      {settlementLoading
+                        ? '정산 정보를 확인하는 중'
+                        : settlementSummary?.balanceAmount === 0
+                          ? '잔금 결제 완료'
+                          : `잔금 ${formatMoney(settlementSummary?.balanceAmount)}`}
+                    </span>
+                  </div>
+                  {isActiveProjectAuthor && (
+                    <button
+                      type="button"
+                      className={styles.settlementPayBtn}
+                      onClick={startSettlementPayment}
+                      disabled={settlementPreparing || !canStartSettlement}
+                      title={!hasSettlementTargets ? '수락된 프리랜서가 있어야 정산할 수 있습니다.' : !hasSettlementBalance ? '정산할 잔금이 없습니다.' : '정산을 진행합니다.'}
+                    >
+                      {settlementPreparing ? '준비 중' : '정산 진행'}
+                    </button>
+                  )}
+                </div>
+                {settlementError ? (
+                  <div className={styles.settlementError}>{settlementError}</div>
+                ) : settlementSummary?.settlements?.length > 0 ? (
+                  <div className={styles.settlementList}>
+                    {settlementSummary.settlements.map(item => (
+                      <div key={item.proposalId} className={styles.settlementItem}>
+                        <span>
+                          {item.freelancerName}
+                          {item.role ? ` · ${item.role}` : ''}
+                        </span>
+                        <strong>{formatMoney(item.payoutAmount)}</strong>
+                        <em>
+                          {item.status === 'PAID'
+                            ? '지급 완료'
+                            : item.status === 'AVAILABLE'
+                              ? `정산 가능 · 수수료 ${formatMoney(item.platformFeeAmount)}`
+                              : `수수료 ${formatMoney(item.platformFeeAmount)}`}
+                        </em>
+                      </div>
+                    ))}
+                  </div>
+                ) : !settlementLoading && (
+                  <div className={styles.settlementEmpty}>수락된 프리랜서가 있으면 정산 정보가 표시됩니다.</div>
+                )}
+              </div>
+            )}
 
             <TodoPanel
               todoLists={todoLists}

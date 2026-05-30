@@ -120,8 +120,144 @@
 .infoRow span { color: var(--color-text-secondary); }
 .infoRow strong { color: var(--color-text-primary); font-weight: 500; }
 
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(15, 23, 42, 0.42);
+}
+
+.inviteModal {
+  width: min(480px, 100%);
+  background: var(--color-bg-primary);
+  border: 0.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  box-shadow: 0 18px 60px rgba(15, 23, 42, 0.24);
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.modalHeader h2 {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.modalHeader button {
+  width: 32px;
+  height: 32px;
+  border: 0.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  font: inherit;
+}
+
+.modalLead {
+  margin: 0 0 18px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.modalLabel {
+  display: block;
+  margin: 14px 0 6px;
+  color: var(--color-text-primary);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.inviteModal select,
+.inviteModal textarea {
+  width: 100%;
+  border: 0.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font: inherit;
+}
+
+.inviteModal select {
+  height: 42px;
+  padding: 0 12px;
+}
+
+.inviteModal textarea {
+  min-height: 96px;
+  padding: 12px;
+  resize: vertical;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.modalActions button {
+  min-width: 92px;
+  border: 0.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  font: inherit;
+}
+
+.modalActions button:last-child {
+  border-color: #185fa5;
+  background: #185fa5;
+  color: white;
+}
+
+.modalActions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
+.empty {
+  padding: 22px;
+  border-radius: var(--radius-md);
+  background: var(--color-bg-secondary);
+  color: var(--color-text-secondary);
+  text-align: center;
+  font-size: 14px;
+}
+
+.toast {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 1100;
+  max-width: min(360px, calc(100vw - 48px));
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  background: var(--color-text-primary);
+  color: var(--color-bg-primary);
+  font-size: 13px;
+  box-shadow: 0 12px 36px rgba(15, 23, 42, 0.2);
+}
+
 @media (max-width: 768px) {
   .layout { flex-direction: column; }
   .sidebar { width: 100%; }
   .profileCard { flex-direction: column; }
+  .modalActions { flex-direction: column-reverse; }
+  .modalActions button { width: 100%; }
 }

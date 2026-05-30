@@ -33,6 +33,18 @@ const MESSAGE_INCLUDE = {
   meeting: { include: MEETING_INCLUDE },
 }
 
+const CHANNEL_INCLUDE = {
+  project: { select: { id: true, title: true, authorId: true } },
+  members: {
+    include: { user: { select: { id: true, name: true } } },
+  },
+  messages: {
+    orderBy: { createdAt: 'desc' as const },
+    take: 1,
+    include: { sender: { select: { name: true } } },
+  },
+}
+
 function previewText(content: string, limit = 80): string {
   return content.length > limit ? `${content.slice(0, limit)}...` : content
 }
@@ -49,19 +61,7 @@ export async function getMyChannels(req: Request, res: Response): Promise<void> 
     const memberships = await prisma.channelMember.findMany({
       where: { userId },
       include: {
-        channel: {
-          include: {
-            project: { select: { id: true, title: true, authorId: true } },
-            members: {
-              include: { user: { select: { id: true, name: true } } },
-            },
-            messages: {
-              orderBy: { createdAt: 'desc' },
-              take: 1,
-              include: { sender: { select: { name: true } } },
-            },
-          },
-        },
+        channel: { include: CHANNEL_INCLUDE },
       },
       orderBy: { joinedAt: 'desc' },
     })
@@ -98,6 +98,93 @@ export async function getMyChannels(req: Request, res: Response): Promise<void> 
 }
 
 // 채널 메시지 조회
+export async function createDirectChannel(req: Request, res: Response): Promise<void> {
+  try {
+    const userId = req.user!.userId
+    const targetUserId = (req.body.userId as string | undefined)?.trim()
+
+    if (!targetUserId) {
+      res.status(400).json({ success: false, message: '메시지를 보낼 사용자를 선택해주세요.' })
+      return
+    }
+    if (targetUserId === userId) {
+      res.status(400).json({ success: false, message: '본인에게는 메시지를 보낼 수 없습니다.' })
+      return
+    }
+
+    const [me, targetUser] = await Promise.all([
+      prisma.user.findUnique({ where: { id: userId }, select: { id: true, name: true } }),
+      prisma.user.findUnique({ where: { id: targetUserId }, select: { id: true, name: true } }),
+    ])
+
+    if (!me || !targetUser) {
+      res.status(404).json({ success: false, message: '사용자를 찾을 수 없습니다.' })
+      return
+    }
+
+    const existingMemberships = await prisma.channelMember.findMany({
+      where: {
+        userId,
+        channel: {
+          projectId: null,
+          members: { some: { userId: targetUserId } },
+        },
+      },
+      include: {
+        channel: { include: CHANNEL_INCLUDE },
+      },
+      orderBy: { joinedAt: 'desc' },
+    })
+
+    const existing = existingMemberships.find(m => m.channel.members.length === 2)
+    if (existing) {
+      ok(res, existing.channel)
+      return
+    }
+
+    const channel = await prisma.$transaction(async tx => {
+      const created = await tx.channel.create({
+        data: { name: `${me.name}, ${targetUser.name}` },
+      })
+
+      await tx.channelMember.createMany({
+        data: [
+          { channelId: created.id, userId },
+          { channelId: created.id, userId: targetUserId },
+        ],
+        skipDuplicates: true,
+      })
+
+      await tx.channelMessage.create({
+        data: {
+          channelId: created.id,
+          senderId: userId,
+          content: `${me.name}님이 대화를 시작했습니다.`,
+          messageType: 'SYSTEM',
+        },
+      })
+
+      return tx.channel.findUniqueOrThrow({
+        where: { id: created.id },
+        include: CHANNEL_INCLUDE,
+      })
+    })
+
+    await createUserNotifications({
+      userIds: [targetUserId],
+      type: 'DIRECT_CHANNEL_CREATED',
+      title: '새 메시지가 도착했습니다',
+      message: `${me.name}님이 대화를 시작했습니다.`,
+      link: 'chat',
+    })
+
+    ok(res, channel)
+  } catch (err) {
+    console.error('[createDirectChannel]', err)
+    serverError(res)
+  }
+}
+
 export async function getChannelMessages(req: Request, res: Response): Promise<void> {
   try {
     const userId = req.user!.userId

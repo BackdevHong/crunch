@@ -3,9 +3,10 @@ import styles from './AdminLayout.module.css'
 
 const NAV_ITEMS = [
   { label: '대시보드', page: 'admin-dashboard', icon: '▦' },
-  { label: '프리랜서 신청', page: 'admin-applications', icon: '📋' },
-  { label: '유저 관리', page: 'admin-users', icon: '👥' },
-  { label: '서비스 관리', page: 'admin-services', icon: '🛠' },
+  { label: '프리랜서 신청', page: 'admin-applications', icon: '□' },
+  { label: '유저 관리', page: 'admin-users', icon: '◇' },
+  { label: '서비스 관리', page: 'admin-services', icon: '◧' },
+  { label: '프로젝트 관리', page: 'admin-projects', icon: '▣' },
   { label: '운영 로그', page: 'admin-audit-logs', icon: '≡' },
 ]
 
@@ -18,9 +19,11 @@ export default function AdminLayout({ children, activePage, onNavigate }) {
         <div className={styles.logo}>크런치 어드민</div>
         <nav className={styles.nav}>
           {NAV_ITEMS.map(item => (
-            <button key={item.page}
+            <button
+              key={item.page}
               className={`${styles.navItem} ${activePage === item.page ? styles.navActive : ''}`}
-              onClick={() => onNavigate(item.page)}>
+              onClick={() => onNavigate(item.page)}
+            >
               <span className={styles.navIcon}>{item.icon}</span>
               {item.label}
             </button>
@@ -28,7 +31,12 @@ export default function AdminLayout({ children, activePage, onNavigate }) {
         </nav>
         <div className={styles.sidebarFooter}>
           <div className={styles.adminName}>{currentUser?.name}</div>
-          <button className={styles.logoutBtn} onClick={async () => { await logout(); onNavigate('home') }}>로그아웃</button>
+          <button
+            className={styles.logoutBtn}
+            onClick={async () => { await logout(); onNavigate('home') }}
+          >
+            로그아웃
+          </button>
         </div>
       </aside>
 

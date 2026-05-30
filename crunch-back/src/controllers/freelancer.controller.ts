@@ -7,8 +7,6 @@ export async function getFreelancers(req: Request, res: Response): Promise<void>
   try {
     const {
       category,
-      minRate,
-      maxRate,
       experience,
       online,
       skill,
@@ -25,12 +23,6 @@ export async function getFreelancers(req: Request, res: Response): Promise<void>
 
     const where: Prisma.FreelancerWhereInput = {
       ...(category && { category: category as any }),
-      ...(minRate || maxRate ? {
-        hourlyRate: {
-          ...(minRate ? { gte: Number(minRate) } : {}),
-          ...(maxRate ? { lte: Number(maxRate) } : {}),
-        }
-      } : {}),
       ...(experience && { experience: String(experience) }),
       ...(online === 'true' && { online: true }),
       ...(skill && {
@@ -46,7 +38,6 @@ export async function getFreelancers(req: Request, res: Response): Promise<void>
     }
 
     const orderBy: Prisma.FreelancerOrderByWithRelationInput =
-      sort === 'hourlyRate'    ? { hourlyRate: order as any } :
       sort === 'completedJobs' ? { completedJobs: order as any } :
                                  { rating: order as any }
 
@@ -62,7 +53,6 @@ export async function getFreelancers(req: Request, res: Response): Promise<void>
           badge: true,
           rating: true,
           completedJobs: true,
-          hourlyRate: true,
           online: true,
           experience: true,
           category: true,

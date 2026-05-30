@@ -1,16 +1,47 @@
 import { Request, Response } from 'express'
 import { prisma } from '../lib/prisma'
 import { ok, created, fail, forbidden, notFound, serverError } from '../lib/response'
-import { ProjectStatus, ProposalStatus } from '@prisma/client'
+import { Prisma, ProjectStatus, ProposalStatus } from '@prisma/client'
 import { createUserNotification } from '../lib/notification'
+
+async function attachProjectRolesToProposals(proposals: any[]) {
+  const roleIds = proposals
+    .map(proposal => proposal.projectRoleId)
+    .filter(Boolean)
+
+  if (roleIds.length === 0) return proposals
+
+  const roles = await prisma.$queryRaw<Array<{
+    id: string
+    role: string
+    headcount: number
+    budgetPercent: number
+    budgetAmount: number
+  }>>`
+    SELECT
+      id,
+      role,
+      headcount,
+      budget_percent AS budgetPercent,
+      budget_amount AS budgetAmount
+    FROM project_roles
+    WHERE id IN (${Prisma.join(roleIds)})
+  `
+  const roleMap = new Map(roles.map(role => [role.id, role]))
+
+  return proposals.map(proposal => ({
+    ...proposal,
+    projectRole: proposal.projectRoleId ? roleMap.get(proposal.projectRoleId) ?? null : null,
+  }))
+}
 
 // 제안 등록 (프리랜서)
 export async function createProposal(req: Request, res: Response): Promise<void> {
   try {
     const userId = req.user!.userId
-    const { projectId, message, price, deliveryDays } = req.body
+    const { projectId, projectRoleId, message, deliveryDays } = req.body
 
-    if (!projectId || !message || price == null || deliveryDays == null) {
+    if (!projectId || !projectRoleId || !message || deliveryDays == null) {
       fail(res, '필수 항목을 모두 입력해주세요.')
       return
     }
@@ -31,6 +62,31 @@ export async function createProposal(req: Request, res: Response): Promise<void>
       return
     }
 
+    const roleRows = await prisma.$queryRaw<Array<{
+      id: string
+      projectId: string
+      role: string
+      headcount: number
+      budgetAmount: number
+    }>>`
+      SELECT
+        id,
+        project_id AS projectId,
+        role,
+        headcount,
+        budget_amount AS budgetAmount
+      FROM project_roles
+      WHERE id = ${projectRoleId} AND project_id = ${projectId}
+      LIMIT 1
+    `
+    const projectRole = roleRows[0]
+    if (!projectRole) {
+      fail(res, '신청할 역할을 선택해주세요.')
+      return
+    }
+
+    const proposalPrice = Math.floor(projectRole.budgetAmount / Math.max(1, projectRole.headcount))
+
     const existing = await prisma.proposal.findUnique({
       where: { projectId_freelancerId: { projectId, freelancerId: freelancer.id } },
     })
@@ -42,11 +98,12 @@ export async function createProposal(req: Request, res: Response): Promise<void>
     const proposal = await prisma.proposal.create({
       data: {
         projectId,
+        projectRoleId,
         freelancerId: freelancer.id,
         message,
-        price: Number(price),
+        price: proposalPrice,
         deliveryDays: Number(deliveryDays),
-      },
+      } as any,
       include: {
         freelancer: {
           include: { user: { select: { id: true, name: true } } },
@@ -58,7 +115,7 @@ export async function createProposal(req: Request, res: Response): Promise<void>
       userId: project.authorId,
       type: 'PROJECT_PROPOSAL_CREATED',
       title: '새 프로젝트 제안이 도착했습니다',
-      message: `"${project.title}" 프로젝트에 ${proposal.freelancer.user.name}님이 제안을 보냈습니다.`,
+      message: `"${project.title}" 프로젝트의 ${projectRole.role} 역할에 ${proposal.freelancer.user.name}님이 신청했습니다.`,
       link: 'mypage-projects',
     })
 
@@ -98,7 +155,7 @@ export async function getProjectProposals(req: Request, res: Response): Promise<
       },
     })
 
-    ok(res, proposals)
+    ok(res, await attachProjectRolesToProposals(proposals))
   } catch (err) {
     console.error('[getProjectProposals]', err)
     serverError(res)
@@ -134,6 +191,24 @@ export async function updateProposalStatus(req: Request, res: Response): Promise
     }
 
     if (status === 'ACCEPTED') {
+      if (proposal.projectRoleId) {
+        const role = await prisma.projectRole.findUnique({
+          where: { id: proposal.projectRoleId },
+          select: { headcount: true },
+        })
+        const acceptedRoleCount = await prisma.proposal.count({
+          where: {
+            projectRoleId: proposal.projectRoleId,
+            status: ProposalStatus.ACCEPTED,
+            id: { not: proposal.id },
+          },
+        })
+
+        if (role && acceptedRoleCount >= role.headcount) {
+          fail(res, '이미 해당 역할의 모집 인원이 모두 채워졌습니다.')
+          return
+        }
+      }
       // 프리랜서의 userId 조회
       const freelancerUser = await prisma.user.findUnique({
         where: { id: proposal.freelancer.userId },
@@ -180,6 +255,36 @@ export async function updateProposalStatus(req: Request, res: Response): Promise
             create: { channelId: channel.id, userId: freelancerUser.id },
             update: {},
           })
+        }
+
+        const roles = await tx.projectRole.findMany({
+          where: { projectId: proposal.projectId },
+          select: { id: true, headcount: true },
+        })
+
+        if (roles.length > 0) {
+          const acceptedGroups = await tx.proposal.groupBy({
+            by: ['projectRoleId'],
+            where: {
+              projectId: proposal.projectId,
+              status: ProposalStatus.ACCEPTED,
+              projectRoleId: { in: roles.map(role => role.id) },
+            },
+            _count: { _all: true },
+          })
+          const acceptedCountByRole = new Map(
+            acceptedGroups.map(group => [group.projectRoleId, group._count._all])
+          )
+          const allRolesFilled = roles.every(role =>
+            (acceptedCountByRole.get(role.id) ?? 0) >= role.headcount
+          )
+
+          if (allRolesFilled && proposal.project.status === ProjectStatus.OPEN) {
+            await tx.project.update({
+              where: { id: proposal.projectId },
+              data: { status: ProjectStatus.IN_PROGRESS },
+            })
+          }
         }
       })
     } else {

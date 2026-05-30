@@ -16,6 +16,8 @@ const BUDGET_OPTIONS = [
 ]
 
 const PROJECT_STATUS_LABEL = { OPEN: '모집중', IN_PROGRESS: '진행중', DONE: '완료', CANCELLED: '취소' }
+const formatMoney = (value) => `${Number(value || 0).toLocaleString('ko-KR')}원`
+const getPerPersonAmount = (role) => Math.floor(Number(role?.budgetAmount || 0) / Math.max(1, Number(role?.headcount || 1)))
 
 export default function BrowseProjects() {
   const [projects, setProjects] = useState([])
@@ -182,17 +184,18 @@ function ProjectCard({ project, onClick }) {
 
 // ── 제안 모달 ─────────────────────────────────────────────────
 function ProposalModal({ project, onClose, onSubmitted }) {
-  const [form, setForm] = useState({ message: '', price: '', deliveryDays: '' })
+  const [form, setForm] = useState({ projectRoleId: project.roles?.[0]?.id ?? '', message: '', deliveryDays: '' })
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
 
   const categoryLabel = CATEGORY_LABEL[project.category] ?? project.category
+  const selectedRole = (project.roles ?? []).find(role => role.id === form.projectRoleId)
   const set = (key, value) => setForm(p => ({ ...p, [key]: value }))
 
   const handleSubmit = async () => {
+    if (!form.projectRoleId) { setError('신청할 역할을 선택해주세요.'); return }
     if (!form.message.trim()) { setError('제안 내용을 입력해주세요.'); return }
-    if (!form.price || isNaN(Number(form.price))) { setError('제안 금액을 입력해주세요.'); return }
     if (!form.deliveryDays || isNaN(Number(form.deliveryDays))) { setError('납기일을 입력해주세요.'); return }
 
     setSubmitting(true)
@@ -200,8 +203,8 @@ function ProposalModal({ project, onClose, onSubmitted }) {
     try {
       await api.post('/api/proposals', {
         projectId: project.id,
+        projectRoleId: form.projectRoleId,
         message: form.message,
-        price: Number(form.price),
         deliveryDays: Number(form.deliveryDays),
       })
       setSuccess(true)
@@ -252,6 +255,34 @@ function ProposalModal({ project, onClose, onSubmitted }) {
 
             <h3 className={styles.formTitle}>제안서 작성</h3>
 
+            {project.roles?.length > 0 && (
+              <div className={styles.field}>
+                <label>신청 역할</label>
+                <div className={styles.roleOptions}>
+                  {project.roles.map(role => (
+                    <button
+                      key={role.id}
+                      type="button"
+                      className={`${styles.roleOption} ${form.projectRoleId === role.id ? styles.roleOptionOn : ''}`}
+                      onClick={() => set('projectRoleId', role.id)}
+                    >
+                      <strong>{role.role}</strong>
+                      <span>{role.headcount}명 모집 · {role.budgetPercent}% 배정</span>
+                      <em>1인 예정 {formatMoney(getPerPersonAmount(role))}</em>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {selectedRole && (
+              <div className={styles.proposalBudgetBox}>
+                <span>신청 시 표시될 예정 금액</span>
+                <strong>{formatMoney(getPerPersonAmount(selectedRole))}</strong>
+                <small>역할 전체 예산 {formatMoney(selectedRole.budgetAmount)}</small>
+              </div>
+            )}
+
             <div className={styles.field}>
               <label>제안 내용</label>
               <textarea
@@ -262,15 +293,6 @@ function ProposalModal({ project, onClose, onSubmitted }) {
             </div>
 
             <div className={styles.fieldRow}>
-              <div className={styles.field}>
-                <label>제안 금액 (원)</label>
-                <input
-                  type="number"
-                  placeholder="예: 300000"
-                  value={form.price}
-                  onChange={e => set('price', e.target.value)}
-                />
-              </div>
               <div className={styles.field}>
                 <label>납기일 (일)</label>
                 <input

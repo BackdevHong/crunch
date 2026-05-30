@@ -62,12 +62,11 @@
 .footer {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
+  gap: 8px;
   padding-top: 10px;
   border-top: 0.5px solid var(--color-border);
 }
-.rateLabel { font-size: 10px; color: var(--color-text-secondary); }
-.rate { font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
 
 .btn {
   font-size: 12px; padding: 6px 14px;
@@ -79,3 +78,15 @@
   transition: all 0.12s;
 }
 .btn:hover { background: #185fa5; color: white; border-color: #185fa5; }
+
+.primaryBtn {
+  font-size: 12px;
+  padding: 6px 14px;
+  border-radius: var(--radius-md);
+  border: 0.5px solid var(--color-accent);
+  background: var(--color-accent);
+  color: white;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.primaryBtn:hover { filter: brightness(0.95); }

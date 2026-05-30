@@ -30,6 +30,25 @@ export function authenticate(req: Request, res: Response, next: NextFunction): v
   }
 }
 
+export function optionalAuthenticate(req: Request, _res: Response, next: NextFunction): void {
+  const authHeader = req.headers.authorization
+
+  if (!authHeader?.startsWith('Bearer ')) {
+    next()
+    return
+  }
+
+  const token = authHeader.split(' ')[1]
+
+  try {
+    req.user = verifyAccessToken(token)
+  } catch {
+    req.user = undefined
+  }
+
+  next()
+}
+
 // 특정 role 만 허용하는 미들웨어
 export function requireRole(...roles: string[]) {
   return (req: Request, res: Response, next: NextFunction): void => {

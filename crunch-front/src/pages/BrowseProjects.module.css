@@ -179,6 +179,60 @@
 .field input:focus, .field textarea:focus { border-color: #6d3fcc; }
 .field textarea { resize: vertical; min-height: 110px; line-height: 1.6; }
 .fieldRow { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.roleOptions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.roleOption {
+  border: 0.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-primary);
+  padding: 12px;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.roleOption:hover {
+  border-color: #6d3fcc;
+}
+.roleOptionOn {
+  border-color: #6d3fcc;
+  background: color-mix(in srgb, #6d3fcc 10%, var(--color-bg-primary));
+}
+.roleOption strong {
+  color: var(--color-text-primary);
+  font-size: 13px;
+}
+.roleOption span,
+.roleOption em {
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-style: normal;
+}
+.proposalBudgetBox {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 0.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-secondary);
+  padding: 12px 14px;
+  margin-bottom: 14px;
+}
+.proposalBudgetBox span,
+.proposalBudgetBox small {
+  color: var(--color-text-secondary);
+  font-size: 12px;
+}
+.proposalBudgetBox strong {
+  color: var(--color-text-primary);
+  font-size: 15px;
+}
 
 .errorBox {
   background: #fcebeb; border: 0.5px solid #f09595;
@@ -217,4 +271,6 @@
   .sidebar { width: 100%; }
   .grid { grid-template-columns: 1fr; }
   .fieldRow { grid-template-columns: 1fr; }
+  .roleOptions { grid-template-columns: 1fr; }
+  .proposalBudgetBox { align-items: flex-start; flex-direction: column; gap: 4px; }
 }

@@ -7,14 +7,80 @@ const ROLE_LABEL = { client: '의뢰인', freelancer: '프리랜서', admin: '�
 const STATUS_LABEL = { PENDING: '대기중', APPROVED: '승인', REJECTED: '거절' }
 const SERVICE_STATUS_LABEL = { PENDING: '심사중', APPROVED: '승인', REJECTED: '반려' }
 const CATEGORY_LABEL = {
-  DEV: '개발·IT', DESIGN: '디자인', MARKETING: '마케팅',
-  WRITING: '글쓰기·번역', VIDEO: '영상·사진', MUSIC: '음악·오디오',
+  DEV: '개발·IT',
+  DESIGN: '디자인',
+  MARKETING: '마케팅',
+  WRITING: '글쓰기·번역',
+  VIDEO: '영상·사진',
+  MUSIC: '음악·오디오',
+}
+const TARGET_LABEL = {
+  USER: '유저',
+  SERVICE: '서비스',
+  FREELANCER_APPLICATION: '프리랜서 신청',
+  PROJECT: '프로젝트',
+}
+const ACTION_LABEL = {
+  USER_ROLE_UPDATED: '역할 변경',
+  SERVICE_APPROVED: '서비스 승인',
+  SERVICE_REJECTED: '서비스 반려',
+  SERVICE_ACTIVATED: '서비스 활성화',
+  SERVICE_DEACTIVATED: '서비스 비활성화',
+  FREELANCER_APPLICATION_APPROVED: '프리랜서 승인',
+  FREELANCER_APPLICATION_REJECTED: '프리랜서 거절',
+  PROJECT_STATUS_UPDATED: '프로젝트 상태 변경',
+  PROJECT_DELETED: '프로젝트 삭제',
+}
+const PROJECT_STATUS_LABEL = {
+  PAYMENT_PENDING: '결제대기',
+  OPEN: '모집중',
+  IN_PROGRESS: '진행중',
+  DONE: '완료',
+  CANCELLED: '취소',
 }
 
 const formatDate = (value) => new Date(value).toLocaleDateString('ko-KR', {
   month: 'short',
   day: 'numeric',
 })
+
+function parseMetadata(metadata) {
+  if (!metadata) return null
+  if (typeof metadata === 'object') return metadata
+  try {
+    return JSON.parse(metadata)
+  } catch {
+    return null
+  }
+}
+
+function looksBroken(message = '') {
+  return /[�]|[寃곗젣꾨줈앺듃쒕퉬뱀씤섎텋]/.test(message)
+}
+
+function getLogMessage(log) {
+  const metadata = parseMetadata(log.metadata)
+
+  if (log.action === 'PROJECT_STATUS_UPDATED') {
+    const from = PROJECT_STATUS_LABEL[metadata?.previousStatus] ?? metadata?.previousStatus
+    const to = PROJECT_STATUS_LABEL[metadata?.status] ?? metadata?.status
+    if (from && to) return `프로젝트 상태를 ${from}에서 ${to}(으)로 변경했습니다.`
+    return '프로젝트 상태를 변경했습니다.'
+  }
+
+  if (log.action === 'PROJECT_DELETED') {
+    const amount = Number(metadata?.refundedDepositAmount ?? 0)
+    return amount > 0
+      ? `프로젝트를 삭제하고 예치금 ${amount.toLocaleString('ko-KR')}원을 환불했습니다.`
+      : '프로젝트를 삭제했습니다.'
+  }
+
+  if (looksBroken(log.message)) {
+    return ACTION_LABEL[log.action] ? `${ACTION_LABEL[log.action]} 작업이 처리되었습니다.` : '운영 작업이 처리되었습니다.'
+  }
+
+  return log.message
+}
 
 export default function AdminDashboard({ activePage, onNavigate }) {
   const [summary, setSummary] = useState(null)
@@ -121,10 +187,10 @@ export default function AdminDashboard({ activePage, onNavigate }) {
                 {summary.recent.auditLogs.map(log => (
                   <li key={log.id}>
                     <div>
-                      <strong>{log.message}</strong>
+                      <strong>{getLogMessage(log)}</strong>
                       <span>{log.admin?.name ?? '관리자'} · {formatDate(log.createdAt)}</span>
                     </div>
-                    <Badge>{log.targetType}</Badge>
+                    <Badge>{TARGET_LABEL[log.targetType] ?? log.targetType}</Badge>
                   </li>
                 ))}
               </ActivityList>

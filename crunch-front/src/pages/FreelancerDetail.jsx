@@ -1,28 +1,102 @@
+import { useEffect, useState } from 'react'
 import { useApp } from '../context/useApp'
+import api from '../lib/api'
 import styles from './FreelancerDetail.module.css'
 
 const BADGE_STYLE = { Top: styles.badgeTop, Pro: styles.badgePro, New: styles.badgeNew }
 
-export default function FreelancerDetail() {
-  const { selectedFreelancer: f, setSelectedFreelancer } = useApp()
+export default function FreelancerDetail({ onNavigate }) {
+  const { selectedFreelancer: f, setSelectedFreelancer, currentUser } = useApp()
+  const [myProjects, setMyProjects] = useState([])
+  const [inviteOpen, setInviteOpen] = useState(false)
+  const [inviteProjectId, setInviteProjectId] = useState('')
+  const [inviteMessage, setInviteMessage] = useState('')
+  const [inviteLoading, setInviteLoading] = useState(false)
+  const [toast, setToast] = useState('')
+
+  const canInvite = currentUser?.role === 'client' || currentUser?.role === 'admin'
+
+  useEffect(() => {
+    if (!canInvite) {
+      setMyProjects([])
+      return
+    }
+
+    api.get('/api/projects/me')
+      .then(({ data }) => setMyProjects(data.data ?? []))
+      .catch(() => setMyProjects([]))
+  }, [canInvite])
+
   if (!f) return null
 
-  // API 응답({ skill: "React" })과 mock 데이터("React") 둘 다 대응
   const skillNames = (f.skills ?? []).map(sk => sk.skill ?? sk)
-
-  // API 응답은 user.name, mock 데이터는 name 직접
-  const name = f.user?.name ?? f.name ?? '?'
+  const name = f.user?.name ?? f.name ?? '프리랜서'
   const avatarUrl = f.user?.avatarUrl ?? f.avatarUrl
   const avatarBg = f.avatarBg ?? '#FFF0E8'
   const avatarColor = f.avatarColor ?? '#C04A1A'
 
+  const showToast = (message) => {
+    setToast(message)
+    setTimeout(() => setToast(''), 3000)
+  }
+
+  const openInviteModal = () => {
+    setInviteProjectId(myProjects[0]?.id ?? '')
+    setInviteMessage('')
+    setInviteOpen(true)
+  }
+
+  const submitInvite = async () => {
+    if (!inviteProjectId) {
+      showToast('제안할 프로젝트를 선택해주세요.')
+      return
+    }
+
+    setInviteLoading(true)
+    try {
+      await api.post(`/api/projects/${inviteProjectId}/invitations`, {
+        freelancerId: f.id,
+        message: inviteMessage.trim() || undefined,
+      })
+      showToast('프로젝트 제안을 보냈습니다.')
+      setInviteOpen(false)
+    } catch (err) {
+      showToast(err.response?.data?.message ?? '프로젝트 제안을 보내지 못했습니다.')
+    } finally {
+      setInviteLoading(false)
+    }
+  }
+
+  const openDirectMessage = async () => {
+    const targetUserId = f.user?.id
+    if (!currentUser) {
+      showToast('로그인이 필요합니다.')
+      return
+    }
+    if (!targetUserId) {
+      showToast('메시지를 보낼 사용자를 찾을 수 없습니다.')
+      return
+    }
+
+    setInviteLoading(true)
+    try {
+      const { data } = await api.post('/api/channels/direct', { userId: targetUserId })
+      window.sessionStorage.setItem('crunch-open-channel-id', data.data.id)
+      setSelectedFreelancer(null)
+      onNavigate?.('chat')
+    } catch (err) {
+      showToast(err.response?.data?.message ?? '채팅방을 열지 못했습니다.')
+    } finally {
+      setInviteLoading(false)
+    }
+  }
+
   return (
     <div className={styles.page}>
       <div className={styles.inner}>
-        <button className={styles.back} onClick={() => setSelectedFreelancer(null)}>← 목록으로</button>
+        <button className={styles.back} onClick={() => setSelectedFreelancer(null)}>목록으로</button>
 
         <div className={styles.layout}>
-          {/* LEFT */}
           <div className={styles.main}>
             <div className={styles.profileCard}>
               <div className={styles.avatarWrap}>
@@ -38,14 +112,14 @@ export default function FreelancerDetail() {
               <div className={styles.profileInfo}>
                 <div className={styles.nameRow}>
                   <h1>{name}</h1>
-                  <span className={`${styles.badge} ${BADGE_STYLE[f.badge]}`}>{f.badge}</span>
+                  {f.badge && <span className={`${styles.badge} ${BADGE_STYLE[f.badge] ?? ''}`}>{f.badge}</span>}
                 </div>
                 <div className={styles.role}>{f.role}</div>
                 <div className={styles.meta}>
-                  <span>⭐ {Number(f.rating).toFixed(1)}</span>
-                  <span>완료 {f.completedJobs}건</span>
-                  <span>경력 {f.experience}</span>
-                  {f.online && <span className={styles.onlineLabel}>🟢 지금 가능</span>}
+                  <span>평점 {Number(f.rating ?? 0).toFixed(1)}</span>
+                  <span>완료 {f.completedJobs ?? 0}건</span>
+                  <span>경력 {f.experience ?? '-'}</span>
+                  {f.online && <span className={styles.onlineLabel}>지금 가능</span>}
                 </div>
                 <div className={styles.skills}>
                   {skillNames.map(sk => (
@@ -59,7 +133,7 @@ export default function FreelancerDetail() {
               <h3>자기소개</h3>
               {f.bio
                 ? <p>{f.bio}</p>
-                : <p style={{ color: 'var(--color-text-secondary)', fontSize: '13px' }}>자기소개를 아직 작성하지 않았습니다.</p>
+                : <p style={{ color: 'var(--color-text-secondary)', fontSize: '13px' }}>아직 자기소개가 없습니다.</p>
               }
             </div>
 
@@ -75,32 +149,69 @@ export default function FreelancerDetail() {
                     </div>
                   </div>
                 )
-                : <p style={{ color: 'var(--color-text-secondary)', fontSize: '13px' }}>경력 정보를 아직 입력하지 않았습니다.</p>
+                : <p style={{ color: 'var(--color-text-secondary)', fontSize: '13px' }}>경력 정보가 없습니다.</p>
               }
             </div>
           </div>
 
-          {/* RIGHT */}
           <div className={styles.sidebar}>
             <div className={styles.priceCard}>
-              <div className={styles.priceTop}>
-                <span className={styles.priceLabel}>시간당 단가</span>
-                <span className={styles.price}>{Number(f.hourlyRate).toLocaleString()}원</span>
-              </div>
-              <button className={styles.btnContact}>프로젝트 제안하기</button>
-              <button className={styles.btnMsg}>메시지 보내기</button>
+              {canInvite && (
+                <button className={styles.btnContact} onClick={openInviteModal}>프로젝트 제안하기</button>
+              )}
+              <button className={styles.btnMsg} onClick={openDirectMessage} disabled={inviteLoading}>메시지 보내기</button>
             </div>
 
             <div className={styles.infoCard}>
-              <div className={styles.infoRow}><span>평점</span><strong>⭐ {Number(f.rating).toFixed(1)}</strong></div>
-              <div className={styles.infoRow}><span>완료 건수</span><strong>{f.completedJobs}건</strong></div>
-              <div className={styles.infoRow}><span>경력</span><strong>{f.experience}</strong></div>
-              <div className={styles.infoRow}><span>분야</span><strong>{f.category}</strong></div>
-              <div className={styles.infoRow}><span>상태</span><strong>{f.online ? '🟢 가능' : '⚫ 바쁨'}</strong></div>
+              <div className={styles.infoRow}><span>평점</span><strong>{Number(f.rating ?? 0).toFixed(1)}</strong></div>
+              <div className={styles.infoRow}><span>완료 건수</span><strong>{f.completedJobs ?? 0}건</strong></div>
+              <div className={styles.infoRow}><span>경력</span><strong>{f.experience ?? '-'}</strong></div>
+              <div className={styles.infoRow}><span>분야</span><strong>{f.category ?? '-'}</strong></div>
+              <div className={styles.infoRow}><span>상태</span><strong>{f.online ? '가능' : '오프라인'}</strong></div>
             </div>
           </div>
         </div>
       </div>
+
+      {inviteOpen && (
+        <div className={styles.overlay} onClick={() => setInviteOpen(false)}>
+          <div className={styles.inviteModal} onClick={e => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h2>프로젝트 제안</h2>
+              <button onClick={() => setInviteOpen(false)}>×</button>
+            </div>
+            <p className={styles.modalLead}>
+              {name}님에게 제안할 프로젝트를 선택해주세요.
+            </p>
+            {myProjects.length === 0 ? (
+              <div className={styles.empty}>제안할 수 있는 내 프로젝트가 없습니다.</div>
+            ) : (
+              <>
+                <label className={styles.modalLabel}>프로젝트</label>
+                <select value={inviteProjectId} onChange={e => setInviteProjectId(e.target.value)}>
+                  {myProjects.map(project => (
+                    <option key={project.id} value={project.id}>{project.title}</option>
+                  ))}
+                </select>
+                <label className={styles.modalLabel}>메시지</label>
+                <textarea
+                  value={inviteMessage}
+                  onChange={e => setInviteMessage(e.target.value)}
+                  placeholder="함께 작업하고 싶은 이유나 요청사항을 남겨주세요."
+                />
+                <div className={styles.modalActions}>
+                  <button onClick={() => setInviteOpen(false)} disabled={inviteLoading}>취소</button>
+                  <button onClick={submitInvite} disabled={inviteLoading}>
+                    {inviteLoading ? '전송 중...' : '제안 보내기'}
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {toast && <div className={styles.toast}>{toast}</div>}
     </div>
   )
 }

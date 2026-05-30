@@ -888,6 +888,9 @@ function ProjectsTab({ onEdit }) {
                       <div className={styles.proposalMsg}>{proposal.message}</div>
                     </div>
                     <div className={styles.proposalRight}>
+                      {proposal.projectRole?.role && (
+                        <div className={styles.proposalDays}>{proposal.projectRole.role}</div>
+                      )}
                       <div className={styles.proposalPrice}>{proposal.price.toLocaleString()}원</div>
                       <div className={styles.proposalDays}>{proposal.deliveryDays}일 납기</div>
                       {proposal.status === 'PENDING' && (
@@ -948,6 +951,9 @@ function MyProposalsTab() {
           <div className={styles.listLeft}>
             <div className={styles.listTitle}>{proposal.project?.title}</div>
             <div className={styles.listSub}>의뢰인 · {proposal.project?.author?.name}</div>
+            {proposal.projectRole?.role && (
+              <div className={styles.listSub}>신청 역할 · {proposal.projectRole.role}</div>
+            )}
             <div className={styles.listSub}>{new Date(proposal.createdAt).toLocaleDateString('ko-KR')}</div>
             <div className={styles.proposalMsgSmall}>{proposal.message}</div>
           </div>

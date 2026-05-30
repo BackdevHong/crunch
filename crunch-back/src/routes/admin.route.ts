@@ -8,9 +8,13 @@ import {
   getUserDetail,
   updateUserRole,
   getAdminServices,
+  getAdminProjects,
+  getAdminProjectDetail,
   getServiceDetail,
   toggleServiceActive,
   updateServiceApproval,
+  updateProjectStatus,
+  deleteAdminProject,
 } from '../controllers/admin.controller'
 
 const router = Router()
@@ -26,5 +30,9 @@ router.get('/services', getAdminServices)
 router.get('/services/:id', getServiceDetail)
 router.patch('/services/:id/approval', updateServiceApproval)
 router.patch('/services/:id/active', toggleServiceActive)
+router.get('/projects', getAdminProjects)
+router.get('/projects/:id', getAdminProjectDetail)
+router.patch('/projects/:id/status', updateProjectStatus)
+router.delete('/projects/:id', deleteAdminProject)
 
 export default router

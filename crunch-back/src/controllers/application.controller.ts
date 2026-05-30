@@ -9,7 +9,7 @@ import { CATEGORY_MAP } from '../lib/contains'
 export async function applyFreelancer(req: Request, res: Response): Promise<void> {
   try {
     const userId = req.user!.userId
-    const { role, category, experience, hourlyRate, bio, skills, portfolioUrl } = req.body
+    const { role, category, experience, bio, skills, portfolioUrl } = req.body
 
     // 이미 신청했는지 확인
     const existing = await prisma.freelancerApplication.findUnique({ where: { userId } })
@@ -28,7 +28,7 @@ export async function applyFreelancer(req: Request, res: Response): Promise<void
         data: {
           role, experience, bio, portfolioUrl,
           category: CATEGORY_MAP[category] as any,
-          hourlyRate: Number(hourlyRate),
+          hourlyRate: 0,
           skills: skills ?? [],
           status: 'PENDING',
           rejectedReason: null,
@@ -44,7 +44,7 @@ export async function applyFreelancer(req: Request, res: Response): Promise<void
         role,
         category: CATEGORY_MAP[category] as any,
         experience,
-        hourlyRate: Number(hourlyRate),
+        hourlyRate: 0,
         bio,
         skills: skills ?? [],
         portfolioUrl,
@@ -144,7 +144,7 @@ export async function approveApplication(req: Request, res: Response): Promise<v
           role: application.role,
           category: application.category,
           experience: application.experience,
-          hourlyRate: application.hourlyRate,
+          hourlyRate: 0,
           bio: application.bio,
           badge: 'New',
           skills: {
@@ -155,7 +155,7 @@ export async function approveApplication(req: Request, res: Response): Promise<v
           role: application.role,
           category: application.category,
           experience: application.experience,
-          hourlyRate: application.hourlyRate,
+          hourlyRate: 0,
           bio: application.bio,
         },
       }),

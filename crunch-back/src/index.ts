@@ -19,6 +19,7 @@ import channelRouter from './routes/channel.route'
 import meetingRouter from './routes/meeting.route'
 import todoRouter from './routes/todo.route'
 import paymentRouter from './routes/payment.route'
+import homeRouter from './routes/home.route'
 
 const app = express()
 const httpServer = http.createServer(app)
@@ -37,6 +38,7 @@ app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')))
 
 // ── 라우터 ────────────────────────────────────────────────────
 app.use('/api/auth', authRouter)
+app.use('/api/home', homeRouter)
 app.use('/api/services', serviceRouter)
 app.use('/api/freelancers', freelancerRouter)
 app.use('/api/orders', orderRouter)

@@ -3,9 +3,10 @@
   border-bottom: 0.5px solid var(--color-border);
   padding: 0 24px;
   height: 60px;
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(150px, 1fr) auto minmax(260px, 1fr);
   align-items: center;
-  justify-content: space-between;
+  gap: 16px;
   position: sticky;
   top: 0;
   z-index: 100;
@@ -19,6 +20,8 @@
   font-weight: 500;
   color: var(--color-text-primary);
   text-decoration: none;
+  min-width: 0;
+  justify-self: start;
 }
 
 .logoMark {
@@ -35,6 +38,8 @@
   display: flex;
   gap: 4px;
   align-items: center;
+  justify-content: center;
+  min-width: max-content;
 }
 
 .navLink {
@@ -62,6 +67,8 @@
   display: flex;
   gap: 8px;
   align-items: center;
+  justify-content: flex-end;
+  min-width: 0;
 }
 
 .btnGhost {
@@ -206,6 +213,11 @@
 }
 
 @media (max-width: 768px) {
+  .nav {
+    display: flex;
+    justify-content: space-between;
+  }
+
   .navLinks {
     display: none;
   }
@@ -229,4 +241,13 @@
   object-fit: cover;
   display: block;
 }
-.userName { font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
+.userName {
+  max-width: clamp(96px, 14vw, 220px);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}

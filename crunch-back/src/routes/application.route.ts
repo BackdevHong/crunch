@@ -1,4 +1,4 @@
-import { Router } from 'express'
+﻿import { Router } from 'express'
 import { body } from 'express-validator'
 import {
   applyFreelancer,
@@ -12,17 +12,16 @@ import { requireAdmin } from '../middlewares/requireAdmin'
 
 const router = Router()
 
-// 일반 유저
+// ?쇰컲 ?좎?
 router.post('/', authenticate, [
-  body('role').notEmpty().withMessage('직책을 입력해주세요.'),
-  body('category').notEmpty().withMessage('카테고리를 선택해주세요.'),
-  body('experience').notEmpty().withMessage('경력을 선택해주세요.'),
-  body('hourlyRate').isInt({ min: 0 }).withMessage('시간당 단가를 입력해주세요.'),
+  body('role').notEmpty().withMessage('吏곸콉???낅젰?댁＜?몄슂.'),
+  body('category').notEmpty().withMessage('移댄뀒怨좊━瑜??좏깮?댁＜?몄슂.'),
+  body('experience').notEmpty().withMessage('寃쎈젰???좏깮?댁＜?몄슂.'),
 ], applyFreelancer)
 
 router.get('/me', authenticate, getMyApplication)
 
-// 어드민 전용
+// ?대뱶誘??꾩슜
 router.get('/', authenticate, requireAdmin, getApplications)
 router.patch('/:id/approve', authenticate, requireAdmin, approveApplication)
 router.patch('/:id/reject', authenticate, requireAdmin, rejectApplication)

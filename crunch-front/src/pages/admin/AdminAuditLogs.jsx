@@ -12,6 +12,8 @@ const ACTION_LABEL = {
   SERVICE_DEACTIVATED: '서비스 비활성화',
   FREELANCER_APPLICATION_APPROVED: '프리랜서 승인',
   FREELANCER_APPLICATION_REJECTED: '프리랜서 거절',
+  PROJECT_STATUS_UPDATED: '프로젝트 상태 변경',
+  PROJECT_DELETED: '프로젝트 삭제',
 }
 
 const TARGET_LABEL = {
@@ -19,12 +21,60 @@ const TARGET_LABEL = {
   USER: '유저',
   SERVICE: '서비스',
   FREELANCER_APPLICATION: '프리랜서 신청',
+  PROJECT: '프로젝트',
 }
 
 const TARGET_TONE = {
   USER: ['var(--color-hero-blue)', 'var(--color-info)'],
   SERVICE: ['var(--color-success-bg)', 'var(--color-success)'],
   FREELANCER_APPLICATION: ['var(--color-warning-bg)', 'var(--color-warning)'],
+  PROJECT: ['var(--color-accent-bg)', 'var(--color-accent-text)'],
+}
+
+const PROJECT_STATUS_LABEL = {
+  PAYMENT_PENDING: '결제대기',
+  OPEN: '모집중',
+  IN_PROGRESS: '진행중',
+  DONE: '완료',
+  CANCELLED: '취소',
+}
+
+function parseMetadata(metadata) {
+  if (!metadata) return null
+  if (typeof metadata === 'object') return metadata
+  try {
+    return JSON.parse(metadata)
+  } catch {
+    return null
+  }
+}
+
+function looksBroken(message = '') {
+  return /[�]|[寃곗젣꾨줈앺듃쒕퉬뱀씤섎텋]/.test(message)
+}
+
+function getLogMessage(log) {
+  const metadata = parseMetadata(log.metadata)
+
+  if (log.action === 'PROJECT_STATUS_UPDATED') {
+    const from = PROJECT_STATUS_LABEL[metadata?.previousStatus] ?? metadata?.previousStatus
+    const to = PROJECT_STATUS_LABEL[metadata?.status] ?? metadata?.status
+    if (from && to) return `프로젝트 상태를 ${from}에서 ${to}(으)로 변경했습니다.`
+    return '프로젝트 상태를 변경했습니다.'
+  }
+
+  if (log.action === 'PROJECT_DELETED') {
+    const amount = Number(metadata?.refundedDepositAmount ?? 0)
+    return amount > 0
+      ? `프로젝트를 삭제하고 예치금 ${amount.toLocaleString('ko-KR')}원을 환불했습니다.`
+      : '프로젝트를 삭제했습니다.'
+  }
+
+  if (looksBroken(log.message)) {
+    return ACTION_LABEL[log.action] ? `${ACTION_LABEL[log.action]} 작업이 처리되었습니다.` : '운영 작업이 처리되었습니다.'
+  }
+
+  return log.message
 }
 
 export default function AdminAuditLogs({ activePage, onNavigate }) {
@@ -120,7 +170,7 @@ export default function AdminAuditLogs({ activePage, onNavigate }) {
                     </span>
                   </span>
                   <span>
-                    <div className={styles.name}>{log.message}</div>
+                    <div className={styles.name}>{getLogMessage(log)}</div>
                     <div className={styles.sub}>{log.targetId}</div>
                   </span>
                   <span className={styles.sub}>{log.admin?.name ?? '관리자'}</span>
@@ -133,9 +183,9 @@ export default function AdminAuditLogs({ activePage, onNavigate }) {
 
         {totalPages > 1 && (
           <div className={styles.pagination}>
-            <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>‹</button>
+            <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>이전</button>
             <span>{page} / {totalPages}</span>
-            <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages}>›</button>
+            <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages}>다음</button>
           </div>
         )}
       </div>

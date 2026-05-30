@@ -111,3 +111,106 @@
   border: 0.5px solid var(--color-border);
   border-radius: var(--radius-lg);
 }
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0,0,0,0.52);
+}
+
+.inviteModal {
+  width: min(520px, 100%);
+  background: var(--color-bg-primary);
+  border: 0.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: 0 18px 48px rgba(0,0,0,0.18);
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.modalHeader h2 { font-size: 18px; font-weight: 600; color: var(--color-text-primary); }
+.modalHeader button {
+  border: 0;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.modalLead {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-bottom: 16px;
+}
+
+.modalLabel {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin: 12px 0 6px;
+}
+
+.inviteModal select,
+.inviteModal textarea {
+  width: 100%;
+  border: 0.5px solid var(--color-border-hover);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font: inherit;
+  outline: none;
+}
+.inviteModal select { padding: 9px 10px; }
+.inviteModal textarea {
+  min-height: 110px;
+  resize: vertical;
+  padding: 10px 12px;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+.modalActions button {
+  border-radius: var(--radius-md);
+  border: 0.5px solid var(--color-border-hover);
+  padding: 8px 14px;
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+.modalActions button:last-child {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  color: white;
+}
+.modalActions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  z-index: 300;
+  transform: translateX(-50%);
+  border-radius: 99px;
+  background: var(--color-text-primary);
+  color: var(--color-bg-primary);
+  padding: 10px 18px;
+  font-size: 13px;
+}
