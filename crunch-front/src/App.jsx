@@ -51,6 +51,7 @@ function getInitialAuthModal() {
   if (typeof window === 'undefined') return null
 
   const params = new URLSearchParams(window.location.search)
+  if (params.get('emailVerification')) return 'login'
   return params.get('oauth') && params.get('error') && params.get('link') !== '1' ? 'login' : null
 }
 

@@ -1,4 +1,4 @@
-import { Router } from 'express'
+import { Router, type Router as ExpressRouter } from 'express'
 import { authenticate } from '../middlewares/authenticate'
 import {
   getPaymentPolicy,
@@ -8,7 +8,7 @@ import {
   prepareProjectDepositPayment,
 } from '../controllers/payment.controller'
 
-const router = Router()
+const router: ExpressRouter = Router()
 
 router.get('/policy', getPaymentPolicy)
 router.get('/projects/:projectId/settlement', authenticate, getProjectSettlementSummary)

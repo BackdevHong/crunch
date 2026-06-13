@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import api from '../lib/api'
+import { cleanDisplayText } from '../lib/displayText'
 import { CATEGORY_META } from '../data/mockData'
 import styles from './BrowseProjects.module.css'
 
@@ -163,7 +164,7 @@ function ProjectCard({ project, onClick }) {
         <span className={styles.categoryBadge}>{categoryLabel}</span>
         <span className={styles.statusBadge}>{PROJECT_STATUS_LABEL[project.status] ?? project.status}</span>
       </div>
-      <div className={styles.cardTitle}>{project.title}</div>
+      <div className={styles.cardTitle}>{cleanDisplayText(project.title, '제목 없음')}</div>
       <div className={styles.cardMeta}>
         {project.budgetPreset && <span>💰 {project.budgetPreset}</span>}
         {project.deadline && <span>📅 {project.deadline}</span>}
@@ -231,7 +232,7 @@ function ProposalModal({ project, onClose, onSubmitted }) {
           <>
             <div className={styles.modalHeader}>
               <span className={styles.categoryBadge}>{categoryLabel}</span>
-              <h2 className={styles.modalTitle}>{project.title}</h2>
+              <h2 className={styles.modalTitle}>{cleanDisplayText(project.title, '제목 없음')}</h2>
               <div className={styles.modalMeta}>
                 {project.budgetPreset && <span>💰 {project.budgetPreset}</span>}
                 {project.deadline && <span>📅 {project.deadline}</span>}

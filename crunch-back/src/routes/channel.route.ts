@@ -1,11 +1,11 @@
-import { Router } from 'express'
+import { Router, type Router as ExpressRouter } from 'express'
 import { authenticate } from '../middlewares/authenticate'
 import { getMyChannels, createDirectChannel, getChannelMessages, getChannelMembers, uploadChannelFile, togglePinnedMessage, updateChannelMessage, deleteChannelMessage, toggleMessageReaction } from '../controllers/channel.controller'
 import { createMeeting } from '../controllers/meeting.controller'
 import { getTodoLists, createTodoList } from '../controllers/todo.controller'
 import { upload } from '../lib/upload'
 
-const router = Router()
+const router: ExpressRouter = Router()
 
 router.use(authenticate)
 

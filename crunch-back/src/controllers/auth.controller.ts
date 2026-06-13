@@ -6,6 +6,7 @@ import { validationResult } from 'express-validator'
 import { prisma } from '../lib/prisma'
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from '../lib/jwt'
 import { ok, created, fail, unauthorized, serverError } from '../lib/response'
+import { sendVerificationEmail } from '../lib/mailer'
 
 const BCRYPT_ROUNDS = Number(process.env.BCRYPT_ROUNDS ?? 12)
 const GOOGLE_AUTH_URL = 'https://accounts.google.com/o/oauth2/v2/auth'
@@ -73,7 +74,6 @@ class OAuthLinkError extends Error {
 
 // ── 회원가입 ─────────────────────────────────────────────────
 export async function signup(req: Request, res: Response): Promise<void> {
-  // 입력값 검증 결과 확인
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
     fail(res, errors.array()[0].msg as string)
@@ -83,17 +83,13 @@ export async function signup(req: Request, res: Response): Promise<void> {
   const { name, email, password, role = 'client' } = req.body
 
   try {
-    // 이메일 중복 확인
     const existing = await prisma.user.findUnique({ where: { email } })
     if (existing) {
-      fail(res, '이미 사용 중인 이메일입니다.')
+      fail(res, '?? ?? ?? ??????.')
       return
     }
 
-    // 비밀번호 해싱
     const passwordHash = await bcrypt.hash(password, BCRYPT_ROUNDS)
-
-    // 유저 생성
     const user = await prisma.user.create({
       data: { name, email, passwordHash, role },
       select: {
@@ -105,28 +101,19 @@ export async function signup(req: Request, res: Response): Promise<void> {
       },
     })
 
-    // 토큰 발급
-    const payload = { userId: user.id, email: user.email, role: user.role }
-    const accessToken = signAccessToken(payload)
-    const refreshToken = signRefreshToken(payload)
+    await sendEmailVerification(user.id, user.email, user.name)
 
-    // refresh token DB 저장
-    await prisma.user.update({
-      where: { id: user.id },
-      data: { refreshToken },
+    created(res, {
+      user,
+      requiresEmailVerification: true,
+      message: '????? ???????. ??? ?? ? ???????.',
     })
-
-    // refresh token 을 HttpOnly 쿠키로 전송
-    setRefreshCookie(res, refreshToken)
-
-    created(res, { user, accessToken })
   } catch (err) {
     console.error('[signup]', err)
     serverError(res)
   }
 }
 
-// ── 로그인 ───────────────────────────────────────────────────
 export async function login(req: Request, res: Response): Promise<void> {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
@@ -139,9 +126,14 @@ export async function login(req: Request, res: Response): Promise<void> {
   try {
     const user = await prisma.user.findUnique({ where: { email } })
 
-    // 유저 없음 or 비밀번호 불일치 — 동일한 메시지로 보안 강화
     if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
-      unauthorized(res, '이메일 또는 비밀번호가 올바르지 않습니다.')
+      unauthorized(res, '??? ?? ????? ???? ????.')
+      return
+    }
+
+    if (!user.emailVerifiedAt) {
+      await sendEmailVerification(user.id, user.email, user.name)
+      fail(res, '??? ??? ?????. ?? ??? ?? ?????.')
       return
     }
 
@@ -163,6 +155,7 @@ export async function login(req: Request, res: Response): Promise<void> {
         email: user.email,
         role: user.role,
         avatarUrl: user.avatarUrl,
+        emailVerifiedAt: user.emailVerifiedAt,
       },
       accessToken,
     })
@@ -172,7 +165,6 @@ export async function login(req: Request, res: Response): Promise<void> {
   }
 }
 
-// ── Google 로그인 시작 ───────────────────────────────────────
 export function googleLogin(_req: Request, res: Response): void {
   const clientId = process.env.GOOGLE_CLIENT_ID
   if (!clientId) {
@@ -521,6 +513,80 @@ export async function kakaoCallback(req: Request, res: Response): Promise<void> 
 }
 
 // ── 토큰 재발급 ──────────────────────────────────────────────
+export async function verifyEmail(req: Request, res: Response): Promise<void> {
+  const token = String(req.query.token ?? '')
+  const clientUrl = process.env.CLIENT_URL ?? 'http://localhost:5173'
+
+  if (!token) {
+    res.redirect(`${clientUrl}?emailVerification=missing_token`)
+    return
+  }
+
+  try {
+    const tokenHash = hashEmailVerificationToken(token)
+    const rows = await prisma.$queryRaw<Array<{ id: string; userId: string; expiresAt: Date; usedAt: Date | null }>>`
+      SELECT id, user_id AS userId, expires_at AS expiresAt, used_at AS usedAt
+      FROM email_verification_tokens
+      WHERE token_hash = ${tokenHash}
+      LIMIT 1
+    `
+    const verification = rows[0]
+
+    if (!verification || verification.usedAt || new Date(verification.expiresAt).getTime() < Date.now()) {
+      res.redirect(`${clientUrl}?emailVerification=invalid`)
+      return
+    }
+
+    await prisma.$transaction(async tx => {
+      await tx.$executeRaw`
+        UPDATE users
+        SET email_verified_at = COALESCE(email_verified_at, NOW(3)), updated_at = NOW(3)
+        WHERE id = ${verification.userId}
+      `
+      await tx.$executeRaw`
+        UPDATE email_verification_tokens
+        SET used_at = NOW(3)
+        WHERE id = ${verification.id}
+      `
+    })
+
+    res.redirect(`${clientUrl}?emailVerification=success`)
+  } catch (err) {
+    console.error('[verifyEmail]', err)
+    res.redirect(`${clientUrl}?emailVerification=failed`)
+  }
+}
+
+export async function resendVerificationEmail(req: Request, res: Response): Promise<void> {
+  const email = String(req.body.email ?? '').trim().toLowerCase()
+  if (!email) {
+    fail(res, '이메일을 입력해주세요.')
+    return
+  }
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { email },
+      select: { id: true, name: true, email: true, emailVerifiedAt: true },
+    })
+
+    if (!user) {
+      ok(res, { message: '인증 메일을 보냈습니다.' })
+      return
+    }
+    if (user.emailVerifiedAt) {
+      ok(res, { message: '이미 인증된 이메일입니다.' })
+      return
+    }
+
+    await sendEmailVerification(user.id, user.email, user.name)
+    ok(res, { message: '인증 메일을 보냈습니다.' })
+  } catch (err) {
+    console.error('[resendVerificationEmail]', err)
+    serverError(res)
+  }
+}
+
 export async function refresh(req: Request, res: Response): Promise<void> {
   const token = req.cookies?.refreshToken as string | undefined
 
@@ -587,6 +653,7 @@ export async function me(req: Request, res: Response): Promise<void> {
         email: true,
         role: true,
         avatarUrl: true,
+        emailVerifiedAt: true,
         createdAt: true,
         freelancer: {
           select: {
@@ -697,6 +764,42 @@ async function issueAuthTokens(
   return accessToken
 }
 
+function hashEmailVerificationToken(token: string): string {
+  return crypto.createHash('sha256').update(token).digest('hex')
+}
+
+function getEmailVerificationUrl(token: string): string {
+  const apiUrl = process.env.API_URL ?? 'http://localhost:4000'
+  return `${apiUrl}/api/auth/verify-email?token=${encodeURIComponent(token)}`
+}
+
+async function sendEmailVerification(userId: string, email: string, name: string): Promise<void> {
+  const token = crypto.randomBytes(32).toString('hex')
+  const tokenHash = hashEmailVerificationToken(token)
+  const expiresAt = new Date(Date.now() + 30 * 60 * 1000)
+
+  await prisma.$transaction(async tx => {
+    await tx.$executeRaw`
+      UPDATE email_verification_tokens
+      SET used_at = NOW(3)
+      WHERE user_id = ${userId}
+        AND used_at IS NULL
+    `
+    await tx.$executeRaw`
+      INSERT INTO email_verification_tokens
+        (id, user_id, token_hash, expires_at, created_at)
+      VALUES
+        (UUID(), ${userId}, ${tokenHash}, ${expiresAt}, NOW(3))
+    `
+  })
+
+  await sendVerificationEmail({
+    to: email,
+    name,
+    verifyUrl: getEmailVerificationUrl(token),
+  })
+}
+
 async function assertProviderAvailable(provider: OAuthProvider, providerId: string, userId: string): Promise<void> {
   const column = provider === 'google'
     ? 'google_id'
@@ -733,6 +836,7 @@ async function linkGoogleUser(userId: string, googleUser: GoogleUserInfo): Promi
     SET
       google_id = ${googleUser.sub},
       avatar_url = CASE WHEN avatar_url IS NULL THEN ${googleUser.picture ?? null} ELSE avatar_url END,
+      email_verified_at = COALESCE(email_verified_at, NOW(3)),
       updated_at = NOW(3)
     WHERE id = ${userId}
   `
@@ -748,6 +852,7 @@ async function linkNaverUser(userId: string, naverUser: NaverUserInfo): Promise<
     SET
       naver_id = ${profile.id},
       avatar_url = CASE WHEN avatar_url IS NULL THEN ${profile.profile_image ?? null} ELSE avatar_url END,
+      email_verified_at = COALESCE(email_verified_at, NOW(3)),
       updated_at = NOW(3)
     WHERE id = ${userId}
   `
@@ -764,6 +869,7 @@ async function linkKakaoUser(userId: string, kakaoUser: KakaoUserInfo): Promise<
     SET
       kakao_id = ${kakaoId},
       avatar_url = CASE WHEN avatar_url IS NULL THEN ${avatarUrl ?? null} ELSE avatar_url END,
+      email_verified_at = COALESCE(email_verified_at, NOW(3)),
       updated_at = NOW(3)
     WHERE id = ${userId}
   `
@@ -788,9 +894,10 @@ async function upsertGoogleUser(googleUser: GoogleUserInfo): Promise<AuthUser> {
     await prisma.$executeRaw`
       UPDATE users
       SET
-        auth_provider = CASE WHEN auth_provider = 'local' THEN 'google' ELSE auth_provider END,
-        google_id = ${googleUser.sub},
-        avatar_url = CASE WHEN avatar_url IS NULL THEN ${googleUser.picture ?? null} ELSE avatar_url END
+      auth_provider = CASE WHEN auth_provider = 'local' THEN 'google' ELSE auth_provider END,
+      google_id = ${googleUser.sub},
+      avatar_url = CASE WHEN avatar_url IS NULL THEN ${googleUser.picture ?? null} ELSE avatar_url END,
+      email_verified_at = COALESCE(email_verified_at, NOW(3))
       WHERE id = ${byEmail.id}
     `
 
@@ -806,9 +913,9 @@ async function upsertGoogleUser(googleUser: GoogleUserInfo): Promise<AuthUser> {
   const passwordHash = await bcrypt.hash(crypto.randomBytes(32).toString('hex'), BCRYPT_ROUNDS)
   await prisma.$executeRaw`
     INSERT INTO users
-      (id, name, email, password_hash, auth_provider, google_id, avatar_url, role, created_at, updated_at)
+      (id, name, email, password_hash, auth_provider, google_id, avatar_url, email_verified_at, role, created_at, updated_at)
     VALUES
-      (UUID(), ${(googleUser.name || googleUser.email.split('@')[0]).slice(0, 50)}, ${googleUser.email}, ${passwordHash}, 'google', ${googleUser.sub}, ${googleUser.picture ?? null}, 'client', NOW(3), NOW(3))
+      (UUID(), ${(googleUser.name || googleUser.email.split('@')[0]).slice(0, 50)}, ${googleUser.email}, ${passwordHash}, 'google', ${googleUser.sub}, ${googleUser.picture ?? null}, NOW(3), 'client', NOW(3), NOW(3))
   `
 
   const usersByEmail = await prisma.$queryRaw<AuthUser[]>`
@@ -846,9 +953,10 @@ async function upsertNaverUser(naverUser: NaverUserInfo): Promise<AuthUser> {
     await prisma.$executeRaw`
       UPDATE users
       SET
-        auth_provider = CASE WHEN auth_provider = 'local' THEN 'naver' ELSE auth_provider END,
-        naver_id = ${profile.id},
-        avatar_url = CASE WHEN avatar_url IS NULL THEN ${profile.profile_image ?? null} ELSE avatar_url END
+      auth_provider = CASE WHEN auth_provider = 'local' THEN 'naver' ELSE auth_provider END,
+      naver_id = ${profile.id},
+      avatar_url = CASE WHEN avatar_url IS NULL THEN ${profile.profile_image ?? null} ELSE avatar_url END,
+      email_verified_at = COALESCE(email_verified_at, NOW(3))
       WHERE id = ${byEmail.id}
     `
 
@@ -866,9 +974,9 @@ async function upsertNaverUser(naverUser: NaverUserInfo): Promise<AuthUser> {
 
   await prisma.$executeRaw`
     INSERT INTO users
-      (id, name, email, password_hash, auth_provider, naver_id, avatar_url, role, created_at, updated_at)
+      (id, name, email, password_hash, auth_provider, naver_id, avatar_url, email_verified_at, role, created_at, updated_at)
     VALUES
-      (UUID(), ${displayName}, ${profile.email!}, ${passwordHash}, 'naver', ${profile.id}, ${profile.profile_image ?? null}, 'client', NOW(3), NOW(3))
+      (UUID(), ${displayName}, ${profile.email!}, ${passwordHash}, 'naver', ${profile.id}, ${profile.profile_image ?? null}, NOW(3), 'client', NOW(3), NOW(3))
   `
 
   const usersByEmail = await prisma.$queryRaw<AuthUser[]>`
@@ -911,9 +1019,10 @@ async function upsertKakaoUser(kakaoUser: KakaoUserInfo): Promise<AuthUser> {
     await prisma.$executeRaw`
       UPDATE users
       SET
-        auth_provider = CASE WHEN auth_provider = 'local' THEN 'kakao' ELSE auth_provider END,
-        kakao_id = ${kakaoId},
-        avatar_url = CASE WHEN avatar_url IS NULL THEN ${avatarUrl ?? null} ELSE avatar_url END
+      auth_provider = CASE WHEN auth_provider = 'local' THEN 'kakao' ELSE auth_provider END,
+      kakao_id = ${kakaoId},
+      avatar_url = CASE WHEN avatar_url IS NULL THEN ${avatarUrl ?? null} ELSE avatar_url END,
+      email_verified_at = COALESCE(email_verified_at, NOW(3))
       WHERE id = ${byEmail.id}
     `
 
@@ -929,9 +1038,9 @@ async function upsertKakaoUser(kakaoUser: KakaoUserInfo): Promise<AuthUser> {
   const passwordHash = await bcrypt.hash(crypto.randomBytes(32).toString('hex'), BCRYPT_ROUNDS)
   await prisma.$executeRaw`
     INSERT INTO users
-      (id, name, email, password_hash, auth_provider, kakao_id, avatar_url, role, created_at, updated_at)
+      (id, name, email, password_hash, auth_provider, kakao_id, avatar_url, email_verified_at, role, created_at, updated_at)
     VALUES
-      (UUID(), ${nickname.slice(0, 50)}, ${email}, ${passwordHash}, 'kakao', ${kakaoId}, ${avatarUrl ?? null}, 'client', NOW(3), NOW(3))
+      (UUID(), ${nickname.slice(0, 50)}, ${email}, ${passwordHash}, 'kakao', ${kakaoId}, ${avatarUrl ?? null}, NOW(3), 'client', NOW(3), NOW(3))
   `
 
   const usersByEmail = await prisma.$queryRaw<AuthUser[]>`

@@ -1,4 +1,4 @@
-import { Router } from 'express'
+import { Router, type Router as ExpressRouter } from 'express'
 import { body } from 'express-validator'
 import {
   signup,
@@ -6,6 +6,8 @@ import {
   refresh,
   logout,
   me,
+  verifyEmail,
+  resendVerificationEmail,
   googleLogin,
   googleLink,
   googleCallback,
@@ -18,7 +20,7 @@ import {
 } from '../controllers/auth.controller'
 import { authenticate } from '../middlewares/authenticate'
 
-const router = Router()
+const router: ExpressRouter = Router()
 
 // ── 유효성 검사 규칙 ──────────────────────────────────────────
 const signupRules = [
@@ -61,7 +63,13 @@ router.post('/signup', signupRules, signup)
 // POST /api/auth/login
 router.post('/login', loginRules, login)
 
-// POST /api/auth/refresh  — refresh token 으로 access token 재발급
+// GET /api/auth/verify-email
+router.get('/verify-email', verifyEmail)
+
+// POST /api/auth/resend-verification
+router.post('/resend-verification', resendVerificationEmail)
+
+// POST /api/auth/refresh
 router.post('/refresh', refresh)
 
 // POST /api/auth/logout

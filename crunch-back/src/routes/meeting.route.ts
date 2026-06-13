@@ -1,8 +1,8 @@
-import { Router } from 'express'
+import { Router, type Router as ExpressRouter } from 'express'
 import { authenticate } from '../middlewares/authenticate'
 import { respondToMeeting } from '../controllers/meeting.controller'
 
-const router = Router()
+const router: ExpressRouter = Router()
 
 router.use(authenticate)
 

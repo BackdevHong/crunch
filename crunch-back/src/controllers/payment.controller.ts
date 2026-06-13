@@ -113,10 +113,21 @@ async function recordPaymentEvent(paymentId: string | null, eventType: string, p
   `
 }
 
+async function markPaymentRequested(paymentId: string): Promise<void> {
+  await prisma.$executeRaw`
+    UPDATE payments
+    SET
+      status = CASE WHEN status = 'READY' THEN 'REQUESTED' ELSE status END,
+      requested_at = COALESCE(requested_at, NOW(3)),
+      updated_at = NOW(3)
+    WHERE id = ${paymentId}
+  `
+}
+
 async function createProjectDepositPayment(project: ProjectDepositRow, amount: number): Promise<PaymentRow> {
   const depositRate = getProjectDepositRate()
   const moid = createMoid('PDEP')
-  const goodsName = `[?덉튂湲? ${project.title}`.slice(0, 120)
+  const goodsName = `[예치금] ${project.title}`.slice(0, 120)
 
   await prisma.$executeRaw`
     INSERT INTO payments
@@ -173,7 +184,7 @@ async function getAcceptedProposalRows(projectId: string): Promise<AcceptedPropo
 
 async function createProjectBalancePayment(project: ProjectSettlementRow, amount: number): Promise<PaymentRow> {
   const moid = createMoid('PBAL')
-  const goodsName = `[?붽툑] ${project.title}`.slice(0, 120)
+  const goodsName = `[잔금] ${project.title}`.slice(0, 120)
 
   await prisma.$executeRaw`
     INSERT INTO payments
@@ -267,7 +278,7 @@ export async function prepareProjectDepositPayment(req: Request, res: Response):
   try {
     const projectId = String(req.body.projectId ?? '')
     if (!projectId) {
-      fail(res, '?꾨줈?앺듃瑜??좏깮?댁＜?몄슂.')
+      fail(res, '프로젝트를 선택해주세요.')
       return
     }
 
@@ -287,15 +298,15 @@ export async function prepareProjectDepositPayment(req: Request, res: Response):
 
     const project = rows[0]
     if (!project) {
-      res.status(404).json({ success: false, message: '?꾨줈?앺듃瑜?李얠쓣 ???놁뒿?덈떎.' })
+      res.status(404).json({ success: false, message: '프로젝트를 찾을 수 없습니다.' })
       return
     }
     if (project.authorId !== req.user!.userId) {
-      res.status(403).json({ success: false, message: '???꾨줈?앺듃留?寃곗젣?????덉뒿?덈떎.' })
+      res.status(403).json({ success: false, message: '내 프로젝트만 결제할 수 있습니다.' })
       return
     }
     if (!project.budget || project.budget <= 0) {
-      fail(res, '?꾨줈?앺듃 ?덉궛???꾩슂?⑸땲??')
+      fail(res, '프로젝트 예산이 필요합니다.')
       return
     }
 
@@ -322,18 +333,19 @@ export async function prepareProjectDepositPayment(req: Request, res: Response):
     `
 
     const payment = existingRows[0] ?? await createProjectDepositPayment(project, amount)
+    await markPaymentRequested(payment.id)
 
     await prisma.$executeRaw`
       UPDATE projects
-      SET status = '寃곗젣?湲?
-      WHERE id = ${project.id} AND status = '紐⑥쭛以?
+      SET status = '결제대기'
+      WHERE id = ${project.id} AND status = '모집중'
     `
 
     ok(res, {
       payment: {
         id: payment.id,
         purpose: payment.purpose,
-        status: payment.status,
+        status: payment.status === 'READY' ? 'REQUESTED' : payment.status,
         moid: payment.moid,
         amount: payment.amount,
         depositRate,
@@ -368,7 +380,7 @@ export async function getProjectSettlementSummary(req: Request, res: Response): 
 
     const project = projectRows[0]
     if (!project) {
-      res.status(404).json({ success: false, message: '?꾨줈?앺듃瑜?李얠쓣 ???놁뒿?덈떎.' })
+      res.status(404).json({ success: false, message: '프로젝트를 찾을 수 없습니다.' })
       return
     }
 
@@ -383,7 +395,7 @@ export async function getProjectSettlementSummary(req: Request, res: Response): 
     const isAuthor = project.authorId === userId
     const isMember = memberRows.length > 0
     if (!isAuthor && !isMember) {
-      res.status(403).json({ success: false, message: '?뺤궛 ?뺣낫瑜??뺤씤??沅뚰븳???놁뒿?덈떎.' })
+      res.status(403).json({ success: false, message: '정산 정보를 확인할 권한이 없습니다.' })
       return
     }
 
@@ -446,7 +458,7 @@ export async function prepareProjectBalancePayment(req: Request, res: Response):
   try {
     const projectId = String(req.body.projectId ?? '')
     if (!projectId) {
-      fail(res, '?꾨줈?앺듃瑜??좏깮?댁＜?몄슂.')
+      fail(res, '프로젝트를 선택해주세요.')
       return
     }
 
@@ -467,21 +479,21 @@ export async function prepareProjectBalancePayment(req: Request, res: Response):
 
     const project = rows[0]
     if (!project) {
-      res.status(404).json({ success: false, message: '?꾨줈?앺듃瑜?李얠쓣 ???놁뒿?덈떎.' })
+      res.status(404).json({ success: false, message: '프로젝트를 찾을 수 없습니다.' })
       return
     }
     if (project.authorId !== req.user!.userId) {
-      res.status(403).json({ success: false, message: '?꾨줈?앺듃 ?섎ː?먮쭔 ?뺤궛??吏꾪뻾?????덉뒿?덈떎.' })
+      res.status(403).json({ success: false, message: '프로젝트 의뢰자만 정산을 진행할 수 있습니다.' })
       return
     }
     if (!project.budget || project.budget <= 0) {
-      fail(res, '?꾨줈?앺듃 ?덉궛???꾩슂?⑸땲??')
+      fail(res, '프로젝트 예산이 필요합니다.')
       return
     }
 
     const acceptedProposals = await getAcceptedProposalRows(projectId)
     if (acceptedProposals.length === 0) {
-      fail(res, '?섎씫???꾨━?쒖꽌媛 ?덉뼱???뺤궛??吏꾪뻾?????덉뒿?덈떎.')
+      fail(res, '수락된 프리랜서가 있어야 정산을 진행할 수 있습니다.')
       return
     }
 
@@ -498,7 +510,7 @@ export async function prepareProjectBalancePayment(req: Request, res: Response):
     const paidBalance = Number(paidBalanceRows[0]?.total ?? 0)
     const amount = Math.max(0, Number(project.budget) - depositPaid - paidBalance)
     if (amount <= 0) {
-      fail(res, '?대? ?붽툑 寃곗젣媛 ?꾨즺???꾨줈?앺듃?낅땲??')
+      fail(res, '이미 잔금 결제가 완료된 프로젝트입니다.')
       return
     }
 
@@ -523,12 +535,13 @@ export async function prepareProjectBalancePayment(req: Request, res: Response):
     `
 
     const payment = existingRows[0] ?? await createProjectBalancePayment(project, amount)
+    await markPaymentRequested(payment.id)
 
     ok(res, {
       payment: {
         id: payment.id,
         purpose: payment.purpose,
-        status: payment.status,
+        status: payment.status === 'READY' ? 'REQUESTED' : payment.status,
         moid: payment.moid,
         amount: payment.amount,
         platformFeeRate: getPlatformFeeRate(),
@@ -574,8 +587,43 @@ export async function nicepayReturn(req: Request, res: Response): Promise<void> 
       return
     }
 
+    const config = getNicepayConfig()
+    const tid = String(body.tid ?? '')
+    const clientId = String(body.clientId ?? '')
+    const mallReserved = String(body.mallReserved ?? '')
     const amount = Number(body.amount)
-    if (amount !== payment.amount) {
+
+    if (!tid) {
+      await prisma.$executeRaw`
+        UPDATE payments
+        SET status = 'FAILED', failed_at = NOW(3), updated_at = NOW(3)
+        WHERE id = ${payment.id}
+      `
+      res.redirect(`${clientUrl}?payment=failed&reason=missing_tid&moid=${encodeURIComponent(payment.moid)}`)
+      return
+    }
+
+    if (clientId && clientId !== config.clientKey) {
+      await prisma.$executeRaw`
+        UPDATE payments
+        SET status = 'FAILED', failed_at = NOW(3), updated_at = NOW(3)
+        WHERE id = ${payment.id}
+      `
+      res.redirect(`${clientUrl}?payment=failed&reason=client_mismatch&moid=${encodeURIComponent(payment.moid)}`)
+      return
+    }
+
+    if (mallReserved && mallReserved !== payment.id) {
+      await prisma.$executeRaw`
+        UPDATE payments
+        SET status = 'FAILED', failed_at = NOW(3), updated_at = NOW(3)
+        WHERE id = ${payment.id}
+      `
+      res.redirect(`${clientUrl}?payment=failed&reason=payment_mismatch&moid=${encodeURIComponent(payment.moid)}`)
+      return
+    }
+
+    if (!Number.isSafeInteger(amount) || amount !== payment.amount) {
       await prisma.$executeRaw`
         UPDATE payments
         SET status = 'FAILED', failed_at = NOW(3), updated_at = NOW(3)
@@ -584,9 +632,6 @@ export async function nicepayReturn(req: Request, res: Response): Promise<void> 
       res.redirect(`${clientUrl}?payment=failed&reason=amount_mismatch&moid=${encodeURIComponent(payment.moid)}`)
       return
     }
-
-    const config = getNicepayConfig()
-    const tid = String(body.tid ?? '')
 
     const approveRes = await axios.post(`${config.apiBaseUrl}/payments/${encodeURIComponent(tid)}`, {
       amount: payment.amount,
@@ -625,7 +670,7 @@ export async function nicepayReturn(req: Request, res: Response): Promise<void> 
       if (payment.purpose === 'PROJECT_DEPOSIT' && payment.projectId) {
         await tx.$executeRaw`
           UPDATE projects
-          SET status = '紐⑥쭛以?
+          SET status = '모집중'
           WHERE id = ${payment.projectId}
         `
       }

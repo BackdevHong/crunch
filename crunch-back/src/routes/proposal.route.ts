@@ -1,4 +1,4 @@
-import { Router } from 'express'
+import { Router, type Router as ExpressRouter } from 'express'
 import { authenticate, requireRole } from '../middlewares/authenticate'
 import {
   createProposal,
@@ -6,7 +6,7 @@ import {
   updateProposalStatus,
 } from '../controllers/proposal.controller'
 
-const router = Router()
+const router: ExpressRouter = Router()
 
 // 제안 등록 - 프리랜서만
 router.post('/', authenticate, requireRole('freelancer'), createProposal)

@@ -1,4 +1,4 @@
-import { Router } from 'express'
+import { Router, type Router as ExpressRouter } from 'express'
 import { body } from 'express-validator'
 import {
   createOrder,
@@ -8,7 +8,7 @@ import {
 } from '../controllers/order.controller'
 import { authenticate } from '../middlewares/authenticate'
 
-const router = Router()
+const router: ExpressRouter = Router()
 
 // 모든 주문 API는 로그인 필요
 router.use(authenticate)

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useApp } from '../context/useApp'
 import api from '../lib/api'
+import { cleanDisplayText } from '../lib/displayText'
 import styles from './FreelancerDetail.module.css'
 
 const BADGE_STYLE = { Top: styles.badgeTop, Pro: styles.badgePro, New: styles.badgeNew }
@@ -190,7 +191,7 @@ export default function FreelancerDetail({ onNavigate }) {
                 <label className={styles.modalLabel}>프로젝트</label>
                 <select value={inviteProjectId} onChange={e => setInviteProjectId(e.target.value)}>
                   {myProjects.map(project => (
-                    <option key={project.id} value={project.id}>{project.title}</option>
+                    <option key={project.id} value={project.id}>{cleanDisplayText(project.title, '제목 없음')}</option>
                   ))}
                 </select>
                 <label className={styles.modalLabel}>메시지</label>

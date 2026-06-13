@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useApp } from '../context/useApp'
 import api from '../lib/api'
 import FreelancerCard from '../components/FreelancerCard'
+import { cleanDisplayText } from '../lib/displayText'
 import { SKILL_TAGS } from '../data/mockData'
 import styles from './FindFreelancers.module.css'
 
@@ -247,7 +248,7 @@ export default function FindFreelancers() {
                 <label className={styles.modalLabel}>프로젝트</label>
                 <select value={inviteProjectId} onChange={e => setInviteProjectId(e.target.value)}>
                   {myProjects.map(project => (
-                    <option key={project.id} value={project.id}>{project.title}</option>
+                    <option key={project.id} value={project.id}>{cleanDisplayText(project.title, '제목 없음')}</option>
                   ))}
                 </select>
                 <label className={styles.modalLabel}>메시지</label>

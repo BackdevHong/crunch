@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useApp } from '../context/useApp'
 import api from '../lib/api'
+import { cleanDisplayText } from '../lib/displayText'
 import { CATEGORY_META, SKILL_TAGS } from '../data/mockData'
 import styles from './MyPage.module.css'
 
@@ -823,7 +824,7 @@ function ProjectsTab({ onEdit }) {
         <div key={proj.id}>
           <div className={styles.listItem}>
             <div className={styles.listLeft}>
-              <div className={styles.listTitle}>{proj.title}</div>
+              <div className={styles.listTitle}>{cleanDisplayText(proj.title, '제목 없음')}</div>
               <div className={styles.listSub}>{proj.category} · {proj.deadline}</div>
               <div className={styles.listSub}>{new Date(proj.createdAt).toLocaleDateString('ko-KR')}</div>
               <div className={styles.skillTags}>
@@ -949,7 +950,7 @@ function MyProposalsTab() {
       {proposals.map(proposal => (
         <div key={proposal.id} className={styles.listItem}>
           <div className={styles.listLeft}>
-            <div className={styles.listTitle}>{proposal.project?.title}</div>
+            <div className={styles.listTitle}>{cleanDisplayText(proposal.project?.title, '제목 없음')}</div>
             <div className={styles.listSub}>의뢰인 · {proposal.project?.author?.name}</div>
             {proposal.projectRole?.role && (
               <div className={styles.listSub}>신청 역할 · {proposal.projectRole.role}</div>

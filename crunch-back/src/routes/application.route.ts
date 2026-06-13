@@ -1,4 +1,4 @@
-﻿import { Router } from 'express'
+﻿import { Router, type Router as ExpressRouter } from 'express'
 import { body } from 'express-validator'
 import {
   applyFreelancer,
@@ -10,7 +10,7 @@ import {
 import { authenticate } from '../middlewares/authenticate'
 import { requireAdmin } from '../middlewares/requireAdmin'
 
-const router = Router()
+const router: ExpressRouter = Router()
 
 // ?쇰컲 ?좎?
 router.post('/', authenticate, [

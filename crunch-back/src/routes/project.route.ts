@@ -1,4 +1,4 @@
-import { Router } from 'express'
+import { Router, type Router as ExpressRouter } from 'express'
 import { body } from 'express-validator'
 import {
   createProject,
@@ -10,7 +10,7 @@ import {
 } from '../controllers/project.controller'
 import { authenticate, optionalAuthenticate } from '../middlewares/authenticate'
 
-const router = Router()
+const router: ExpressRouter = Router()
 
 router.get('/', optionalAuthenticate, getProjects)
 router.get('/me', authenticate, getMyProjects)

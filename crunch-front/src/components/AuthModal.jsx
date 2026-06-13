@@ -68,7 +68,7 @@ function LoginView({ onSwitch, onClose }) {
       return
     }
     const ok = await login(email, password)
-    if (ok) onClose()  // 성공할 때만 닫기
+    if (ok) onClose()
   }
 
   return (
@@ -77,14 +77,13 @@ function LoginView({ onSwitch, onClose }) {
       <div className={styles.header}><Logo /><h2>다시 만나요!</h2><p>계속하려면 로그인하세요</p></div>
       <div className={styles.body}>
         {authError && <div className={styles.errorBox}>{authError}</div>}
-        <div className={styles.hintBox}>테스트 계정: hong@test.com / test1234</div>
         <div className={styles.field}>
           <label>이메일</label>
-          <input type="email" placeholder="hong@test.com" value={email} onChange={e => { setEmail(e.target.value); setAuthError('') }} />
+          <input type="email" placeholder="example@email.com" value={email} onChange={e => { setEmail(e.target.value); setAuthError('') }} />
         </div>
         <div className={styles.field}>
           <label>비밀번호</label>
-          <input type="password" placeholder="test1234" value={password}
+          <input type="password" placeholder="비밀번호를 입력하세요" value={password}
             onChange={e => { setPassword(e.target.value); setAuthError('') }}
             onKeyDown={e => e.key === 'Enter' && handleSubmit()} />
         </div>
@@ -120,7 +119,7 @@ function SignupView({ onSwitch, onClose }) {
       return
     }
     const ok = await signup(form)
-    if (ok) onClose()  // 성공할 때만 닫기
+    if (ok) onSwitch()
   }
 
   return (

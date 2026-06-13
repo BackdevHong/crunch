@@ -1,7 +1,7 @@
 import 'dotenv/config'
 import http from 'http'
 import path from 'path'
-import express from 'express'
+import express, { type Express } from 'express'
 import cors from 'cors'
 import morgan from 'morgan'
 import cookieParser from 'cookie-parser'
@@ -21,7 +21,7 @@ import todoRouter from './routes/todo.route'
 import paymentRouter from './routes/payment.route'
 import homeRouter from './routes/home.route'
 
-const app = express()
+const app: Express = express()
 const httpServer = http.createServer(app)
 const PORT = Number(process.env.PORT ?? 4000)
 
@@ -76,5 +76,7 @@ httpServer.listen(PORT, () => {
   console.log(`🚀 서버 실행 중 → http://localhost:${PORT}`)
   console.log(`   환경: ${process.env.NODE_ENV ?? 'development'}`)
 })
+
+app.set('trust proxy', 1)
 
 export default app

@@ -24,10 +24,20 @@ function getOAuthErrorMessage(provider, error, linkMode = false) {
   return `${providerLabel} ${linkMode ? '계정 연결' : '로그인'} 실패: ${detail}`
 }
 
+function getEmailVerificationMessage(status) {
+  const messages = {
+    success: '이메일 인증이 완료되었습니다. 로그인해주세요.',
+    invalid: '인증 링크가 만료되었거나 올바르지 않습니다.',
+    failed: '이메일 인증 처리 중 오류가 발생했습니다.',
+    missing_token: '인증 토큰이 없습니다.',
+  }
+  return messages[status] ?? '이메일 인증 상태를 확인해주세요.'
+}
+
 export function AppProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null)
   const [authError, setAuthError] = useState('')
-  const [authLoading, setAuthLoading] = useState(true) // 초기 인증 확인 중
+  const [authLoading, setAuthLoading] = useState(true)
 
   const [services, _setServices] = useState([])
   const [freelancers, _setFreelancers] = useState([])
@@ -38,7 +48,6 @@ export function AppProvider({ children }) {
   const [editingService, setEditingService] = useState(null)
   const [editingProject, setEditingProject] = useState(null)
 
-  // ── 앱 시작 시 로그인 상태 복원 ──────────────────────────────
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     const oauthToken = params.get('accessToken')
@@ -46,6 +55,7 @@ export function AppProvider({ children }) {
     const oauthError = params.get('error')
     const oauthLinked = params.get('linked')
     const oauthLinkMode = params.get('link') === '1'
+    const emailVerification = params.get('emailVerification')
 
     if (oauthToken) {
       localStorage.setItem('accessToken', oauthToken)
@@ -55,6 +65,9 @@ export function AppProvider({ children }) {
       window.history.replaceState({}, document.title, window.location.pathname)
     } else if (oauthProvider && oauthLinked) {
       window.history.replaceState({}, document.title, window.location.pathname)
+    } else if (emailVerification) {
+      setAuthError(getEmailVerificationMessage(emailVerification))
+      window.history.replaceState({}, document.title, window.location.pathname)
     }
 
     const token = oauthToken || localStorage.getItem('accessToken')
@@ -62,13 +75,13 @@ export function AppProvider({ children }) {
       setAuthLoading(false)
       return
     }
+
     api.get('/api/auth/me')
       .then(({ data }) => setCurrentUser(data.data))
       .catch(() => localStorage.removeItem('accessToken'))
       .finally(() => setAuthLoading(false))
   }, [])
 
-  // ── 로그인 ───────────────────────────────────────────────────
   const login = async (email, password) => {
     setAuthError('')
     try {
@@ -82,7 +95,6 @@ export function AppProvider({ children }) {
     }
   }
 
-  // ── 회원가입 ─────────────────────────────────────────────────
   const signup = async ({ lastName, firstName, email, password }) => {
     setAuthError('')
     try {
@@ -91,8 +103,7 @@ export function AppProvider({ children }) {
         email,
         password,
       })
-      localStorage.setItem('accessToken', data.data.accessToken)
-      setCurrentUser(data.data.user)
+      setAuthError(data.data?.message ?? '인증 메일을 보냈습니다. 이메일 인증 후 로그인해주세요.')
       return true
     } catch (err) {
       setAuthError(err.response?.data?.message ?? '회원가입 중 오류가 발생했습니다.')
@@ -100,7 +111,6 @@ export function AppProvider({ children }) {
     }
   }
 
-  // ── 로그아웃 ─────────────────────────────────────────────────
   const logout = async () => {
     try {
       await api.post('/api/auth/logout')
@@ -110,7 +120,6 @@ export function AppProvider({ children }) {
     }
   }
 
-  // ── 프로젝트 등록 ─────────────────────────────────────────────
   const addProject = (projectData) => {
     const newProject = {
       id: Date.now(),
